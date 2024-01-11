@@ -40,6 +40,3 @@ graph TD;
 ## Second section
 
 
-
----
-<!-- {{ VERSION }} -->
