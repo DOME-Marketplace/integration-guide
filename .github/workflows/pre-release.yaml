@@ -1,0 +1,131 @@
+name: Pre-Release
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled  
+
+
+env:
+  INPUT_FILENAME: README
+  OUTPUT_FILENAME: DOME-Integration-Guide
+  
+      
+jobs:
+
+  # Generate version based on semver
+  generate-version:
+    name: Generate version
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.out.outputs.version }}
+      plain-version: ${{ steps.out.outputs.plain-version }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: bump
+        uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: major,minor,patch
+
+      - uses: zwaldowski/semver-release-action@v2
+        with:
+          dry_run: true
+          bump: ${{ steps.bump.outputs.match }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get PR Number
+        id: pr_number
+        run: echo "::set-output name=nr::$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')"
+
+      - name: Set version output
+        id: out
+        run: |
+          echo "::set-output name=version::$(echo ${VERSION}-PRE-${{ steps.pr_number.outputs.nr }})"
+          echo "::set-output name=plain-version::$(echo ${VERSION})"
+
+
+
+  # Export to PDF and release
+  export-release:
+    name: Export and Release
+    needs: ["generate-version"]
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Create export directories
+        run: |
+          mkdir export
+          #mkdir -p doc/img/mermaid
+
+      # mermaid currently places an absolute path which does not work with the PDF export below
+      #- name: compile mermaid
+      #  uses: Marloxo/compile-mermaid-markdown-action@0.2.3
+      #  with:
+      #    files: ./${{ env.INPUT_FILENAME }}.md
+      #    output: 'doc/img/mermaid'
+      #  env:
+      #    HIDE_CODEBLOCKS: 1
+      #    ABSOLUTE_IMAGE_LINKS: 0  # <-- this has no effect
+      #    OUTPUT_FILE_TYPE: "png"
+
+      - name: Generate ToC
+        uses: technote-space/toc-generator@v4
+        with:
+          TARGET_PATHS: ./${{ env.INPUT_FILENAME }}.md
+          COMMIT_MESSAGE: "Update ToC"
+
+      - name: Set version in template
+        run: |
+          sed -i 's/{{{VERSION}}}/${{ needs.generate-version.outputs.version }}/g' doc/template/template.html
+
+      - name: Export to PDF/HTML
+        uses: baileyjm02/markdown-to-pdf@v1
+        with:
+          input_path: ./
+          output_dir: export/
+          images_dir: "./doc/img"
+          image_import: doc/img
+          template: doc/template/template.html
+          build_pdf: true
+          build_html: true
+          table_of_contents: false
+
+      - name: Rename export files
+        run: |
+          cd export
+          mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
+          mv ${{ env.INPUT_FILENAME }}.html ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: export
+
+      - name: Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ needs.generate-version.outputs.version }}
+          prerelease: true
+          title: ${{ needs.generate-version.outputs.version }}
+          files: |
+            export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
+            export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
+          
+
+
+
+
+  

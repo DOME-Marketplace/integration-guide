@@ -1,2 +1,37 @@
-# integration-guide
+# DOME Marketplace Integration and Federation Guide
+
+![DOME Logo](doc/img/DOME_logo_doc.png)
+
 Guide for DOME marketplace integration and federation
+
+<!-- ToC created with: https://github.com/thlorenz/doctoc -->
+<!-- Update with: doctoc README.md -->
+<!-- Will be also updated during pre-release/release GitHub workflow -->
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<!-- param::title::**Table of Contents**:: -->
+**Table of Contents**
+
+- [First section](#first-section)
+  - [First subsection](#first-subsection)
+- [Second section](#second-section)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
+## First section
+
+Some content
+
+
+### First subsection
+
+Some more content
+
+
+
+
+## Second section
+
+Second content
