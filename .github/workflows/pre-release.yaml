@@ -106,6 +106,7 @@ jobs:
           ls -la doc/img
           ls -la doc/img/mermaid
           ls -la export
+          cat README.md
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
