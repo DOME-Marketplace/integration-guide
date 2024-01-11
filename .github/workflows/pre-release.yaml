@@ -110,6 +110,10 @@ jobs:
           mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
           mv ${{ env.INPUT_FILENAME }}.html ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
 
+      - name: debug
+        run: |
+          cat ./README.md
+          
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
