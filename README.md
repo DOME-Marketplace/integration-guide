@@ -8,7 +8,7 @@ Guide for DOME marketplace integration and federation
 <!-- Update with: doctoc README.md -->
 <!-- Will be also updated during pre-release/release GitHub workflow -->
 
-<summary><strong>Table of Contents</strong></summary>
+**Table of Contents**
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->

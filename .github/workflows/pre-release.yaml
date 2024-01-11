@@ -68,6 +68,7 @@ jobs:
           mkdir -p export/gh-pages
           #mkdir -p doc/img/mermaid
 
+      # mermaid currently places an absolute path which does not work with the PDF export below
       #- name: compile mermaid
       #  uses: Marloxo/compile-mermaid-markdown-action@0.2.3
       #  with:
@@ -77,6 +78,12 @@ jobs:
       #    HIDE_CODEBLOCKS: 1
       #    ABSOLUTE_IMAGE_LINKS: 0
       #    OUTPUT_FILE_TYPE: "png"
+
+      - name: Append document version
+        run: |
+          echo "" >> ./${{ env.INPUT_FILENAME }}.md
+          echo "---" >> ./${{ env.INPUT_FILENAME }}.md
+          echo "Version: ${{ needs.generate-version.outputs.version }}" >> ./${{ env.INPUT_FILENAME }}.md
 
       - name: Generate ToC
         uses: technote-space/toc-generator@v4
@@ -108,15 +115,6 @@ jobs:
         with:
           name: docs
           path: export
-
-      - name: List exported files
-        run: |
-          ls -la .
-          ls -la doc
-          ls -la doc/img
-          #ls -la doc/img/mermaid
-          ls -la export
-          cat README.md
 
       - name: Deploy gh-pages HTML
         uses: JamesIves/github-pages-deploy-action@v4
