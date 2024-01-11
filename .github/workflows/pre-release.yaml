@@ -91,7 +91,7 @@ jobs:
           image_import: doc/img
           build_pdf: true
           build_html: true
-          table_of_contents: true
+          table_of_contents: false
 
       - name: Rename export files
         run: |
