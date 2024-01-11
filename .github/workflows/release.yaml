@@ -1,0 +1,103 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  INPUT_FILENAME: README
+  OUTPUT_FILENAME: DOME-Integration-Guide
+  
+      
+jobs:
+
+  # Generate version based on semver
+  generate-version:
+    name: Generate version
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.out.outputs.version }}
+      
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: pr
+        uses: actions-ecosystem/action-get-merged-pull-request@v1.0.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: zwaldowski/semver-release-action@v2
+        with:
+          dry_run: true
+          bump: ${{ steps.pr.outputs.labels }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set version output
+        id: out
+        run: echo "::set-output name=version::$(echo ${VERSION})"
+
+
+
+  # Export to PDF and release
+  export-release:
+    name: Export and Release
+    needs: ["generate-version"]
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Create export directories
+        run: |
+          mkdir -p export/gh-pages
+          
+      - name: Set version in template
+        run: |
+          sed -i 's/{{{VERSION}}}/${{ needs.generate-version.outputs.version }}/g' doc/template/template.html
+
+      - name: Export to PDF/HTML
+        uses: baileyjm02/markdown-to-pdf@v1
+        with:
+          input_path: ./
+          output_dir: export/
+          images_dir: "./doc/img"
+          image_import: doc/img
+          template: doc/template/template.html
+          build_pdf: true
+          build_html: true
+          table_of_contents: false
+
+      - name: Rename export files
+        run: |
+          cd export
+          cp ${{ env.INPUT_FILENAME }}.html ./gh-pages/index.html
+          mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
+          mv ${{ env.INPUT_FILENAME }}.html ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: export
+
+      - name: Deploy gh-pages HTML
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: export/gh-pages
+          branch: gh-pages
+
+      - name: Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ needs.generate-version.outputs.version }}
+          prerelease: false
+          title: ${{ needs.generate-version.outputs.version }}
+          files: |
+            export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
+            export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
+          
