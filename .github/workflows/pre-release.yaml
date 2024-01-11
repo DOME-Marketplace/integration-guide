@@ -1,0 +1,89 @@
+name: Pre-Release
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled  
+
+jobs:
+
+  # Generate version based on semver
+  generate-version:
+    name: Generate version
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.out.outputs.version }}
+      plain-version: ${{ steps.out.outputs.plain-version }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: bump
+        uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: major,minor,patch
+
+      - uses: zwaldowski/semver-release-action@v2
+        with:
+          dry_run: true
+          bump: ${{ steps.bump.outputs.match }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get PR Number
+        id: pr_number
+        run: echo "::set-output name=nr::$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')"
+
+      - name: Set version output
+        id: out
+        run: |
+          echo "::set-output name=version::$(echo ${VERSION}-PRE-${{ steps.pr_number.outputs.nr }})"
+          echo "::set-output name=plain-version::$(echo ${VERSION})"
+
+
+
+  # Export to PDF and release
+  export-release:
+    name: Export and Release
+    needs: ["generate-version"]
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Create export directories
+        run: |
+          mkdir -p export
+
+      - uses: baileyjm02/markdown-to-pdf@v1
+        with:
+          input_path: .
+          output_dir: ./export
+          images_dir: ./doc/img
+          # for example <img src="./images/file-name.png">
+          #image_import: ./images
+          build_pdf: true
+          build_html: false
+          table_of_contents: true
+
+      - name: List exported files
+        run: |
+          ls -la ./export
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ needs.generate-version.outputs.version }}
+          prerelease: true
+          title: ${{ needs.generate-version.outputs.version }}
+          
+
+
+
+
+  
