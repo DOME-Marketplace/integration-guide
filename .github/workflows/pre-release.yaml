@@ -85,6 +85,7 @@ jobs:
           echo "---" >> ./${{ env.INPUT_FILENAME }}.md
           echo "Version: ${{ needs.generate-version.outputs.version }}" >> ./${{ env.INPUT_FILENAME }}.md
           cat ./${{ env.INPUT_FILENAME }}.md
+          git diff
 
       - name: Generate ToC
         uses: technote-space/toc-generator@v4
@@ -105,6 +106,7 @@ jobs:
 
       - name: Rename export files
         run: |
+          git diff
           cat ./${{ env.INPUT_FILENAME }}.md
           cd export
           cp ${{ env.INPUT_FILENAME }}.html ./gh-pages/index.html
@@ -113,6 +115,7 @@ jobs:
 
       - name: debug
         run: |
+          git diff
           cat ./${{ env.INPUT_FILENAME }}.md
           
       - name: Upload artifact
