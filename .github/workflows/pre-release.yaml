@@ -63,9 +63,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      #- name: Create export directories
-      #  run: |
-      #    mkdir -p doc/img/mermaid
+      - name: Create export directories
+        run: |
+          mkdir export
+          #mkdir -p doc/img/mermaid
 
       # mermaid currently places an absolute path which does not work with the PDF export below
       #- name: compile mermaid

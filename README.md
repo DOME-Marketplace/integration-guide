@@ -22,21 +22,16 @@ Guide for DOME marketplace integration and federation
 
 ## First section
 
+Some content
+
 
 ### First subsection
 
-Some mermaid flow chart
+Some more content
 
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
 
 
 
 ## Second section
 
-
+Second content
