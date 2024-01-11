@@ -2,7 +2,7 @@
 
 Guide for DOME marketplace integration and federation
 
-![DOME Logo](doc/img/DOME_logo_doc.png)
+![DOME Logo](img/DOME_logo_doc.png)
 
 
 ## First section
