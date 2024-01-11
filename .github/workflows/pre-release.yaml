@@ -84,6 +84,15 @@ jobs:
         with:
           TARGET_PATHS: ./${{ env.INPUT_FILENAME }}.md
           COMMIT_MESSAGE: "Update ToC"
+
+      - name: Set version in template
+        run: |
+          sed -i 's/{{{VERSION}}}/${{ needs.generate-version.outputs.version }}/g' doc/template/template.html
+          cat doc/template/template.html
+
+      - name: Debug
+        run: |
+          cat doc/template/template.html
                 
       - name: Export to PDF/HTML
         uses: baileyjm02/markdown-to-pdf@v1
