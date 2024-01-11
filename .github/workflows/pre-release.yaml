@@ -75,7 +75,7 @@ jobs:
           output: 'doc/img/mermaid'
         env:
           HIDE_CODEBLOCKS: 1
-          ABSOLUTE_IMAGE_LINKS: 0
+          #ABSOLUTE_IMAGE_LINKS: 0
           OUTPUT_FILE_TYPE: "png"
 
       - uses: baileyjm02/markdown-to-pdf@v1
