@@ -12,6 +12,11 @@ Guide for DOME marketplace integration and federation
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [First section](#first-section)
+  - [First subsection](#first-subsection)
+- [Second section](#second-section)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
