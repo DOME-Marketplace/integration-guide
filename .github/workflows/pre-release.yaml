@@ -71,7 +71,7 @@ jobs:
         #uses: neenjaw/compile-mermaid-markdown-action@0.3.3
         uses: Marloxo/compile-mermaid-markdown-action@0.2.3
         with:
-          files: ./${{ env.INPUT_FILENAME }}.md
+          files: ${{ env.INPUT_FILENAME }}.md
           output: 'doc/img/mermaid'
         env:
           HIDE_CODEBLOCKS: 1
