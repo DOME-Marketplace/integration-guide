@@ -79,14 +79,21 @@ jobs:
       #    ABSOLUTE_IMAGE_LINKS: 0
       #    OUTPUT_FILE_TYPE: "png"
 
-      - name: Append document version
-        run: |
-          echo "" >> ./${{ env.INPUT_FILENAME }}.md
-          echo "---" >> ./${{ env.INPUT_FILENAME }}.md
-          echo "Version: ${{ needs.generate-version.outputs.version }}" >> ./${{ env.INPUT_FILENAME }}.md
-          cat ./${{ env.INPUT_FILENAME }}.md
-          git diff
+      #- name: Append document version
+      #  run: |
+      #    echo "" >> ./${{ env.INPUT_FILENAME }}.md
+      #    echo "---" >> ./${{ env.INPUT_FILENAME }}.md
+      #    echo "Version: ${{ needs.generate-version.outputs.version }}" >> ./${{ env.INPUT_FILENAME }}.md
+      #    cat ./${{ env.INPUT_FILENAME }}.md
+      #    git diff
 
+      - name: Append document version
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          include: ./${{ env.INPUT_FILENAME }}.md
+          find: "<!-- {{ VERSION }} -->"
+          replace: "Version: ${{ needs.generate-version.outputs.version }}"
+      
       - name: Generate ToC
         uses: technote-space/toc-generator@v4
         with:
