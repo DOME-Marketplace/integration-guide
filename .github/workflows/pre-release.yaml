@@ -9,6 +9,12 @@ on:
       - labeled
       - unlabeled  
 
+
+env:
+  INPUT_FILENAME: README
+  OUTPUT_FILENAME: DOME-Integration-Guide
+  
+      
 jobs:
 
   # Generate version based on semver
@@ -59,8 +65,6 @@ jobs:
       - name: Create export directories
         run: |
           mkdir -p export
-          ls -la
-          ls -la doc
 
       - uses: baileyjm02/markdown-to-pdf@v1
         with:
@@ -72,6 +76,11 @@ jobs:
           build_pdf: true
           build_html: false
           table_of_contents: true
+
+      - name: Rename export files
+        run: |
+          cd export
+          mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
 
       - uses: actions/upload-artifact@v3
         with:
@@ -90,6 +99,8 @@ jobs:
           automatic_release_tag: ${{ needs.generate-version.outputs.version }}
           prerelease: true
           title: ${{ needs.generate-version.outputs.version }}
+          files: |
+            export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
           
 
 
