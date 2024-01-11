@@ -81,6 +81,7 @@ jobs:
         run: |
           cd export
           mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
+          mv ${{ env.INPUT_FILENAME }}.html ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
 
       - uses: actions/upload-artifact@v3
         with:
@@ -101,6 +102,7 @@ jobs:
           title: ${{ needs.generate-version.outputs.version }}
           files: |
             export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
+            export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
           
 
 
