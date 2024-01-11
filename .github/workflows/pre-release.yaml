@@ -105,6 +105,7 @@ jobs:
 
       - name: Rename export files
         run: |
+          cat ./${{ env.INPUT_FILENAME }}.md
           cd export
           cp ${{ env.INPUT_FILENAME }}.html ./gh-pages/index.html
           mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
@@ -112,7 +113,7 @@ jobs:
 
       - name: debug
         run: |
-          cat ./README.md
+          cat ./${{ env.INPUT_FILENAME }}.md
           
       - name: Upload artifact
         uses: actions/upload-artifact@v3
