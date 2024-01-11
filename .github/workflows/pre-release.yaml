@@ -114,7 +114,7 @@ jobs:
           ls -la .
           ls -la doc
           ls -la doc/img
-          ls -la doc/img/mermaid
+          #ls -la doc/img/mermaid
           ls -la export
           cat README.md
 
