@@ -1,14 +1,9 @@
-name: Pre-Release
+name: Release
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - labeled
-      - unlabeled  
-
+  push:
+    branches:
+      - main
 
 env:
   INPUT_FILENAME: README
@@ -24,31 +19,24 @@ jobs:
 
     outputs:
       version: ${{ steps.out.outputs.version }}
-      plain-version: ${{ steps.out.outputs.plain-version }}
-
+      
     steps:
       - uses: actions/checkout@v2
 
-      - id: bump
-        uses: zwaldowski/match-label-action@v1
+      - id: pr
+        uses: actions-ecosystem/action-get-merged-pull-request@v1.0.1
         with:
-          allowed: major,minor,patch
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: zwaldowski/semver-release-action@v2
         with:
           dry_run: true
-          bump: ${{ steps.bump.outputs.match }}
+          bump: ${{ steps.pr.outputs.labels }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get PR Number
-        id: pr_number
-        run: echo "::set-output name=nr::$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')"
 
       - name: Set version output
         id: out
-        run: |
-          echo "::set-output name=version::$(echo ${VERSION}-PRE-${{ steps.pr_number.outputs.nr }})"
-          echo "::set-output name=plain-version::$(echo ${VERSION})"
+        run: echo "::set-output name=version::$(echo ${VERSION})"
 
 
 
@@ -63,27 +51,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      #- name: Create export directories
-      #  run: |
-      #    mkdir -p doc/img/mermaid
-
-      # mermaid currently places an absolute path which does not work with the PDF export below
-      #- name: compile mermaid
-      #  uses: Marloxo/compile-mermaid-markdown-action@0.2.3
-      #  with:
-      #    files: ./${{ env.INPUT_FILENAME }}.md
-      #    output: 'doc/img/mermaid'
-      #  env:
-      #    HIDE_CODEBLOCKS: 1
-      #    ABSOLUTE_IMAGE_LINKS: 0  # <-- this has no effect
-      #    OUTPUT_FILE_TYPE: "png"
-
-      - name: Generate ToC
-        uses: technote-space/toc-generator@v4
-        with:
-          TARGET_PATHS: ./${{ env.INPUT_FILENAME }}.md
-          COMMIT_MESSAGE: "Update ToC"
-
+      - name: Create export directories
+        run: |
+          mkdir -p export/gh-pages
+          
       - name: Set version in template
         run: |
           sed -i 's/{{{VERSION}}}/${{ needs.generate-version.outputs.version }}/g' doc/template/template.html
@@ -103,6 +74,7 @@ jobs:
       - name: Rename export files
         run: |
           cd export
+          cp ${{ env.INPUT_FILENAME }}.html ./gh-pages/index.html
           mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
           mv ${{ env.INPUT_FILENAME }}.html ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
 
@@ -112,19 +84,20 @@ jobs:
           name: docs
           path: export
 
+      - name: Deploy gh-pages HTML
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: export/gh-pages
+          branch: gh-pages
+
       - name: Release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: ${{ needs.generate-version.outputs.version }}
-          prerelease: true
+          prerelease: false
           title: ${{ needs.generate-version.outputs.version }}
           files: |
             export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
             export/${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
           
-
-
-
-
-  
