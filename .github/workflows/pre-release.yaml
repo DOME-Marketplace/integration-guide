@@ -67,17 +67,22 @@ jobs:
           mkdir -p export
           mkdir -p doc/img/mermaid
 
-      - name: compile mermaid
-        #uses: neenjaw/compile-mermaid-markdown-action@0.3.3
-        uses: Marloxo/compile-mermaid-markdown-action@0.2.3
-        with:
-          files: ./${{ env.INPUT_FILENAME }}.md
-          output: 'doc/img/mermaid'
-        env:
-          HIDE_CODEBLOCKS: 1
-          ABSOLUTE_IMAGE_LINKS: 0
-          OUTPUT_FILE_TYPE: "png"
+      #- name: compile mermaid
+      #  uses: Marloxo/compile-mermaid-markdown-action@0.2.3
+      #  with:
+      #    files: ./${{ env.INPUT_FILENAME }}.md
+      #    output: 'doc/img/mermaid'
+      #  env:
+      #    HIDE_CODEBLOCKS: 1
+      #    ABSOLUTE_IMAGE_LINKS: 0
+      #    OUTPUT_FILE_TYPE: "png"
 
+      - uses: technote-space/toc-generator@v4
+        with:
+          TARGET_PATHS: ./${{ env.INPUT_FILENAME }}.md
+          COMMIT_MESSAGE: "Update ToC"
+          #GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      
       - uses: baileyjm02/markdown-to-pdf@v1
         with:
           input_path: ./
