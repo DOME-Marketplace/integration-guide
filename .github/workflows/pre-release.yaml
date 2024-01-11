@@ -65,13 +65,23 @@ jobs:
       - name: Create export directories
         run: |
           mkdir -p export
+          mkdir -p doc/img/mermaid
+
+      - name: compile mermaid
+        uses: neenjaw/compile-mermaid-markdown-action@0.3.3
+        with:
+          files: ./${{ env.INPUT_FILENAME }}.md
+          output: 'doc/img/mermaid'
+        env:
+          HIDE_CODEBLOCKS: 1
+          ABSOLUTE_IMAGE_LINKS: 1
+          OUTPUT_FILE_TYPE: "png"
 
       - uses: baileyjm02/markdown-to-pdf@v1
         with:
           input_path: ./
           output_dir: export/
           images_dir: "./doc/img"
-          # for example <img src="./images/file-name.png">
           image_import: doc/img
           build_pdf: true
           build_html: true
@@ -92,6 +102,8 @@ jobs:
         run: |
           ls -la .
           ls -la doc
+          ls -la doc/img
+          ls -la doc/img/mermaid
           ls -la export
 
       - uses: "marvinpinto/action-automatic-releases@latest"
