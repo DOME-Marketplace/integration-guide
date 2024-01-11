@@ -60,12 +60,13 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Create export directories
         run: |
-          mkdir -p export
-          mkdir -p doc/img/mermaid
+          mkdir -p export/gh-pages
+          #mkdir -p doc/img/mermaid
 
       #- name: compile mermaid
       #  uses: Marloxo/compile-mermaid-markdown-action@0.2.3
@@ -77,13 +78,15 @@ jobs:
       #    ABSOLUTE_IMAGE_LINKS: 0
       #    OUTPUT_FILE_TYPE: "png"
 
-      - uses: technote-space/toc-generator@v4
+      - name: Generate ToC
+        uses: technote-space/toc-generator@v4
         with:
           TARGET_PATHS: ./${{ env.INPUT_FILENAME }}.md
           COMMIT_MESSAGE: "Update ToC"
           #GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       
-      - uses: baileyjm02/markdown-to-pdf@v1
+      - name: Export to PDF/HTML
+        uses: baileyjm02/markdown-to-pdf@v1
         with:
           input_path: ./
           output_dir: export/
@@ -96,10 +99,12 @@ jobs:
       - name: Rename export files
         run: |
           cd export
+          cp ${{ env.INPUT_FILENAME }}.html ./gh-pages/index.html
           mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
           mv ${{ env.INPUT_FILENAME }}.html ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
           name: docs
           path: export
@@ -113,7 +118,14 @@ jobs:
           ls -la export
           cat README.md
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Deploy gh-pages HTML
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: export/gh-pages
+          branch: gh-pages
+
+      - name: Release
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: ${{ needs.generate-version.outputs.version }}
