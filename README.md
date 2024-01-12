@@ -24,14 +24,40 @@ Guide for DOME marketplace integration and federation
 
 Some content
 
+**Some table:**
+
+| Title 1 | Title 2 | Title 3 |
+|---------|---------|---------|
+| abc     | def     | ghi     |
+| 123     | 456     | 789     |
+| jkl     | mno     | pqr     |
+
+
 
 ### First subsection
 
 Some more content
 
+Some mermaid diagram
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
 
 
 
 ## Second section
 
 Second content
+
+* Another table:
+
+  | Title 1 | Title 2 | Title 3 |
+  |---------|---------|---------|
+  | abc     | def     | ghi     |
+  | 123     | 456     | 789     |
+  | jkl     | mno     | pqr     |

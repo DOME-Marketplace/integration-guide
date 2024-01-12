@@ -54,10 +54,21 @@ jobs:
       - name: Create export directories
         run: |
           mkdir -p export/gh-pages
+          mkdir -p doc/img/mermaid
           
       - name: Set version in template
         run: |
           sed -i 's/{{{VERSION}}}/${{ needs.generate-version.outputs.version }}/g' doc/template/template.html
+
+      - name: Compile mermaid diagrams
+        uses: Marloxo/compile-mermaid-markdown-action@0.2.3
+        with:
+          files: ./${{ env.INPUT_FILENAME }}.md
+          output: 'doc/img/mermaid'
+        env:
+          HIDE_CODEBLOCKS: 1
+          ABSOLUTE_IMAGE_LINKS: ""
+          OUTPUT_FILE_TYPE: "png"
 
       - name: Export to PDF/HTML
         uses: baileyjm02/markdown-to-pdf@v1
