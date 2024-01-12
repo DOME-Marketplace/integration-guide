@@ -68,24 +68,6 @@ jobs:
           mkdir export
           mkdir -p doc/img/mermaid
 
-      # mermaid currently places an absolute path which does not work with the PDF export below
-      - name: Compile mermaid diagrams
-        uses: Marloxo/compile-mermaid-markdown-action@0.2.3
-        with:
-          files: ./${{ env.INPUT_FILENAME }}.md
-          output: 'doc/img/mermaid'
-        env:
-          HIDE_CODEBLOCKS: 1
-          ABSOLUTE_IMAGE_LINKS: ""
-          OUTPUT_FILE_TYPE: "png"
-
-      - name: DEBUG show changes
-        run: |
-          git status
-          git diff
-          cat ./${{ env.INPUT_FILENAME }}.md
-          ls -la doc/img/mermaid
-          
       - name: Generate ToC
         uses: technote-space/toc-generator@v4
         with:
@@ -95,6 +77,17 @@ jobs:
       - name: Set version in template
         run: |
           sed -i 's/{{{VERSION}}}/${{ needs.generate-version.outputs.version }}/g' doc/template/template.html
+
+      # mermaid currently places an absolute path which does not work with the PDF export below
+      - name: Compile mermaid diagrams
+        uses: Marloxo/compile-mermaid-markdown-action@0.2.3
+        with:
+          files: ./${{ env.INPUT_FILENAME }}.md
+          output: 'doc/img/mermaid'
+        env:
+          HIDE_CODEBLOCKS: ""
+          ABSOLUTE_IMAGE_LINKS: ""
+          OUTPUT_FILE_TYPE: "png"
 
       - name: Export to PDF/HTML
         uses: baileyjm02/markdown-to-pdf@v1
@@ -108,6 +101,13 @@ jobs:
           build_html: true
           table_of_contents: false
 
+      - name: DEBUG show changes
+        run: |
+          git status
+          git diff
+          cat ./${{ env.INPUT_FILENAME }}.md
+          ls -la doc/img/mermaid
+          
       - name: Rename export files
         run: |
           cat ./${{ env.INPUT_FILENAME }}.md
