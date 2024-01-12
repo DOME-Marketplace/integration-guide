@@ -45,8 +45,8 @@ graph TD;
 Second content
 
 * **Some table:**
-Title 1 | Title 2 | Title 3
---------|---------|--------
-abc     | def     | ghi    
-123     | 456     | 789    
-jkl     | mno     | pqr    
+| Title 1 | Title 2 | Title 3 |
+|---------|---------|---------|
+| abc     | def     | ghi     |
+| 123     | 456     | 789     |
+| jkl     | mno     | pqr     |
