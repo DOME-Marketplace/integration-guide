@@ -30,6 +30,7 @@ Some content
 Some more content
 
 Some mermaid diagram
+
 ```mermaid
 graph TD;
     A-->B;
@@ -45,6 +46,7 @@ graph TD;
 Second content
 
 * **Some table:**
+
 | Title 1 | Title 2 | Title 3 |
 |---------|---------|---------|
 | abc     | def     | ghi     |
