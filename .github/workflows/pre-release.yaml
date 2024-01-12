@@ -79,7 +79,7 @@ jobs:
           ABSOLUTE_IMAGE_LINKS: ""
           OUTPUT_FILE_TYPE: "png"
 
-      - name: DEBUG: show changes
+      - name: DEBUG show changes
         run: |
           git status
           git diff
