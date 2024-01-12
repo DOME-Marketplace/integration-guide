@@ -78,14 +78,13 @@ jobs:
         run: |
           sed -i 's/{{{VERSION}}}/${{ needs.generate-version.outputs.version }}/g' doc/template/template.html
 
-      # mermaid currently places an absolute path which does not work with the PDF export below
       - name: Compile mermaid diagrams
         uses: Marloxo/compile-mermaid-markdown-action@0.2.3
         with:
           files: ./${{ env.INPUT_FILENAME }}.md
           output: 'doc/img/mermaid'
         env:
-          HIDE_CODEBLOCKS: ""
+          HIDE_CODEBLOCKS: 1
           ABSOLUTE_IMAGE_LINKS: ""
           OUTPUT_FILE_TYPE: "png"
 
@@ -101,17 +100,8 @@ jobs:
           build_html: true
           table_of_contents: false
 
-      - name: DEBUG show changes
-        run: |
-          git status
-          git diff
-          cat ./${{ env.INPUT_FILENAME }}.md
-          ls -la doc/img/mermaid
-          
       - name: Rename export files
         run: |
-          cat ./${{ env.INPUT_FILENAME }}.md
-          ls -la doc/img/mermaid
           cd export
           mv ${{ env.INPUT_FILENAME }}.pdf ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.pdf
           mv ${{ env.INPUT_FILENAME }}.html ${{ env.OUTPUT_FILENAME }}_${{ needs.generate-version.outputs.version }}.html
