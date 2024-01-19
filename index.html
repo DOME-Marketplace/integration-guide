@@ -1125,7 +1125,128 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 <li><a href="#second-section">Second section</a></li>
 </ul>
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-<h2 id="first-section" tabindex="-1"><a class="anchor" href="#first-section" aria-hidden="true"><span class="octicon octicon-link"></span></a> First section</h2>
+<hr>
+<blockquote>
+<p><strong><em>NOTE:</em></strong>
+We want future Participants to integrate successfully and efficiently, therefore we provide a clear, structured, step-by-step Integration Guide that is comprehensive, self-contained, self-explanatory and actionable.
+This Integration Guide should:</p>
+<ul>
+<li>be the single point of entry for any stakeholder that wants to <em>execute</em> on integrating and federating a marketplace in DOME</li>
+<li>be the reference for what is <em>currently</em> available to integrators and with what level of stability vs. expected change</li>
+<li>not assume knowledge of DOME implementation details from the part of the reader</li>
+<li>be comprehensive so as to allow an executing IT/eng team to work autonomously</li>
+<li>provide detailed, self-contained, actionable instructions</li>
+<li>include context when appropriate to facilitate the comprehension of the Why, the What, the How and the with Whom at each step.</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="introduction" tabindex="-1"><a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a> Introduction</h2>
+<h3 id="who-is-this-guide-for" tabindex="-1"><a class="anchor" href="#who-is-this-guide-for" aria-hidden="true"><span class="octicon octicon-link"></span></a> Who is this guide for?</h3>
+<h3 id="what-is-dome" tabindex="-1"><a class="anchor" href="#what-is-dome" aria-hidden="true"><span class="octicon octicon-link"></span></a> What is DOME?</h3>
+<h3 id="what-will-i-accomplish-following-this-guide" tabindex="-1"><a class="anchor" href="#what-will-i-accomplish-following-this-guide" aria-hidden="true"><span class="octicon octicon-link"></span></a> What will I accomplish following this guide?</h3>
+<blockquote>
+<p>A complete and functioning integration of a marketplace in a federated DOME environment (contractual and business aspects not included).</p>
+</blockquote>
+<h3 id="pre-requisites" tabindex="-1"><a class="anchor" href="#pre-requisites" aria-hidden="true"><span class="octicon octicon-link"></span></a> Pre-requisites</h3>
+<blockquote>
+<p>x. need to be a legal entity of this type or another; have a registration number of this type or another; etc.</p>
+</blockquote>
+<h2 id="onboarding-as-a-dome-participant" tabindex="-1"><a class="anchor" href="#onboarding-as-a-dome-participant" aria-hidden="true"><span class="octicon octicon-link"></span></a> Onboarding as a DOME Participant</h2>
+<h3 id="what-will-i-accomplish-following-this-section" tabindex="-1"><a class="anchor" href="#what-will-i-accomplish-following-this-section" aria-hidden="true"><span class="octicon octicon-link"></span></a> What will I accomplish following this section?</h3>
+<h3 id="pre-requisites-1" tabindex="-1"><a class="anchor" href="#pre-requisites-1" aria-hidden="true"><span class="octicon octicon-link"></span></a> Pre-requisites</h3>
+<blockquote>
+<p>ex. have an eIDAS certificate; pointers to how one can be procured etc.</p>
+</blockquote>
+<h3 id="step-by-step-process" tabindex="-1"><a class="anchor" href="#step-by-step-process" aria-hidden="true"><span class="octicon octicon-link"></span></a> Step-by step process</h3>
+<blockquote>
+<ul>
+<li>What actions do I need to perform and where?</li>
+<li>What information do I need to provide, to whom, and in what form?</li>
+<li>What artefacts do I need to provide and to whom ? (ex. VCs)</li>
+<li>How do I obtain/produce/certify those artefacts ? (ex. GAIA-X compliance)</li>
+<li>What artefacts do I get out of the onboarding process how/where do I use them subsequently ?
+(ex. the signing key that will later be used by my Access Node)</li>
+</ul>
+</blockquote>
+<h2 id="distributed-components" tabindex="-1"><a class="anchor" href="#distributed-components" aria-hidden="true"><span class="octicon octicon-link"></span></a> Distributed components</h2>
+<blockquote>
+<p>Components that need to be operated by a federated participant.</p>
+</blockquote>
+<h3 id="access-node" tabindex="-1"><a class="anchor" href="#access-node" aria-hidden="true"><span class="octicon octicon-link"></span></a> Access Node</h3>
+<h4 id="overview-and-sub-components" tabindex="-1"><a class="anchor" href="#overview-and-sub-components" aria-hidden="true"><span class="octicon octicon-link"></span></a> Overview and sub-components</h4>
+<blockquote>
+<p>To understand what the sub-components are, how they all work together and how they interact</p>
+</blockquote>
+<h4 id="infrastructure-requirements" tabindex="-1"><a class="anchor" href="#infrastructure-requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a> Infrastructure requirements</h4>
+<blockquote>
+<p>ex. internal endpoint for the TMForum APIs ; external endpoint for the context broker API ; other endpoints between components ?</p>
+</blockquote>
+<h4 id="how-to-deploy" tabindex="-1"><a class="anchor" href="#how-to-deploy" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to deploy</h4>
+<blockquote>
+<p>incl. where to find clean, versioned, infrastructure agnostic HELM charts.</p>
+</blockquote>
+<h4 id="how-to-configure" tabindex="-1"><a class="anchor" href="#how-to-configure" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to configure</h4>
+<blockquote>
+<p>Recommended configuration for all the sub-components, any considerations. When should I change them?</p>
+</blockquote>
+<h4 id="how-to-validate-a-deployment" tabindex="-1"><a class="anchor" href="#how-to-validate-a-deployment" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to validate a deployment</h4>
+<blockquote>
+<p>(validate that everything works)</p>
+</blockquote>
+<h4 id="how-to-operate" tabindex="-1"><a class="anchor" href="#how-to-operate" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to operate</h4>
+<blockquote>
+<ul>
+<li>Management/admin APIs.</li>
+<li>Instrumentation, metrics, logs, alerts</li>
+</ul>
+</blockquote>
+<h4 id="how-to-update" tabindex="-1"><a class="anchor" href="#how-to-update" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to update</h4>
+<h4 id="release-process" tabindex="-1"><a class="anchor" href="#release-process" aria-hidden="true"><span class="octicon octicon-link"></span></a> Release process</h4>
+<blockquote>
+<p>Versioning, release notes, stability considerations</p>
+</blockquote>
+<h4 id="troubleshooting" tabindex="-1"><a class="anchor" href="#troubleshooting" aria-hidden="true"><span class="octicon octicon-link"></span></a> Troubleshooting</h4>
+<h3 id="iam-components" tabindex="-1"><a class="anchor" href="#iam-components" aria-hidden="true"><span class="octicon octicon-link"></span></a> IAM components</h3>
+<blockquote>
+<p>(similar to the Access Node section)</p>
+</blockquote>
+<h2 id="authentication" tabindex="-1"><a class="anchor" href="#authentication" aria-hidden="true"><span class="octicon octicon-link"></span></a> Authentication</h2>
+<h3 id="dome-verifiable-credentials-lear" tabindex="-1"><a class="anchor" href="#dome-verifiable-credentials-lear" aria-hidden="true"><span class="octicon octicon-link"></span></a> DOME Verifiable Credentials (LEAR)</h3>
+<h3 id="how-to-implement" tabindex="-1"><a class="anchor" href="#how-to-implement" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to implement</h3>
+<blockquote>
+<p>using wallets, OIDC4VC&amp;VP. verification etc.</p>
+</blockquote>
+<h2 id="integration-api-tmforum" tabindex="-1"><a class="anchor" href="#integration-api-tmforum" aria-hidden="true"><span class="octicon octicon-link"></span></a> Integration API (TMForum)</h2>
+<blockquote>
+<p>Samples &amp; tutorials for implementing core federation scenarios using the TMForum APIs (with focus on semantics and workflow, beyond the API reference)</p>
+</blockquote>
+<h2 id="policies" tabindex="-1"><a class="anchor" href="#policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Policies</h2>
+<h3 id="defining-policies" tabindex="-1"><a class="anchor" href="#defining-policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Defining policies</h3>
+<blockquote>
+<ul>
+<li>How can a Service Provider create policies that concern the Products that they offer ?</li>
+<li>How can a Marketplace Operator create policites that concern the Products that they host ?</li>
+</ul>
+</blockquote>
+<h4 id="local-policies" tabindex="-1"><a class="anchor" href="#local-policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Local policies</h4>
+<blockquote>
+<p>That only the federated marketplace needs to enforce locally.</p>
+</blockquote>
+<h4 id="distributed-policies" tabindex="-1"><a class="anchor" href="#distributed-policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Distributed policies</h4>
+<blockquote>
+<p>That everyone in the federation needs to enforce.</p>
+</blockquote>
+<h3 id="enforcing-policies" tabindex="-1"><a class="anchor" href="#enforcing-policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Enforcing policies</h3>
+<h4 id="in-front-of-tmforum-api" tabindex="-1"><a class="anchor" href="#in-front-of-tmforum-api" aria-hidden="true"><span class="octicon octicon-link"></span></a> In front of TMForum API</h4>
+<blockquote>
+<p>i.e. marketplace -to- Access Node
+PEP, PDP - when are they needed and when not ?</p>
+</blockquote>
+<h4 id="in-front-of-context-broker-api" tabindex="-1"><a class="anchor" href="#in-front-of-context-broker-api" aria-hidden="true"><span class="octicon octicon-link"></span></a> In front of Context Broker API</h4>
+<blockquote>
+<p>i.e. Access Node -to- Access Node</p>
+</blockquote>
+<hr>
 <p>Some content</p>
 <p><strong>Some table:</strong></p>
 <table>
@@ -1206,6 +1327,6 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 		</main>
 
 		<hr />
-		<small>Version: 0.1.0</small>
+		<small>Version: 0.1.1</small>
 	</body>
 </html>
