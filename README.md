@@ -116,6 +116,7 @@ This Integration Guide should:
 ## Integration API (TMForum)
 
 > Samples & tutorials for implementing core federation scenarios using the TMForum APIs (with focus on semantics and workflow, beyond the API reference)
+>
 > Some content also required for the Knowledgebase, which should be added here as well:
 > - How to: retrieve DOME ecosystem notifications
 > - How to: retrieve a list of products from the shared catalog
