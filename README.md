@@ -116,6 +116,17 @@ This Integration Guide should:
 ## Integration API (TMForum)
 
 > Samples & tutorials for implementing core federation scenarios using the TMForum APIs (with focus on semantics and workflow, beyond the API reference)
+> Some content also required for the Knowledgebase, which should be added here as well:
+> - How to: retrieve DOME ecosystem notifications
+> - How to: retrieve a list of products from the shared catalog
+> - How to: retrieve the product description from the shared catalog
+> - How to: retrieve the product price model from the shared catalog
+> - How to: push a product on the shared catalog
+> - How to: retrieve an order from other marketplaces
+> - How to: push a provisioning status on the shared data layer
+> - How to: push metering information on the shared data layer
+> - How to: push billing information on the shared data layer
+> - How to: retrieve billing information on the shared data layer
 
 ## Policies
 
