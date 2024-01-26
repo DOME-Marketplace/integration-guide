@@ -1117,8 +1117,60 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 <!-- param::title::**Table of Contents**:: -->
 <p><strong>Table of Contents</strong></p>
 <ul>
-<li><a href="#first-section">First section</a>
+<li><a href="#introduction">Introduction</a>
 <ul>
+<li><a href="#who-is-this-guide-for">Who is this guide for?</a></li>
+<li><a href="#what-is-dome">What is DOME?</a></li>
+<li><a href="#what-will-i-accomplish-following-this-guide">What will I accomplish following this guide?</a></li>
+<li><a href="#pre-requisites">Pre-requisites</a></li>
+</ul>
+</li>
+<li><a href="#onboarding-as-a-dome-participant">Onboarding as a DOME Participant</a>
+<ul>
+<li><a href="#what-will-i-accomplish-following-this-section">What will I accomplish following this section?</a></li>
+<li><a href="#pre-requisites-1">Pre-requisites</a></li>
+<li><a href="#step-by-step-process">Step-by step process</a></li>
+</ul>
+</li>
+<li><a href="#distributed-components">Distributed components</a>
+<ul>
+<li><a href="#access-node">Access Node</a>
+<ul>
+<li><a href="#overview-and-sub-components">Overview and sub-components</a></li>
+<li><a href="#infrastructure-requirements">Infrastructure requirements</a></li>
+<li><a href="#how-to-deploy">How to deploy</a></li>
+<li><a href="#how-to-configure">How to configure</a></li>
+<li><a href="#how-to-validate-a-deployment">How to validate a deployment</a></li>
+<li><a href="#how-to-operate">How to operate</a></li>
+<li><a href="#how-to-update">How to update</a></li>
+<li><a href="#release-process">Release process</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li><a href="#iam-components">IAM components</a></li>
+</ul>
+</li>
+<li><a href="#authentication">Authentication</a>
+<ul>
+<li><a href="#dome-verifiable-credentials-lear">DOME Verifiable Credentials (LEAR)</a></li>
+<li><a href="#how-to-implement">How to implement</a></li>
+</ul>
+</li>
+<li><a href="#integration-api-tmforum">Integration API (TMForum)</a></li>
+<li><a href="#policies">Policies</a>
+<ul>
+<li><a href="#defining-policies">Defining policies</a>
+<ul>
+<li><a href="#local-policies">Local policies</a></li>
+<li><a href="#distributed-policies">Distributed policies</a></li>
+</ul>
+</li>
+<li><a href="#enforcing-policies">Enforcing policies</a>
+<ul>
+<li><a href="#in-front-of-tmforum-api">In front of TMForum API</a></li>
+<li><a href="#in-front-of-context-broker-api">In front of Context Broker API</a></li>
+</ul>
+</li>
 <li><a href="#first-subsection">First subsection</a></li>
 </ul>
 </li>
@@ -1219,6 +1271,20 @@ This Integration Guide should:</p>
 <h2 id="integration-api-tmforum" tabindex="-1"><a class="anchor" href="#integration-api-tmforum" aria-hidden="true"><span class="octicon octicon-link"></span></a> Integration API (TMForum)</h2>
 <blockquote>
 <p>Samples &amp; tutorials for implementing core federation scenarios using the TMForum APIs (with focus on semantics and workflow, beyond the API reference)</p>
+<p>Some content also required for the Knowledgebase, which should be added here as well:</p>
+<ul>
+<li>How to: autenticate the marketplace on the shared data layer</li>
+<li>How to: retrieve DOME ecosystem notifications</li>
+<li>How to: retrieve a list of products from the shared catalog</li>
+<li>How to: retrieve the product description from the shared catalog</li>
+<li>How to: retrieve the product price model from the shared catalog</li>
+<li>How to: push a product on the shared catalog</li>
+<li>How to: retrieve an order from other marketplaces</li>
+<li>How to: push a provisioning status on the shared data layer</li>
+<li>How to: push metering information on the shared data layer</li>
+<li>How to: push billing information on the shared data layer</li>
+<li>How to: retrieve billing information on the shared data layer</li>
+</ul>
 </blockquote>
 <h2 id="policies" tabindex="-1"><a class="anchor" href="#policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Policies</h2>
 <h3 id="defining-policies" tabindex="-1"><a class="anchor" href="#defining-policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Defining policies</h3>
@@ -1327,6 +1393,6 @@ PEP, PDP - when are they needed and when not ?</p>
 		</main>
 
 		<hr />
-		<small>Version: 0.1.1</small>
+		<small>Version: 0.1.2</small>
 	</body>
 </html>
