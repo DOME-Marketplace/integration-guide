@@ -13,7 +13,38 @@ Guide for DOME marketplace integration and federation
 <!-- param::title::**Table of Contents**:: -->
 **Table of Contents**
 
-- [First section](#first-section)
+- [Introduction](#introduction)
+  - [Who is this guide for?](#who-is-this-guide-for)
+  - [What is DOME?](#what-is-dome)
+  - [What will I accomplish following this guide?](#what-will-i-accomplish-following-this-guide)
+  - [Pre-requisites](#pre-requisites)
+- [Onboarding as a DOME Participant](#onboarding-as-a-dome-participant)
+  - [What will I accomplish following this section?](#what-will-i-accomplish-following-this-section)
+  - [Pre-requisites](#pre-requisites-1)
+  - [Step-by step process](#step-by-step-process)
+- [Distributed components](#distributed-components)
+  - [Access Node](#access-node)
+    - [Overview and sub-components](#overview-and-sub-components)
+    - [Infrastructure requirements](#infrastructure-requirements)
+    - [How to deploy](#how-to-deploy)
+    - [How to configure](#how-to-configure)
+    - [How to validate a deployment](#how-to-validate-a-deployment)
+    - [How to operate](#how-to-operate)
+    - [How to update](#how-to-update)
+    - [Release process](#release-process)
+    - [Troubleshooting](#troubleshooting)
+  - [IAM components](#iam-components)
+- [Authentication](#authentication)
+  - [DOME Verifiable Credentials (LEAR)](#dome-verifiable-credentials-lear)
+  - [How to implement](#how-to-implement)
+- [Integration API (TMForum)](#integration-api-tmforum)
+- [Policies](#policies)
+  - [Defining policies](#defining-policies)
+    - [Local policies](#local-policies)
+    - [Distributed policies](#distributed-policies)
+  - [Enforcing policies](#enforcing-policies)
+    - [In front of TMForum API](#in-front-of-tmforum-api)
+    - [In front of Context Broker API](#in-front-of-context-broker-api)
   - [First subsection](#first-subsection)
 - [Second section](#second-section)
 
@@ -116,6 +147,19 @@ This Integration Guide should:
 ## Integration API (TMForum)
 
 > Samples & tutorials for implementing core federation scenarios using the TMForum APIs (with focus on semantics and workflow, beyond the API reference)
+>
+> Some content also required for the Knowledgebase, which should be added here as well:
+> - How to: autenticate the marketplace on the shared data layer
+> - How to: retrieve DOME ecosystem notifications
+> - How to: retrieve a list of products from the shared catalog
+> - How to: retrieve the product description from the shared catalog
+> - How to: retrieve the product price model from the shared catalog
+> - How to: push a product on the shared catalog
+> - How to: retrieve an order from other marketplaces
+> - How to: push a provisioning status on the shared data layer
+> - How to: push metering information on the shared data layer
+> - How to: push billing information on the shared data layer
+> - How to: retrieve billing information on the shared data layer
 
 ## Policies
 
