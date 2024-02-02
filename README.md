@@ -45,8 +45,7 @@
   - [Enforcing policies](#enforcing-policies)
     - [In front of TMForum API](#in-front-of-tmforum-api)
     - [In front of Context Broker API](#in-front-of-context-broker-api)
-  - [First subsection](#first-subsection)
-- [Second section](#second-section)
+- [Example content (to be removed later)](#example-content-to-be-removed-later)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
