@@ -2,7 +2,7 @@
 
 ![DOME Logo](doc/img/DOME_logo_doc.png)
 
-Guide for DOME marketplace integration and federation
+
 
 <!-- ToC created with: https://github.com/thlorenz/doctoc -->
 <!-- Update with: doctoc README.md -->
@@ -51,7 +51,8 @@ Guide for DOME marketplace integration and federation
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
->**_NOTE:_**
+(to be removed later)  
+>**_NOTE:_** 
 > We want future Participants to integrate successfully and efficiently, therefore we provide a clear, structured, step-by-step Integration Guide that is comprehensive, self-contained, self-explanatory and actionable.
 This Integration Guide should:
 >- be the single point of entry for any stakeholder that wants to _execute_ on integrating and federating a marketplace in DOME
@@ -64,17 +65,87 @@ This Integration Guide should:
 
 ## Introduction
 
+This guide provides detailed, self-contained and actionable technical instructions for integrating and federating a marketplace in DOME.  
+It is meant to be the reference for what is _currently_ technically available and ready to be used. When additional functionality, components and/or 
+instruction get available, this guide will be adapted accordingly.
+
+This guide limits on the technical details and therefore is not providing any details about contractual 
+and business aspects of the marketplace integration and federation.
+
+
 ### Who is this guide for?
+
+This guide aims for future participants willing to technically integrate and federate a marketplace in DOME. Descriptions and instructions are 
+given as a comprehensive, step-by-step guide in such detail, so that IT and engineering teams can successfully and efficiently 
+perform the necessary steps without profound knowledge of the DOME implementation details.
+
+Nevertheless, this guide focusses on the actual integration of a marketplace in DOME, providing only the information 
+needed to perform the actual setup for integration and federation. More details and in-depth knowledge about DOME and its involved 
+components can be found in the linked resources.
+
 
 ### What is DOME?
 
+Cloud computing is identified as a central piece of Europe’s digital future, giving European
+businesses and public organisations the data processing technology required to support their
+digital transformation. 
+The European Commission thereby stepped up its efforts to support
+cloud uptake in Europe as part of its strategy, notably with the pledge to facilitate "the set-up
+of a cloud services marketplace for EU users from the private and public sector". 
+DOME is
+materialising the envisioned online marketplace, providing the means for accessing trusted
+services, notably cloud and edge services, building blocks deployed under the Common
+Services Platform and more generally any software and data processing services developed
+under EU programmes such as the Digital Europe Programme, Horizon 2020 or Horizon
+Europe.
+Relying on Gaia-X concepts and open standards, DOME is providing the finishing touch to the
+technical building that the Digital Europe Program is creating for boosting the development
+and adoption of trusted Cloud and Edge services in Europe. It will provide the single point for
+enabling customers and service providers to meet each other in a trustful manner. DOME is 
+taking the form of a federated collection of marketplaces connected to a shared digital catalogue
+of cloud and edge services. Each of the federated marketplaces will be independent or
+connected to the offering of a given cloud/edge infrastructure service provider which, in turn,
+can be classified as cloud IaaS providers or cloud platform service providers (each of which
+provide a platform targeted to solve the integration of vertical data/application services from a
+given vertical domain, like smart cities or smart farming, or the integration of certain type of
+data/application services, e.g., AI services). DOME is relying on the adoption of common open
+standards for the description and the management of the lifecycle of cloud and edge service
+products and offerings around those products, as well as their access or match-making
+services through a shared catalogue.
+
+
 ### What will I accomplish following this guide?
 
-> A complete and functioning integration of a marketplace in a federated DOME environment (contractual and business aspects not included).
+After following this guide, you will have a complete and functioning integration of a marketplace 
+in a federated DOME environment.
+
+The following sections provide details about the necessary steps:
+* [Onboarding](#onboarding-as-a-dome-participant): How to perform onboarding as DOME participant (Note, 
+  that this topic is currently under discussion and details will be added later).
+* [Distributed components](#distributed-components): How to configure, deploy and operate the different 
+  required components. This involves the access node and components required for the IAM.
+* [Authentication](#authentication): How to authenticate at services and how to implement the authentication.
+* [Integration API](#integration-api-tmforum): How to integrate with the TMForum APIs, especially when using an 
+  own marketplace implementation instead of the BAE. Some samples and tutorials are given for core federation 
+  scenarios.
+* [Policies](#policies): How access policies are defined, created and enforced (Note, 
+  that this topic is currently under discussion and details will be added later).
+
+
 
 ### Pre-requisites
 
-> x. need to be a legal entity of this type or another; have a registration number of this type or another; etc.
+There are some prerequisites that need to be fulfilled before following this guide:
+* Domain: You need control over an own domain and have access to the DNS settings.
+* Public access: Certain components need to be publicly accessible under your own domain. Therefore, a suitable 
+  infrastructure (like a cloud-hosted Kubernetes cluster) is required for running the components.
+  
+Additional prerequisites are provided in the different sections.
+
+
+
+
+
 
 ## Onboarding as a DOME Participant
 
@@ -189,7 +260,7 @@ PEP, PDP - when are they needed and when not ?
 
 ---
 
-
+## Example content (to be removed later)
 
 Some content
 
@@ -203,9 +274,10 @@ Some content
 
 
 
-### First subsection
-
-Some more content
+Some more content in a list
+* Entry 1
+* Entry 2
+* Entry 3
 
 Some mermaid diagram
 
@@ -217,16 +289,3 @@ graph TD;
     C-->D;
 ```
 
-
-
-## Second section
-
-Second content
-
-* Another table:
-
-  | Title 1 | Title 2 | Title 3 |
-  |---------|---------|---------|
-  | abc     | def     | ghi     |
-  | 123     | 456     | 789     |
-  | jkl     | mno     | pqr     |
