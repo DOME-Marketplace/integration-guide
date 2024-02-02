@@ -98,6 +98,7 @@ services, notably cloud and edge services, building blocks deployed under the Co
 Services Platform and more generally any software and data processing services developed
 under EU programmes such as the Digital Europe Programme, Horizon 2020 or Horizon
 Europe.
+
 Relying on Gaia-X concepts and open standards, DOME is providing the finishing touch to the
 technical building that the Digital Europe Program is creating for boosting the development
 and adoption of trusted Cloud and Edge services in Europe. It will provide the single point for
@@ -112,6 +113,7 @@ data/application services, e.g., AI services). DOME is relying on the adoption o
 standards for the description and the management of the lifecycle of cloud and edge service
 products and offerings around those products, as well as their access or match-making
 services through a shared catalogue.
+
 
 
 ### What will I accomplish following this guide?
