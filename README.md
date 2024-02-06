@@ -91,9 +91,8 @@ Therefore also knowledge about [cert-manager](https://cert-manager.io/)
 and [external-dns](https://github.com/kubernetes-sigs/external-dns) is recommended.  
 Authentication requires usage of decentralized identifiers and verifiable credentials, which requires an 
 appropriate configuration of the related components. Therefore, the reader of this guide should be 
-familiar with [DIDs](https://www.w3.org/TR/did-core/), [VC/VP standards](https://www.w3.org/TR/vc-data-model/), 
-[SIOPv2](https://openid.net/specs/openid-connect-self-issued-v2-1_0.html) 
-and [OIDC4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
+familiar with [DIDs](https://www.w3.org/TR/did-core/) and [VC/VP standards](https://www.w3.org/TR/vc-data-model/).
+
 
 
 
