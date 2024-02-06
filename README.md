@@ -83,6 +83,21 @@ Nevertheless, this guide focusses on the actual integration of a marketplace in 
 needed to perform the actual setup for integration and federation. More details and in-depth knowledge about DOME and its involved 
 components can be found in the linked resources.
 
+The suggested deployment target infrastructure is [Kubernetes](https://kubernetes.io/). Therefore a sufficient 
+knowledge of Kubernetes and [Helm](https://helm.sh/) is expected when following this guide. Knowledge about 
+[ArgoCD](https://argo-cd.readthedocs.io/en/stable/) is also helpful when using it as GitOps 
+continuous delivery tool.  
+This guide requires access to a domain and it's DNS settings, as well as configuring proper certificates. 
+Therefore also knowledge about [cert-manager](https://cert-manager.io/) 
+and [external-dns](https://github.com/kubernetes-sigs/external-dns) is recommended.  
+Authentication requires usage of decentralized identifiers and verifiable credentials, which requires an 
+appropriate configuration of the related components. Therefore, the reader of this guide should be 
+familiar with [DIDs](https://www.w3.org/TR/did-core/), [VC/VP standards](https://www.w3.org/TR/vc-data-model/), 
+[SIOPv2](https://openid.net/specs/openid-connect-self-issued-v2-1_0.html) 
+and [OIDC4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
+
+
+
 
 ### What is DOME?
 
@@ -210,6 +225,8 @@ Additional prerequisites are provided in the different sections.
 > (similar to the Access Node section)
 
 ## Authentication
+
+> One might also link or integrate this guide: [https://dome-marketplace.github.io/iam-guide/](https://dome-marketplace.github.io/iam-guide/)
 
 ### DOME Verifiable Credentials (LEAR)
 
