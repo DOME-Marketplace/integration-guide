@@ -185,38 +185,160 @@ Additional prerequisites are provided in the different sections.
 
 ### Access Node
 
-#### Overview and sub-components
+The TM-Forum-API Service is a service providing a growing subset of the [TMForum API](https://www.tmforum.org/oda/open-apis/table)'s while using an [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.06.01_60/gs_CIM009v010601p.pdf) context broker as persistence backend and change notificator.
 
-> To understand what the sub-components are, how they all work together and how they interact
+```mermaid
+graph TD;
+    TM-Forum-API-->Context-Broker;
+    Context-Broker-->Persistence;
+```
+
+#### Overview and sub-components
+The TM-Forum-API service is a cluster of individual services providing one specific API each, enabling the participant to only run the necessary subset for its use-case.
+Apart from offering CRUD operations on the managed entities, the service also enables the subscription to notifications based on given queries.
+
+The services are stateless and support horizontal scaling, but require an external cache to avoid having inconsistent caches. Inconsistent caches can result from either changes due to calls to the API, or due to notifications for changes reported by the underlying persistence. If run in a single instance mode, a local cache is acceptable but for larger setups a [Redis](https://redis.io/) installation is recommended.
+
+For reasons of convenience, the TM-Forum-API service can be deploying with an [Envoy API proxy](https://www.envoyproxy.io/) which provides the individual APIs via a single service, routed based on the path. Another convenient feature is a [RapiDoc](https://rapidocweb.com/) container, that can be deployed with the TM-Forum-API service that provides a Openapi based API documentation for the deployed services, with the functionality of querying the API too. 
+
+While the requirement for the persistence is to be compliant to the NGSI-LD API v1.6, the currently recommended Context-Broker is [Scorpio](https://github.com/ScorpioBroker/ScorpioBroker), mainly due to good cloud integration and overall support.
 
 #### Infrastructure requirements
 
-> ex. internal endpoint for the TMForum APIs ; external endpoint for the context broker API ; other endpoints between components ?
+The base memory consumption per deployed pod is listed below but is will increase with the amount of traffic, therefor should only be used as a rough estimate.
+
+| Service          | Memory (Mi) |
+|------------------|-------------|
+| TM-Forum-API Pod | 250         |
+| Scorpio          | 400         |
+| Postgis          | 150         |
+| Redis            | tbd         |
+|                  |             |
+|                  |             |
+
+Apart from the database service, no other service will maintain a own persistence, therefor only for this service a persistent volume claim has to be dimensioned.
 
 #### How to deploy
+The recommended and endorsed way of deployment is via the provided helm charts ( optionally wrapped in ArgoCD Applications).
 
-> incl. where to find clean, versioned, infrastructure agnostic HELM charts.
+To deploy a setup, the [umbrella chart](https://helm.sh/docs/howto/charts_tips_and_tricks/#complex-charts-with-many-dependencies) of the access-node can be used as followed:
 
+- create a configuration values file according to the own environment, as described [here](#how-to-configure).
+- add helm chart repository to helm installation
+  ```
+    helm repo add dome-access-node https://dome-marketplace.github.io/access-node
+    helm repo update
+  ```
+  > :bulb: All releases of the Access-Node reside in the helm-repository https://dome-marketplace.github.io/access-node. In addition to that, all Pre-Release versions(build from the Pull Requests) are provided in the pre-repo https://dome-marketplace.github.io/access-node/pre. The pre-repo will be cleaned-up from time to time, in order to keep the index manageable.
+
+- install the components using the prepared configuration
+  ```
+    helm install <RELEASE_NAME> dome-access-node/access-node --namespace <NAME_SPACE> --version <CHART_VERSION> -f values.yaml
+  ```
 #### How to configure
 
-> Recommended configuration for all the sub-components, any considerations. When should I change them?
+The chart is released with a set of [default values](https://github.com/DOME-Marketplace/access-node/blob/main/charts/access-node/values.yaml) which act as a good starting point for an adoption. These values are also documented, enhancing the understanding. Additionally, the [respective charts](https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api) of the components should be consulted.
+
+To have a starting point, the following minimal config reduces the configuration to items that are likely changed by integrators. 
+TODO: include config for the blockchain components
+```  
+## configuration of the context-broker - see https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio for details
+scorpio:
+  # -- should scorpio be enabled
+  enabled: true  
+  ## configuration of the database to be used by broker
+  db:
+    # -- host of the db
+    dbhost: postgis
+    # -- username to be used
+    user: postgres
+    # -- password to be used
+    password: postgres  
+  # -- overrides the generated name, provides stable service names - this should be avoided if multiple instances are available in the same namespace
+  fullnameOverride: scorpio
+
+## configuration for kafka in case its used by scorpio - see https://github.com/bitnami/charts/tree/main/bitnami/kafka
+kafka:
+  # -- should kafka be enabled? 
+  enabled: false  
+
+## configuration of postgis to be used for scorpio - see https://github.com/bitnami/charts/tree/main/bitnami/postgresql for details
+postgis:
+  # -- should postgis be enabled
+  enabled: true  
+  # -- overrides the generated name, provides stable service names - this should be avoided if multiple instances are available in the same namespace
+  fullnameOverride: postgis
+  # -- overrides the generated name, provides stable service names - this should be avoided if multiple instances are available in the same namespace
+  nameOverride: postgis
+  ## auth configuration for the database
+  auth:
+    # -- username to be used
+    username: postgres
+    # -- should the default postgres user be enabled
+    enablePostgresUser: true
+    # -- username to be used
+    password: postgres
+
+## configuration of the tm-forum-api - see https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api for details
+tm-forum-api:
+  # -- should tm-forum-api be enabled
+  enabled: true
+  ## configuration to be used by every api-deployment if nothing specific is provided.
+  defaultConfig:
+    # --  ngsi-ld broker connection information
+    ngsiLd:
+      # -- address of the broker
+      url: http://scorpio:9090
+    # -- default context to be used when contacting the context broker
+    contextUrl: https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld
+  ## configuration for the api proxy, to serve all apis through one kubernetes service 
+  apiProxy:
+    # -- should the proxy be enabled
+    enabled: true
+
+blockchain-connector:
+  enabled: false
+broker-adapter:
+  enabled: false
+dlt-adapter:
+  enabled: false
+postgresql:
+  enabled: false
+```
 
 #### How to validate a deployment
+All components are configured with health and readiness checks to validate their own status, therefor being the base for a validation. These checks are utilized in the kubernetes checks as defined in the helm charts.
+TODO: Include RapiDoc Container for validation and add explanation here 
+##### How to operate
 
-> (validate that everything works)
-
-#### How to operate
-
->- Management/admin APIs. 
+>- Management/admin APIs.
 >- Instrumentation, metrics, logs, alerts
 
-#### How to update
+The underlying database service holds the persisted data and therefor requires a backup&recovery mechanism when operated in a production environment. The use of managed database is strongly encouraged for safety and convenience.
 
+The TM-Forum-API service used a json based log output by default, which can be parsed easily by log aggregators but can also be replaced if needed. The verbosity is controlled via [environment variables](https://github.com/FIWARE/helm-charts/blob/05552c4c97a21df68f14e78de80a56e3934e179d/charts/tm-forum-api/templates/deployment.yaml#L165) and can be fine tuned to the operators needs.
+
+TODO: Prometheus Metrics
+TODO: Grafana Dashboard
+##### How to update
+Upgrade to both a different chart version and new configuration can be accomplished with the following command
+  ```
+    helm upgrade <RELEASE_NAME> dome-access-node/access-node --namespace <NAME_SPACE> --version <CHART_VERSION> -f values.yaml
+  ```
 #### Release process
+
+Versioning of the main access-node helm chart is handled based on the labels used in the pull requests used to introduce changes and is enforced in the [build pipeline](https://github.com/DOME-Marketplace/access-node/tree/main/.github/workflows). The requester and reviewers must set the label according to the [SemVer 2.0.0](https://semver.org/) versioning scheme.
+
+Versioning of the components and sub-charts is recommended to use the same scheme.
 
 > Versioning, release notes, stability considerations
 
 #### Troubleshooting
+
+> To be filled once feedback from integrators comes in
+
+##### Timeouts occur while querying TM-Forum-API
+  When encountering timeouts in calls to the TM-Forum-API service it is possible to mitigate the imminent issue by increasing the timeout of the client (called "ngsi") calling the NGSI-LD broker. The necessary [client](https://docs.micronaut.io/latest/guide/configurationreference.html#io.micronaut.http.client.ServiceHttpClientConfiguration) and [server](https://docs.micronaut.io/latest/guide/configurationreference.html#io.micronaut.http.server.HttpServerConfiguration) configuration can be handed in via [additional environment variables](https://github.com/FIWARE/helm-charts/blob/05552c4c97a21df68f14e78de80a56e3934e179d/charts/tm-forum-api/templates/deployment.yaml#L243-L249). 
 
 ### IAM components
 
