@@ -212,7 +212,7 @@ The base memory consumption per deployed pod is listed below but is will increas
 | TM-Forum-API Pod | 250         |
 | Scorpio          | 400         |
 | Postgis          | 150         |
-| Redis            | tbd         |
+| Redis            | 10          |
 |                  |             |
 |                  |             |
 
