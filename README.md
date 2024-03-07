@@ -305,7 +305,7 @@ All components are configured with health and readiness checks to validate their
 a validation. These checks are utilized in the kubernetes checks as defined in the helm charts.
 TODO: Include RapiDoc Container for validation and add explanation here
 
-##### How to operate
+#### How to operate
 
 > - Management/admin APIs.
 >- Instrumentation, metrics, logs, alerts
@@ -321,7 +321,7 @@ and can be fine tuned to the operators needs.
 TODO: Prometheus Metrics
 TODO: Grafana Dashboard
 
-##### How to update
+#### How to update
 
 Upgrade to both a different chart version and new configuration can be accomplished with the following command
 
