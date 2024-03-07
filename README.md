@@ -191,7 +191,7 @@ the DOME Marketplace. A registered participant can use it to act as a federated 
 
 The Access-Nodes consists of 3 logical building blocks:
 
-![Building Blocks](./doc/img/building-blocks.png)
+![Building Blocks](doc/img/building-blocks.png)
 
 The TM-Forum-API Service is a service providing a growing subset of
 the [TMForum API](https://www.tmforum.org/oda/open-apis/table)'s while using
