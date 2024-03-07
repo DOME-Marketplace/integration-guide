@@ -295,74 +295,9 @@ consulted.
 
 TODO: Replace with charts [in](https://github.com/in2workspace/helm-charts/tree/main/charts) once they are used.
 
-To have a starting point, the following minimal config reduces the configuration to items that are likely changed by
-integrators.
+To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely changed by integrators.
 TODO: include config for the blockchain components
 
-```  
-## configuration of the context-broker - see https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio for details
-scorpio:
-  # -- should scorpio be enabled
-  enabled: true  
-  ## configuration of the database to be used by broker
-  db:
-    # -- host of the db
-    dbhost: postgis
-    # -- username to be used
-    user: postgres
-    # -- password to be used
-    password: postgres  
-  # -- overrides the generated name, provides stable service names - this should be avoided if multiple instances are available in the same namespace
-  fullnameOverride: scorpio
-
-## configuration for kafka in case its used by scorpio - see https://github.com/bitnami/charts/tree/main/bitnami/kafka
-kafka:
-  # -- should kafka be enabled? 
-  enabled: false  
-
-## configuration of postgis to be used for scorpio - see https://github.com/bitnami/charts/tree/main/bitnami/postgresql for details
-postgis:
-  # -- should postgis be enabled
-  enabled: true  
-  # -- overrides the generated name, provides stable service names - this should be avoided if multiple instances are available in the same namespace
-  fullnameOverride: postgis
-  # -- overrides the generated name, provides stable service names - this should be avoided if multiple instances are available in the same namespace
-  nameOverride: postgis
-  ## auth configuration for the database
-  auth:
-    # -- username to be used
-    username: postgres
-    # -- should the default postgres user be enabled
-    enablePostgresUser: true
-    # -- username to be used
-    password: postgres
-
-## configuration of the tm-forum-api - see https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api for details
-tm-forum-api:
-  # -- should tm-forum-api be enabled
-  enabled: true
-  ## configuration to be used by every api-deployment if nothing specific is provided.
-  defaultConfig:
-    # --  ngsi-ld broker connection information
-    ngsiLd:
-      # -- address of the broker
-      url: http://scorpio:9090
-    # -- default context to be used when contacting the context broker
-    contextUrl: https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld
-  ## configuration for the api proxy, to serve all apis through one kubernetes service 
-  apiProxy:
-    # -- should the proxy be enabled
-    enabled: true
-
-blockchain-connector:
-  enabled: false
-broker-adapter:
-  enabled: false
-dlt-adapter:
-  enabled: false
-postgresql:
-  enabled: false
-```
 
 #### How to validate a deployment
 
