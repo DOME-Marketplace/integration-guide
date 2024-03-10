@@ -162,23 +162,64 @@ Additional prerequisites are provided in the different sections.
 
 
 
-
-## Onboarding as a DOME Participant
+## Onboarding as a DOME Service Provider with did:web
 
 ### What will I accomplish following this section?
 
+We describe here the onboarding process using Verifiable Credentials with the `did:web` DID method. In production (June 2024) the process will use `did:elsi` and eIDAS certificates, but this process will be finished in the coming weeks, so for the moment the users will be able to test onboarding and creation of Product Offerings and replication to other marketplaces, even if the actions do not have yet the legal coverage that `did:elsi` provides.
+
+The user will be able to login with her Wallet in the DOME BAE Marketplace instance (the one operated at this moment by the DOME project) as a Service Provider with a unique identity determined by the domain (e.g., www.in2.es) used when generating the Verifiable Credential used to login to the BAE Marketplace.
+
+Once logged-in, the user will be able to test the creation of a Product Offering using the screens of the DOME BAE Marketplace instance, and publish the Product Offering in the marketplace. The Product Offering will be replicated to all other federated marketplaces connected to the main DOME Marketplace instance.
+
+All Product Offerings and related entities created under this identity will be separated from the other entities created by other identities.
+
 ### Pre-requisites
 
-> ex. have an eIDAS certificate; pointers to how one can be procured etc.
+This scenario uses the [`did:web` DID Method](https://w3c-ccg.github.io/did-method-web/), so you need control over a domain and have access to the DNS settings.
 
-### Step-by step process
+Before continuing, you have to create your DID, following the instructions in the section [Create (Register)](https://w3c-ccg.github.io/did-method-web/#create-register) of the `did:web` specification.
 
->- What actions do I need to perform and where?
->- What information do I need to provide, to whom, and in what form?
->- What artefacts do I need to provide and to whom ? (ex. VCs) 
->- How do I obtain/produce/certify those artefacts ? (ex. GAIA-X compliance)
->- What artefacts do I get out of the onboarding process how/where do I use them subsequently ? 
-(ex. the signing key that will later be used by my Access Node)
+### Install and configure Keycloack as a Verifiable Credential Issuer
+
+You need to be able to issue a Verifiable Credential to a Wallet, using the DOME format and with the `did:web` method. There are different possibilities, but the easiest one which ensures compatibility with the current status of the OID4SSI implementation in DOME is to use the Wallet and Issuer provided by DOME.
+
+**Wallet**: in order to use the Wallet provided by DOME, you do not have to install anything. Just visit with your mobile the URL: https://demo-wallet.fiware.dev/
+
+**Issuer**: the Issuer is a little bit more involved. Before June, DOME will provide an Issuer acting As-a-Service (for those willing to use it), but for the moment you have to install and operate an instance the Issuer yourself.
+
+The instructions to install and configure the Issuer (which is based on Keycloack) are here: [Keycloack VC-Issuer](https://github.com/FIWARE/keycloak-vc-issuer). For a simple installation, the repo includes a containerised deployment so you only have to configure the Issuer with your specific information.
+
+The Wallet should be able to access the relevant endpoints exposed by the Issuer, as described in the instrucions mentioned above.
+
+### Configure the Credential type and the Claims in the Issuer
+
+Follow the instructions in [Configure claims for Credential-Types](https://github.com/FIWARE/keycloak-vc-issuer?tab=readme-ov-file#configure-claims-for-credential-types) to configure your Issuer for issuance of the Credential required for DOME.
+
+### Issue and receive the Verifiable Credential in your Wallet
+
+Follow the instructions in section [Demo](https://github.com/FIWARE/keycloak-vc-issuer?tab=readme-ov-file#demo) to make Keycloack issue a QR code that can be scanned by your Wallet (remember that your Wallet is at https://demo-wallet.fiware.dev/).
+
+Once you scan the QR code and complete the issuance process, you will have in your Wallet the required credentials to login in the DOME BAE Marketplace.
+
+### Login to the DOME BAE Marketplace instance
+
+At this moment, you have in your mobile the credentials required to login to the DOME BAE Marketplace instance with a unique identity associated to your unique domain. Even though this credential does not have the level of legal certainty required for production use, it will allow you to test the features that the DOME BAE Marketplace instance provides to Service Providers.
+
+TODO: add instructions to login to the DOME BAR Marketplace instance.
+
+### Create a Product Offering in the DOME BAE Marketplace instance
+
+Once logged in, you are logged as a Service Provider with a unique identity associated to your unique domain. You can start creating Product Offerings and publishing them. The action of publishing the Product Offernings will make them visible to potential customers in the DOME BAE Marketplace instance and all other federated marketplaces which are connected to the DOME main instance.
+
+TODO: add instructions to create and publish Product Offerings.
+
+### Logoff from the DOME BAE Marketplace instance
+
+Once you have finished interacting with the DOME BAE Marketplace instance, you can logoff from it. In case of inactivity, the BAE Marketplace will log you off automatically.
+
+Using your Wallet, you can login at any moment and continue working with the DOME BAE Marketplace. The Wallet has your credentials stored in your device and you can use them at any moment.
+
 
 ## Distributed components
 
