@@ -1124,11 +1124,16 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 <li><a href="#pre-requisites">Pre-requisites</a></li>
 </ul>
 </li>
-<li><a href="#onboarding-as-a-dome-participant">Onboarding as a DOME Participant</a>
+<li><a href="#onboarding-as-a-dome-service-provider-with-didweb">Onboarding as a DOME Service Provider with did:web</a>
 <ul>
 <li><a href="#what-will-i-accomplish-following-this-section">What will I accomplish following this section?</a></li>
 <li><a href="#pre-requisites-1">Pre-requisites</a></li>
-<li><a href="#step-by-step-process">Step-by step process</a></li>
+<li><a href="#install-and-configure-keycloack-as-a-verifiable-credential-issuer">Install and configure Keycloack as a Verifiable Credential Issuer</a></li>
+<li><a href="#configure-the-credential-type-and-the-claims-in-the-issuer">Configure the Credential type and the Claims in the Issuer</a></li>
+<li><a href="#issue-and-receive-the-verifiable-credential-in-your-wallet">Issue and receive the Verifiable Credential in your Wallet</a></li>
+<li><a href="#login-to-the-dome-bae-marketplace-instance">Login to the DOME BAE Marketplace instance</a></li>
+<li><a href="#create-a-product-offering-in-the-dome-bae-marketplace-instance">Create a Product Offering in the DOME BAE Marketplace instance</a></li>
+<li><a href="#logoff-from-the-dome-bae-marketplace-instance">Logoff from the DOME BAE Marketplace instance</a></li>
 </ul>
 </li>
 <li><a href="#distributed-components">Distributed components</a>
@@ -1269,23 +1274,35 @@ that this topic is currently under discussion and details will be added later).<
 infrastructure (like a cloud-hosted Kubernetes cluster) is required for running the components.</li>
 </ul>
 <p>Additional prerequisites are provided in the different sections.</p>
-<h2 id="onboarding-as-a-dome-participant" tabindex="-1"><a class="anchor" href="#onboarding-as-a-dome-participant" aria-hidden="true"><span class="octicon octicon-link"></span></a> Onboarding as a DOME Participant</h2>
+<h2 id="onboarding-as-a-dome-service-provider-with-didweb" tabindex="-1"><a class="anchor" href="#onboarding-as-a-dome-service-provider-with-didweb" aria-hidden="true"><span class="octicon octicon-link"></span></a> Onboarding as a DOME Service Provider with did:web</h2>
 <h3 id="what-will-i-accomplish-following-this-section" tabindex="-1"><a class="anchor" href="#what-will-i-accomplish-following-this-section" aria-hidden="true"><span class="octicon octicon-link"></span></a> What will I accomplish following this section?</h3>
+<p>We describe here the onboarding process using Verifiable Credentials with the <code>did:web</code> DID method. In production (June 2024) the process will use <code>did:elsi</code> and eIDAS certificates, but this process will be finished in the coming weeks, so for the moment the users will be able to test onboarding and creation of Product Offerings and replication to other marketplaces, even if the actions do not have yet the legal coverage that <code>did:elsi</code> provides.</p>
+<p>The user will be able to login with her Wallet in the DOME BAE Marketplace instance (the one operated at this moment by the DOME project) as a Service Provider with a unique identity determined by the domain (e.g., www.in2.es) used when generating the Verifiable Credential used to login to the BAE Marketplace.</p>
+<p>Once logged-in, the user will be able to test the creation of a Product Offering using the screens of the DOME BAE Marketplace instance, and publish the Product Offering in the marketplace. The Product Offering will be replicated to all other federated marketplaces connected to the main DOME Marketplace instance.</p>
+<p>All Product Offerings and related entities created under this identity will be separated from the other entities created by other identities.</p>
 <h3 id="pre-requisites-1" tabindex="-1"><a class="anchor" href="#pre-requisites-1" aria-hidden="true"><span class="octicon octicon-link"></span></a> Pre-requisites</h3>
-<blockquote>
-<p>ex. have an eIDAS certificate; pointers to how one can be procured etc.</p>
-</blockquote>
-<h3 id="step-by-step-process" tabindex="-1"><a class="anchor" href="#step-by-step-process" aria-hidden="true"><span class="octicon octicon-link"></span></a> Step-by step process</h3>
-<blockquote>
-<ul>
-<li>What actions do I need to perform and where?</li>
-<li>What information do I need to provide, to whom, and in what form?</li>
-<li>What artefacts do I need to provide and to whom ? (ex. VCs)</li>
-<li>How do I obtain/produce/certify those artefacts ? (ex. GAIA-X compliance)</li>
-<li>What artefacts do I get out of the onboarding process how/where do I use them subsequently ?
-(ex. the signing key that will later be used by my Access Node)</li>
-</ul>
-</blockquote>
+<p>This scenario uses the <a href="https://w3c-ccg.github.io/did-method-web/"><code>did:web</code> DID Method</a>, so you need control over a domain and have access to the DNS settings.</p>
+<p>Before continuing, you have to create your DID, following the instructions in the section <a href="https://w3c-ccg.github.io/did-method-web/#create-register">Create (Register)</a> of the <code>did:web</code> specification.</p>
+<h3 id="install-and-configure-keycloack-as-a-verifiable-credential-issuer" tabindex="-1"><a class="anchor" href="#install-and-configure-keycloack-as-a-verifiable-credential-issuer" aria-hidden="true"><span class="octicon octicon-link"></span></a> Install and configure Keycloack as a Verifiable Credential Issuer</h3>
+<p>You need to be able to issue a Verifiable Credential to a Wallet, using the DOME format and with the <code>did:web</code> method. There are different possibilities, but the easiest one which ensures compatibility with the current status of the OID4SSI implementation in DOME is to use the Wallet and Issuer provided by DOME.</p>
+<p><strong>Wallet</strong>: in order to use the Wallet provided by DOME, you do not have to install anything. Just visit with your mobile the URL: https://demo-wallet.fiware.dev/</p>
+<p><strong>Issuer</strong>: the Issuer is a little bit more involved. Before June, DOME will provide an Issuer acting As-a-Service (for those willing to use it), but for the moment you have to install and operate an instance the Issuer yourself.</p>
+<p>The instructions to install and configure the Issuer (which is based on Keycloack) are here: <a href="https://github.com/FIWARE/keycloak-vc-issuer">Keycloack VC-Issuer</a>. For a simple installation, the repo includes a containerised deployment so you only have to configure the Issuer with your specific information.</p>
+<p>The Wallet should be able to access the relevant endpoints exposed by the Issuer, as described in the instrucions mentioned above.</p>
+<h3 id="configure-the-credential-type-and-the-claims-in-the-issuer" tabindex="-1"><a class="anchor" href="#configure-the-credential-type-and-the-claims-in-the-issuer" aria-hidden="true"><span class="octicon octicon-link"></span></a> Configure the Credential type and the Claims in the Issuer</h3>
+<p>Follow the instructions in <a href="https://github.com/FIWARE/keycloak-vc-issuer?tab=readme-ov-file#configure-claims-for-credential-types">Configure claims for Credential-Types</a> to configure your Issuer for issuance of the Credential required for DOME.</p>
+<h3 id="issue-and-receive-the-verifiable-credential-in-your-wallet" tabindex="-1"><a class="anchor" href="#issue-and-receive-the-verifiable-credential-in-your-wallet" aria-hidden="true"><span class="octicon octicon-link"></span></a> Issue and receive the Verifiable Credential in your Wallet</h3>
+<p>Follow the instructions in section <a href="https://github.com/FIWARE/keycloak-vc-issuer?tab=readme-ov-file#demo">Demo</a> to make Keycloack issue a QR code that can be scanned by your Wallet (remember that your Wallet is at https://demo-wallet.fiware.dev/).</p>
+<p>Once you scan the QR code and complete the issuance process, you will have in your Wallet the required credentials to login in the DOME BAE Marketplace.</p>
+<h3 id="login-to-the-dome-bae-marketplace-instance" tabindex="-1"><a class="anchor" href="#login-to-the-dome-bae-marketplace-instance" aria-hidden="true"><span class="octicon octicon-link"></span></a> Login to the DOME BAE Marketplace instance</h3>
+<p>At this moment, you have in your mobile the credentials required to login to the DOME BAE Marketplace instance with a unique identity associated to your unique domain. Even though this credential does not have the level of legal certainty required for production use, it will allow you to test the features that the DOME BAE Marketplace instance provides to Service Providers.</p>
+<p>TODO: add instructions to login to the DOME BAR Marketplace instance.</p>
+<h3 id="create-a-product-offering-in-the-dome-bae-marketplace-instance" tabindex="-1"><a class="anchor" href="#create-a-product-offering-in-the-dome-bae-marketplace-instance" aria-hidden="true"><span class="octicon octicon-link"></span></a> Create a Product Offering in the DOME BAE Marketplace instance</h3>
+<p>Once logged in, you are logged as a Service Provider with a unique identity associated to your unique domain. You can start creating Product Offerings and publishing them. The action of publishing the Product Offernings will make them visible to potential customers in the DOME BAE Marketplace instance and all other federated marketplaces which are connected to the DOME main instance.</p>
+<p>TODO: add instructions to create and publish Product Offerings.</p>
+<h3 id="logoff-from-the-dome-bae-marketplace-instance" tabindex="-1"><a class="anchor" href="#logoff-from-the-dome-bae-marketplace-instance" aria-hidden="true"><span class="octicon octicon-link"></span></a> Logoff from the DOME BAE Marketplace instance</h3>
+<p>Once you have finished interacting with the DOME BAE Marketplace instance, you can logoff from it. In case of inactivity, the BAE Marketplace will log you off automatically.</p>
+<p>Using your Wallet, you can login at any moment and continue working with the DOME BAE Marketplace. The Wallet has your credentials stored in your device and you can use them at any moment.</p>
 <h2 id="distributed-components" tabindex="-1"><a class="anchor" href="#distributed-components" aria-hidden="true"><span class="octicon octicon-link"></span></a> Distributed components</h2>
 <blockquote>
 <p>Components that need to be operated by a federated participant.</p>
@@ -1602,6 +1619,6 @@ PEP, PDP - when are they needed and when not ?</p>
 		</main>
 
 		<hr />
-		<small>Version: 0.3.0</small>
+		<small>Version: 0.4.0</small>
 	</body>
 </html>
