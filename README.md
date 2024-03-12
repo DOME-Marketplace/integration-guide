@@ -421,41 +421,21 @@ The IAM-Framework consists of following components:
 
 ![IAM-components](./doc/img/iam.png)
 
-##### [Trusted Issuers List](https://github.com/fiware/trusted-issuers-list)
-
-The Trusted-Issuers-List service provides an [EBSI Trusted Issuers Registry](https://hub.ebsi.eu/apis/pilot/trusted-issuers-registry/v4) implementation to act as
+* The [Trusted Issuers List](https://github.com/fiware/trusted-issuers-list) service provides an [EBSI Trusted Issuers Registry](https://hub.ebsi.eu/apis/pilot/trusted-issuers-registry/v4) implementation to act as
 the Trusted-List-Service in the DSBA Trust and IAM Framework. In addition, a Trusted-Issuers-List API is provided to
 manage the issuers.
-
-##### [VCVerifier](https://github.com/fiware/vcverifier)
-
-VCVerifier provides the necessary endpoints to offer SIOP-2/OIDC4VP compliant authentication flows. It exchanges
+* [VCVerifier](https://github.com/fiware/vcverifier) provides the necessary endpoints to offer SIOP-2/OIDC4VP compliant authentication flows. It exchanges
 VerifiableCredentials for JWT, that can be used for authorization and authentication in down-stream components.
-
-##### [Credentials Config Service](https://github.com/fiware/credentials-config-service)
-
-Credentials Config Service manages and provides information about services and the credentials they are using. It
+* [Credentials Config Service](https://github.com/fiware/credentials-config-service) manages and provides information about services and the credentials they are using. It
 returns the scope to be requested from the wallet per service and the credentials and issuers that are considered to be
 trusted for a certain service.
-
-##### [Keycloak-VC-Issuer](https://github.com/fiware/keycloak-vc-issuer)
-
-The Keycloak-VC-Issuer is plugin for Keycloak to support SIOP-2/OIDC4VP clients and issue VerifiableCredentials through
+* The [Keycloak-VC-Issuer](https://github.com/fiware/keycloak-vc-issuer) is plugin for Keycloak to support SIOP-2/OIDC4VP clients and issue VerifiableCredentials through
 the OIDC4VCI-Protocol to compliant wallets.
-
-##### [PDP](https://github.com/fiware/dsba-pdp)
-
-Implementation of a Policy-Decision Point, evaluating Json-Web-Tokens containing VerifiableCredentials in a
+* [PDP](https://github.com/fiware/dsba-pdp) is an implementation of a Policy-Decision Point, evaluating Json-Web-Tokens containing VerifiableCredentials in a
 DSBA-compliant way. It also supports the evaluation in the context of i4Trust.
-
-##### [Keyrock](https://github.com/ging/fiware-idm)
-
-Keyrock is the FIWARE component responsible for Identity Management. Using Keyrock (in conjunction with other security
+* [Keyrock](https://github.com/ging/fiware-idm) is the FIWARE component responsible for Identity Management. Using Keyrock (in conjunction with other security
 components) enables you to add OAuth2-based authentication and authorization security to your services and applications.
-
-##### [Kong Plugins](https://github.com/fiware/kong-plugins-fiware)
-
-These allow to extend the API Gateway Kong by further functionalities required for FIWARE-based environments. Kong
+* [Kong Plugins](https://github.com/fiware/kong-plugins-fiware) allow to extend the API Gateway Kong by further functionalities required for FIWARE-based environments. Kong
 Gateway is a lightweight, fast, and flexible cloud-native API gateway. An API gateway is a reverse proxy that lets you
 manage, configure, and route requests to your APIs.
 
