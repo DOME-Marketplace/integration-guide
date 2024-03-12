@@ -401,7 +401,143 @@ via [additional environment variables](https://github.com/FIWARE/helm-charts/blo
 
 ### IAM components
 
-> (similar to the Access Node section)
+The [DOME IAM-Framework](https://github.com/DOME-Marketplace/iam-components) is a set of microservices, that enables
+users in the DOME ecosystem to authenticate into the [DOME Marketplace](https://dome-marketplace.org).
+
+#### Overview and subcomponents
+
+The DOME IAM-Framework consists of multiple open-source components. The components are not required to be used, as long
+as alternatives providing the same interfaces are used.
+
+The IAM-Framework consists of following components:
+
+![IAM-components](./doc/img/iam.png)
+
+##### [Trusted Issuers List](https://github.com/fiware/trusted-issuers-list)
+
+The Trusted-Issuers-List service provides an [EBSI Trusted Issuers Registry](https://hub.ebsi.eu/apis/pilot/trusted-issuers-registry/v4) implementation to act as
+the Trusted-List-Service in the DSBA Trust and IAM Framework. In addition, a Trusted-Issuers-List API is provided to
+manage the issuers.
+
+##### [VCVerifier](https://github.com/fiware/vcverifier)
+
+VCVerifier provides the necessary endpoints to offer SIOP-2/OIDC4VP compliant authentication flows. It exchanges
+VerifiableCredentials for JWT, that can be used for authorization and authentication in down-stream components.
+
+##### [Credentials Config Service](https://github.com/fiware/credentials-config-service)
+
+Credentials Config Service manages and provides information about services and the credentials they are using. It
+returns the scope to be requested from the wallet per service and the credentials and issuers that are considered to be
+trusted for a certain service.
+
+##### [Keycloak-VC-Issuer](https://github.com/fiware/keycloak-vc-issuer)
+
+The Keycloak-VC-Issuer is plugin for Keycloak to support SIOP-2/OIDC4VP clients and issue VerifiableCredentials through
+the OIDC4VCI-Protocol to compliant wallets.
+
+##### [PDP](https://github.com/fiware/dsba-pdp)
+
+Implementation of a Policy-Decision Point, evaluating Json-Web-Tokens containing VerifiableCredentials in a
+DSBA-compliant way. It also supports the evaluation in the context of i4Trust.
+
+##### [Keyrock](https://github.com/ging/fiware-idm)
+
+Keyrock is the FIWARE component responsible for Identity Management. Using Keyrock (in conjunction with other security
+components) enables you to add OAuth2-based authentication and authorization security to your services and applications.
+
+##### [Kong Plugins](https://github.com/fiware/kong-plugins-fiware)
+
+These allow to extend the API Gateway Kong by further functionalities required for FIWARE-based environments. Kong
+Gateway is a lightweight, fast, and flexible cloud-native API gateway. An API gateway is a reverse proxy that lets you
+manage, configure, and route requests to your APIs.
+
+#### How to deploy
+
+The recommended way of deployment is via the provided [Helm charts](https://github.com/DOME-Marketplace/iam-components).
+
+To deploy a setup,
+the [umbrella chart](https://helm.sh/docs/howto/charts_tips_and_tricks/#complex-charts-with-many-dependencies) of the
+iam-components can be used as followed:
+
+- create a configuration values file according to the own environment, as described [here](#how-to-configure-1).
+- add helm chart repository to helm installation
+  ```
+    helm repo add dome-iam https://dome-marketplace.github.io/iam-components
+    helm repo update
+  ```
+  > :bulb: All releases of the IAM-components reside in the helm-repository https://dome-marketplace.github.io/iam-components.
+  In addition to that, all Pre-Release versions(build from the Pull Requests) are provided in the
+  pre-repo https://dome-marketplace.github.io/iam-components/pre. The pre-repo will be cleaned-up from time to time, in
+  order to keep the index manageable.
+
+- install the components using the prepared configuration
+  ```
+    helm install <RELEASE_NAME> dome-iam/iam-components --namespace <NAME_SPACE> --version <CHART_VERSION> -f values.yaml
+  ```
+
+#### How to configure
+
+Before deploying these components, you need to update some values:
+
+* `rbac` and `serviceAccount`: Depending on your requirements, you might need to adapt settings for RBAC and service
+  account
+* `ingress` or `route`: You need to set up these settings to make a component externally accessible
+* `did`s of participants: Replace/add the DIDs of the issuer and other participants
+* Provide correct key in [keyfile.json](https://github.com/DOME-Marketplace/iam-components/blob/main/charts/iam-components/templates/keycloak.yaml)
+  for your issuer
+* `keycloak.frontendUrl`: Externally accessible address of the keycloak (should be the same as defined in ingress/route)
+* `keycloak.realm`: Adapt clients, users and roles according to your needs
+* `tir.com`: replace everywhere with actual TIR
+* `keyrock.initData.scriptData`: Adapt the roles as in keycloak realm
+* `kong.configMap`: Adapt the kong services and their routes
+
+The chart is released with a set
+of [default values](https://github.com/DOME-Marketplace/iam-components/blob/main/charts/iam-components/values.yaml).
+To see how to configure each subcomponent, check the table below: 
+
+| Component                  | Chart                                                                             |
+|----------------------------|-----------------------------------------------------------------------------------|
+| postgresql                 | https://github.com/bitnami/charts/tree/main/bitnami/postgresql                    |
+| mysql                      | https://github.com/bitnami/charts/tree/main/bitnami/mysql                         |
+| vcwaltid                   | https://github.com/i4Trust/helm-charts/tree/main/charts/vcwaltid                  |
+| keycloak                   | https://github.com/bitnami/charts/tree/main/bitnami/keycloak                      |
+| credentials-config-service | https://github.com/FIWARE/helm-charts/tree/main/charts/credentials-config-service |
+| trusted-issuers-list       | https://github.com/FIWARE/helm-charts/tree/main/charts/trusted-issuers-list       |
+| vcverifier                 | https://github.com/i4Trust/helm-charts/tree/main/charts/vcverifier                |
+| keyrock                    | https://github.com/FIWARE/helm-charts/tree/main/charts/keyrock                    |
+| dsba-pdp                   | https://github.com/FIWARE/helm-charts/tree/main/charts/dsba-pdp                   |
+| kong                       | https://github.com/Kong/charts/tree/main/charts/kong                              |
+
+#### How to validate a deployment
+
+All components are configured with health and readiness checks to validate their own status, therefore being the base
+for a validation. These checks are utilized in the Kubernetes checks as defined in the helm charts.
+
+#### How to operate
+
+The underlying database service holds the persisted data and therefore requires a backup&recovery mechanism when
+operated in a production environment. The use of managed database is strongly encouraged for safety and convenience.
+
+#### How to update
+
+Upgrade to both a different chart version and new configuration can be accomplished with the following command
+
+  ```
+    helm upgrade <RELEASE_NAME> dome-iam/iam-components --namespace <NAME_SPACE> --version <CHART_VERSION> -f values.yaml
+  ```
+
+#### Release process
+
+Versioning of the main iam-components helm chart is handled based on the labels used in the pull requests used to
+introduce changes and is enforced in
+the [build pipeline](https://github.com/DOME-Marketplace/iam-components/tree/main/.github/workflows). The requester and
+reviewers must set the label according to the [SemVer 2.0.0](https://semver.org/) versioning scheme.
+
+Versioning of the components and sub-charts is recommended to use the same scheme.
+
+#### Troubleshooting
+
+> To be filled once feedback from integrators comes in
 
 ## Authentication
 
