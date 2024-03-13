@@ -426,9 +426,9 @@ the Trusted-List-Service in the DSBA Trust and IAM Framework. In addition, a Tru
 manage the issuers.
 * [VCVerifier](https://github.com/fiware/vcverifier) provides the necessary endpoints to offer SIOP-2/OIDC4VP compliant authentication flows. It exchanges
 VerifiableCredentials for JWT, that can be used for authorization and authentication in down-stream components.
-* [Credentials Config Service](https://github.com/fiware/credentials-config-service) manages and provides information about services and the credentials they are using. It
-returns the scope to be requested from the wallet per service and the credentials and issuers that are considered to be
-trusted for a certain service.
+* [Credentials Config Service](https://github.com/fiware/credentials-config-service) manages and provides information about services and the credentials they are using.
+It returns the scope to be requested from the wallet per service. Furthermore, it specifies the credentials required and
+the issuers list endpoints to validate against, when checking access for a certain service.
 * The [Keycloak-VC-Issuer](https://github.com/fiware/keycloak-vc-issuer) is plugin for Keycloak to support SIOP-2/OIDC4VP clients and issue VerifiableCredentials through
 the OIDC4VCI-Protocol to compliant wallets.
 * [PDP](https://github.com/fiware/dsba-pdp) is an implementation of a Policy-Decision Point, evaluating Json-Web-Tokens containing VerifiableCredentials in a
@@ -475,7 +475,7 @@ Before deploying these components, you need to update some values:
   for your issuer
 * `keycloak.frontendUrl`: Externally accessible address of the keycloak (should be the same as defined in ingress/route)
 * `keycloak.realm`: Adapt clients, users and roles according to your needs
-* `tir.com`: replace everywhere with actual TIR
+* `<tir.com>`: replace everywhere with actual TIR
 * `keyrock.initData.scriptData`: Adapt the roles as in keycloak realm
 * `kong.configMap`: Adapt the kong services and their routes
 
