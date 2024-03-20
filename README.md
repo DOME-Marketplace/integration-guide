@@ -410,7 +410,8 @@ via [additional environment variables](https://github.com/FIWARE/helm-charts/blo
 ### IAM components
 
 The [DOME IAM-Framework](https://github.com/DOME-Marketplace/iam-components) is a set of microservices, that enables
-users in the DOME ecosystem to authenticate into the [DOME Marketplace](https://dome-marketplace.org).
+users in the DOME ecosystem to authenticate into the [DOME Marketplace](https://dome-marketplace.org). The authentication process itself is
+described further below in the [Authentication](#authentication) section.
 
 #### Overview and subcomponents
 
@@ -419,7 +420,7 @@ as alternatives providing the same interfaces are used.
 
 The IAM-Framework consists of following components:
 
-![IAM-components](./doc/img/iam.png)
+![IAM-components](doc/img/iam.png)
 
 * The [Trusted Issuers List](https://github.com/fiware/trusted-issuers-list) service provides an [EBSI Trusted Issuers Registry](https://hub.ebsi.eu/apis/pilot/trusted-issuers-registry/v4) implementation to act as
 the Trusted-List-Service in the DSBA Trust and IAM Framework. In addition, a Trusted-Issuers-List API is provided to
@@ -433,11 +434,13 @@ the issuers list endpoints to validate against, when checking access for a certa
 the OIDC4VCI-Protocol to compliant wallets.
 * [PDP](https://github.com/fiware/dsba-pdp) is an implementation of a Policy-Decision Point, evaluating Json-Web-Tokens containing VerifiableCredentials in a
 DSBA-compliant way. It also supports the evaluation in the context of i4Trust.
-* [Keyrock](https://github.com/ging/fiware-idm) is the FIWARE component responsible for Identity Management. Using Keyrock (in conjunction with other security
-components) enables you to add OAuth2-based authentication and authorization security to your services and applications.
-* [Kong Plugins](https://github.com/fiware/kong-plugins-fiware) allow to extend the API Gateway Kong by further functionalities required for FIWARE-based environments. Kong
-Gateway is a lightweight, fast, and flexible cloud-native API gateway. An API gateway is a reverse proxy that lets you
-manage, configure, and route requests to your APIs.
+* [Keyrock](https://github.com/ging/fiware-idm) is the FIWARE component responsible for Identity Management. Within DOME IAM-Framework Keyrock is being
+used as the iSHARE-compliant Authorization Registry (see for details: https://dev.ishare.eu/delegation/endpoint.html),
+where attribute-based access policies are stored and used during the authorization process.
+* [Kong Plugins](https://github.com/fiware/kong-plugins-fiware) allow to extend the API Gateway Kong by further functionalities. Kong Gateway is a lightweight,
+fast, and flexible cloud-native API gateway. One of the plugins is the PEP plugin, which is especially required within
+the IAM-components as PEP component and interacts with the PDP mentioned above.
+* [Waltid](https://github.com/walt-id/waltid-ssikit) manages Keys, DIDs and VCs. It is used by VC Issuer and VCVerifier.
 
 #### How to deploy
 
@@ -465,17 +468,17 @@ iam-components can be used as followed:
 
 #### How to configure
 
-Before deploying these components, you need to update some values:
+It is suggested to go through all parameters (the links to the corresponding charts are provided below to look this up),
+but these parameters listed below are important to set and should be updated at least:
 
 * `rbac` and `serviceAccount`: Depending on your requirements, you might need to adapt settings for RBAC and service
   account
-* `ingress` or `route`: You need to set up these settings to make a component externally accessible
 * `did`s of participants: Replace/add the DIDs of the issuer and other participants
-* Provide correct key in [keyfile.json](https://github.com/DOME-Marketplace/iam-components/blob/main/charts/iam-components/templates/keycloak.yaml)
-  for your issuer
+* In the case of did:key provide correct key in [keyfile.json](https://github.com/DOME-Marketplace/iam-components/blob/main/charts/iam-components/templates/keycloak.yaml) for your issuer
 * `keycloak.frontendUrl`: Externally accessible address of the keycloak (should be the same as defined in ingress/route)
 * `keycloak.realm`: Adapt clients, users and roles according to your needs
-* `<tir.com>`: replace everywhere with actual TIR
+* `<tir.com>`: replace everywhere with actual TIR URL
+* `<dome-marketplace.org>`: replace with your own domain
 * `keyrock.initData.scriptData`: Adapt the roles as in keycloak realm
 * `kong.configMap`: Adapt the kong services and their routes
 
