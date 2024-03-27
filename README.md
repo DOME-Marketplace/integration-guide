@@ -434,9 +434,10 @@ the issuers list endpoints to validate against, when checking access for a certa
 the OIDC4VCI-Protocol to compliant wallets.
 * [PDP](https://github.com/fiware/dsba-pdp) is an implementation of a Policy-Decision Point, evaluating Json-Web-Tokens containing VerifiableCredentials in a
 DSBA-compliant way. It also supports the evaluation in the context of i4Trust.
-* [Keyrock](https://github.com/ging/fiware-idm) is the FIWARE component responsible for Identity Management. Within DOME IAM-Framework Keyrock is being
+* [Keyrock](https://github.com/ging/fiware-idm) is the FIWARE component responsible for Identity Management. Within DOME IAM-Framework, currently Keyrock is being
 used as the iSHARE-compliant Authorization Registry (see for details: https://dev.ishare.eu/delegation/endpoint.html),
-where attribute-based access policies are stored and used during the authorization process.
+where attribute-based access policies are stored and used during the authorization process. Note, that this will be replaced by an ODRL-compliant 
+policy registry. A description of the policies is given in the [policies](#policies) section.
 * [Kong Plugins](https://github.com/fiware/kong-plugins-fiware) allow to extend the API Gateway Kong by further functionalities. Kong Gateway is a lightweight,
 fast, and flexible cloud-native API gateway. One of the plugins is the PEP plugin, which is especially required within
 the IAM-components as PEP component and interacts with the PDP mentioned above.
@@ -468,8 +469,9 @@ iam-components can be used as followed:
 
 #### How to configure
 
-It is suggested to go through all parameters (the links to the corresponding charts are provided below to look this up),
-but these parameters listed below are important to set and should be updated at least:
+The chart is released with a set
+of documented [default values](https://github.com/DOME-Marketplace/iam-components/blob/main/charts/iam-components/values.yaml).
+The parameters listed below are important to set and should be updated at least:
 
 * `rbac` and `serviceAccount`: Depending on your requirements, you might need to adapt settings for RBAC and service
   account
@@ -482,9 +484,8 @@ but these parameters listed below are important to set and should be updated at 
 * `keyrock.initData.scriptData`: Adapt the roles as in keycloak realm
 * `kong.configMap`: Adapt the kong services and their routes
 
-The chart is released with a set
-of [default values](https://github.com/DOME-Marketplace/iam-components/blob/main/charts/iam-components/values.yaml).
-To see how to configure each subcomponent, check the table below: 
+However, 
+it is suggested to consult the respective charts listed below and check their documentation and configuration. 
 
 | Component                  | Chart                                                                             |
 |----------------------------|-----------------------------------------------------------------------------------|
