@@ -55,6 +55,12 @@ jobs:
         run: |
           mkdir -p export/gh-pages
           mkdir -p doc/img/mermaid
+
+      - name: Generate ToC
+        uses: technote-space/toc-generator@v4
+        with:
+          TARGET_PATHS: ./${{ env.INPUT_FILENAME }}.md
+          COMMIT_MESSAGE: "Update ToC"
           
       - name: Set version in template
         run: |
