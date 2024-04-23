@@ -558,6 +558,154 @@ Versioning of the components and sub-charts is recommended to use the same schem
 > - How to: push billing information on the shared data layer
 > - How to: retrieve billing information on the shared data layer
 
+### How to retrieve your organization party
+
+When working with the TMForum data models, most of the entities created include information about the
+parties that are related to them. This includes, thought it is not limited to, the owner, customers,
+etc.
+
+All the organizations onboarded in DOME should have a Party object, created during the onboarding, that
+can be retrieved using the TMForum Party Management API.
+
+The Party object of a particular organization can be retrieved quering the Party API, using the Organization ID
+provided in the mandator of the Verifiable Credential.
+
+```
+GET [Party API Endpoint]/organization?externalReference.name=[VC Org ID]
+[{
+  {
+        "id": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+        "href": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+        "tradingName": "Test Org, S.L",
+        "externalReference": [
+            {
+                "externalReferenceType": "idm_id",
+                "name": "VATES-B12341234"
+            }
+        ]
+    }
+}]
+```
+
+Knowing the ID of the Party object is quite relevant as will be needed to create any other
+entity in the TMForum APIs
+
+
+### How to create custom categories
+
+DOME allows Service Providers to define their custom Product Categories in addition to the ones provided
+by the DOME Marketplace. These Product Categories are created as part of the TMForum Product Catalog Management API
+and are attached to the Service Provider Product Catalog. For a complete reference of the Product Catalog
+Management API, please refer to the [Swagger Doc.](https://github.com/FIWARE/tmforum-api/blob/main/api/tm-forum/product-catalog/api.json)
+
+The first step to define a set of categories is creating the Service Provider Product Catalog. This can be done
+via HTTP making the following POST request to the Product Catalog API
+
+```
+POST [Catalog API Endpoint]/catalog
+{
+  "name": "Provider Catalog",
+  "description": "A Provider Product Catalog",
+  "lifecycleStatus": "active",
+  "relatedParty": [{
+    "id": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+    "href": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+    "role": "owner"
+  }],
+  "category": []
+}
+```
+
+As part of the Product Catalog it must be included:
+* **name**: A name for the Product Catalog
+* **description**: A description for the Product Catalog
+* **lifecycleStatus**: The status of the Product Catalog. When creating a new entity it should be set to *active*
+* **relatedParty**: The parties related to the catalogue. At least the owner party must be included providing its ID and the *owner* role
+
+Once the Product Catalog is ready, root categories can be created. Product Categories
+are created in the Product Catalog API using the following request:
+
+```
+POST [Catalog API Endpoint]/category
+{
+  "name": "IaaS Service",
+  "description": "Products offering IaaS Services",
+  "lifecycleStatus": "active",
+  "isRoot": true,
+}
+```
+
+Note that when creating a root category the *isRoot* attribute is set to *true*
+
+New root categories can be attached to the provider catalog updating the *category* field using
+a PATCH request.
+
+```
+PATCH [Catalog API Endpoint]/catalog/[Catalog ID]
+
+{
+  "category": [{
+    "id": "urn:ngsi-ld:product-category:58e41694-594c-42e1-bff9-b249984e42e1",
+    "href": "urn:ngsi-ld:product-category:58e41694-594c-42e1-bff9-b249984e42e1"
+  }]
+}
+```
+
+Finally, children categories can be created using the *parentId* attribute to add the parent category ID
+and setting the *isRoot* attribute to *false*. These children categories doesn't need to be included in
+the service provider catalog, as they can be reached from its parents to build the whole category tree.
+
+```
+POST [Catalog API Endpoint]/category
+{
+  "name": "Computing Service",
+  "description": "Products offering Computing Services",
+  "lifecycleStatus": "active",
+  "isRoot": false,
+  "parentId": "urn:ngsi-ld:product-category:58e41694-594c-42e1-bff9-b249984e42e1"
+}
+```
+
+There are some considerations to be taken into account regarding the lifecycle status.
+As defined by TMForum model, the different product catalog elements can be discovered
+by potential customers when they are in *launched* state. In this regard, it is adviced
+to create the different entities in *active* state, allowing the provider to keep on making
+modifications before they are discovered.
+
+In the particular case of the catalogue and the categories, it is adviced to keep them
+in *active* state until there is a Product Offering offering within it. This way,
+potential customers will not browse an empty category. 
+
+
+### How to discover product offerings
+
+Search categories tree by searching using params
+* Category or categories
+* Other parameters
+
+Get the product specification
+
+Get the Service Specifications
+
+Get the resource specifications
+
+### How to publish a product offering
+
+Create service and resource specifications
+
+Create a product specification
+
+Create a product offering
+
+
+Launch the different objects
+
+
+### How to subscribe to events
+
+Using the TMForum Hub API
+
+
 ## Policies
 
 ### Defining policies
