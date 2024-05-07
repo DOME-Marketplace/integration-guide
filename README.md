@@ -673,23 +673,60 @@ to create the different entities in *active* state, allowing the provider to kee
 modifications before they are discovered.
 
 In the particular case of the catalogue and the categories, it is adviced to keep them
-in *active* state until there is a Product Offering offering within it. This way,
+in *active* state until there is a Product Offering within it. This way,
 potential customers will not browse an empty category. 
 
 
 ### How to discover product offerings
 
-Search categories tree by searching using params
-* Category or categories
-* Other parameters
+There are multiple filtering options that allow potential customers to browse
+the product offering catalog. The TMForum API defines a query language that
+allows to search by any of the fields included in the particular TMForum model
+using query params in a GET request.
 
-Get the product specification
+In general, a query is defined with the following rules:
+* The attribute from the TMForum model that is used as filter is provided as a
+query param of a GET request
+* When the attribute value is a nested object, it is possible to query by nested attributes
+using dots
+* Multiple attributes can be used at the same time using different query params, the query will be an AND
+* Multiple values separated by comma can be used to create an OR query
+* Results can be paged using the *start* and *limit* query params
 
-Get the Service Specifications
+The following is an example of a query retrieving all the *Launched* Product Offerings of a given
+provider
 
-Get the resource specifications
+```
+GET [Catalog API Endpoint]/productOffering?lifecycleStatus=launched&relatedParty.id=urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1
+```
+
+As described in the previous section, the different Product Offerings can be categorized
+using Product Categories. These categories can be used for filtering the results as any
+other field of the product offering.
+
+The following is an example filtering offerings by category ID
+
+```
+GET [Catalog API Endpoint]/productOffering?category.id=urn:ngsi-ld:product-category:58e41694-594c-42e1-bff9-b249984e42e1
+```
+
+The following is an example filtering offerings by category name
+
+```
+GET [Catalog API Endpoint]/productOffering?category.name=PaaS
+```
+
+> Note that the examples in this section are applied to the Product Catalog Management API;
+> nevertheless, the same query mechanism is used in all the TMForum APIs
+>
 
 ### How to publish a product offering
+
+When dealing with product offerings, the TMForum datamodel splits the technical
+and business information in different entities that needs to be created.
+
+On the one hand, the different services and resources that made up the product
+to be published need to be modeled as Service and Resource Specifications
 
 Create service and resource specifications
 
@@ -703,7 +740,66 @@ Launch the different objects
 
 ### How to subscribe to events
 
-Using the TMForum Hub API
+All the TMForum APIs allow to subscribe to certain events over the different entities managed in
+the particular API. To do that, the TMForum APIs define a set of endpoints that can be used
+to register listeners for the different events.
+
+In general, the following events are triggered for a TMForum entity:
+* **Create**: This event is triggered when a new entity is created
+* **Attribute Value Change**: This event is triggered when the value of an attribute of the entity is changed
+* **State Change**: This event is triggered when the lifecycle status of an entity is changed
+* **Delete**: This event is triggered when an entity is deleted
+
+To register a listener for the different events a POST request to the *hub* endpoint is used. Such an endpoint is available in all the TMForum APIs and receives two params, a query filtering the
+entities you are interested and the callback to be called when an event is triggered.
+
+The following is an example of creating a listener:
+
+```
+POST [Catalog API Endpoint]/hub
+
+{
+  "callback": "https://provider.com",
+  "query": ""
+}
+```
+
+Once the listener is registered, the particular TMForum API will call the given
+callback URL every time an event is triggered. To do that, the TMForum API will
+send a POST request and encode the particular event as part of the path of the
+request.
+
+The following is an example request made by the TMForum API when a new Product Offering
+is created
+
+```
+POST https://provider.com/listener/productOfferingCreateEvent
+
+{
+  "event": {
+    "productOffering": {
+      ...
+    }
+  },
+  "eventId": "string",
+  "eventTime": "2024-05-07T08:24:01.581Z",
+  "eventType": "string",
+  "correlationId": "string",
+  "domain": "string",
+  "title": "string",
+  "description": "string",
+  "priority": "string",
+  "timeOcurred": "2024-05-07T08:24:01.581Z"
+}
+```
+
+The event content will include on the one hand, some information about the event itself, like the time
+when it was triggered or the event type. On the other hand, the field *event* will
+include the updated TMForum entity the event refers to.
+
+It can be seen, that the TMForum API is making the POST request to the */listener/productOfferingCreateEvent*, that URL encodes the particular event, addding the
+model followed by the event type. For a complete list of all the listener URL options
+please refer to the particular Swagger documentation of the API.
 
 
 ## Policies
