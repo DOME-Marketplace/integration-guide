@@ -351,7 +351,60 @@ consulted.
 | scorpio-broker       | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker             |
 
 To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely changed by integrators.
-TODO: include config for the blockchain components
+
+These are the fields to configure:
+
+| Key                                                    | Comments                                                                                                                | Default Values                 |
+|--------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| nameOverride                                           | Option to override the name config in the _helpers.tpl                                                                  | ""                             |
+| fullnameOverride                                       | Option to override the fullname config in the _helpers.tpl                                                              | ""                             |
+| service                                                | Configuration for the k8s service to access blockchain-connector-core                                                   |                                |
+| service.type                                           | Service type                                                                                                            | ClusterIP                      |
+| service.port                                           | Port to be used by the service                                                                                          | 8080                           |
+| service.annotations                                    | Additional annotations, if required                                                                                     | { }                            |
+| serviceAccount                                         | If a blockchain-connector-core specific service account should be used, it can be configured here                       |                                |
+| serviceAccount.create                                  | Specifies if the account should be created                                                                              | false                          |
+| deployment                                             | Deployment specific configuration                                                                                       |                                |
+| deployment.replicaCount                                | Initial number of target replications, can be different if autoscaling is enabled                                       | 1                              |
+| deployment.revisionHistoryLimit                        | Number of old replicas to be retained                                                                                   | 3                              |
+| deployment.updateStrategy                              | Configuration of the blockchain-connector-core update strategy                                                          |                                |
+| deployment.updateStrategy.type                         | Type of the update                                                                                                      | RollingUpdate                  |
+| deployment.updateStrategy.rollingUpdate                | New pods will be added gradually                                                                                        |                                |
+| deployment.updateStrategy.rollingUpdate.maxSurge       | Number of pods that can be created above the desired amount while updating                                              | 1                              |
+| deployment.updateStrategy.rollingUpdate.maxUnavailable | Number of pods that can be unavailable while updating                                                                   | 0                              |
+| deployment.image                                       | Configuration of the image to be used                                                                                   |                                |
+| deployment.image.repository                            | Blockchain-connector image name                                                                                         | in2kizuna/blockchain-connector |
+| deployment.image.tag                                   | Tag of the image to be used                                                                                             | 1.0.0                          |
+| deployment.image.pullPolicy                            | Specification of the image pull policy                                                                                  | IfNotPresent                   |
+| deployment.resources                                   | Blockchain-connector-core resource requests and limits                                                                  |                                |
+| deployment.additionalLabels                            | Additional labels for the deployment, if required                                                                       | { }                            |
+| deployment.additionalAnnotations                       | Additional annotations for the deployment, if required                                                                  | { }                            |
+| deployment.nodeSelector                                | Selector template                                                                                                       | { }                            |
+| deployment.tolerations                                 | Tolerations template                                                                                                    | [ ]                            |
+| deployment.affinity                                    | Affinity template                                                                                                       | { }                            |
+| deployment.healthPort                                  | Port to request health information at                                                                                   | 8080                           |
+| deployment.livenessProbe                               | Liveness and readiness probes                                                                                           |                                |
+| deployment.livenessProbe.initialDelaySeconds           | Initial delay in seconds for the liveness probe                                                                         | 30                             |
+| deployment.livenessProbe.periodSeconds                 | Period in seconds for the liveness probe                                                                                | 10                             |
+| deployment.livenessProbe.successThreshold              | Success threshold for the liveness probe                                                                                | 1                              |
+| deployment.livenessProbe.timeoutSeconds                | Timeout in seconds for the liveness probe                                                                               | 30                             |
+| deployment.readinessProbe                              | Readiness probe configuration                                                                                           |                                |
+| deployment.readinessProbe.initialDelaySeconds          | Initial delay in seconds for the readiness probe                                                                        | 31                             |
+| deployment.readinessProbe.periodSeconds                | Period in seconds for the readiness probe                                                                               | 10                             |
+| deployment.readinessProbe.successThreshold             | Success threshold for the readiness probe                                                                               | 1                              |
+| deployment.readinessProbe.timeoutSeconds               | Timeout in seconds for the readiness probe                                                                              | 30                             |
+| autoscaling                                            | Pod autoscaling configuration, use for automatic scaling of the broker pods                                             |                                |
+| autoscaling.enabled                                    | Should autoscaling be enabled for til                                                                                   | false                          |
+| autoscaling.minReplicas                                | Minimum number of running pods                                                                                          | 1                              |
+| autoscaling.maxReplicas                                | Maximum number of running pods                                                                                          | 10                             |
+| autoscaling.metrics                                    | Metrics to react on                                                                                                     | [ ]                            |
+| port                                                   | Port that the blockchain-connector-core container uses                                                                  | 8080                           |
+| prometheus                                             | Configuration for Prometheus monitoring                                                                                 |                                |
+| prometheus.enabled                                     | Should Prometheus scrape be enabled                                                                                     | true                           |
+| prometheus.path                                        | Path for Prometheus scrape                                                                                              | /prometheus                    |
+| prometheus.port                                        | Port Prometheus scrape is available at                                                                                  | 8080                           |
+| additionalEnvVars                                      | A list of additional environment variables to be set, check the blockchain-connector-core doc for all available options | [ ]                            |
+
 
 
 #### How to validate a deployment
