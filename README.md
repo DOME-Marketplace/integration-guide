@@ -426,8 +426,9 @@ also be replaced if needed. The verbosity is controlled
 via [environment variables](https://github.com/FIWARE/helm-charts/blob/05552c4c97a21df68f14e78de80a56e3934e179d/charts/tm-forum-api/templates/deployment.yaml#L165)
 and can be fine tuned to the operators needs.
 
-TODO: Prometheus Metrics
-TODO: Grafana Dashboard
+We need to implement Grafana dashboards but for the moment the access node publishes metrics for Prometheus by default
+in "/actuator/prometheus".
+
 
 #### How to update
 
