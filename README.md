@@ -339,16 +339,16 @@ as a good starting point for an adoption. These values are also documented, enha
 the [respective charts](https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api) of the components should be
 consulted.
 
-| Component            | Chart                                                                             |
-|----------------------|-----------------------------------------------------------------------------------|
-| TM-Forum-API         | https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api               |
-| blockchain-connector | https://github.com/in2workspace/helm-charts/tree/main/charts/blockchain-connector |
-| broker-adapter       | https://github.com/in2workspace/helm-charts/tree/main/charts/broker-adapter       |
-| dlt-adapter          | https://github.com/alastria/helm-charts/tree/master/dlt-adapter/templates         |
-| kafka                | https://github.com/bitnami/charts/tree/main/bitnami/kafka                         |
-| postgresql           | https://github.com/bitnami/charts/tree/main/bitnami/postgresql                    |
-| scorpio-broker-aaio  | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio        |
-| scorpio-broker       | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker             |
+| Component              | Chart                                                                               |
+|------------------------|-------------------------------------------------------------------------------------|
+| TM-Forum-API           | https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api                 |
+| blockchain-connector   | https://github.com/in2workspace/helm-charts/tree/main/charts/blockchain-connector   |
+| broker-adapter         | https://github.com/in2workspace/helm-charts/tree/main/charts/broker-adapter         |
+| dlt-adapter            | https://github.com/alastria/helm-charts/tree/master/dlt-adapter                     |
+| kafka                  | https://github.com/bitnami/charts/tree/main/bitnami/kafka                           |
+| postgresql             | https://github.com/bitnami/charts/tree/main/bitnami/postgresql                      |
+| scorpio-broker-aaio    | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio          |
+| scorpio-broker         | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker               |
 
 To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely changed by integrators.
 
