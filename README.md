@@ -410,6 +410,8 @@ profile names _sbx_, _dev_ and _prd_. It is important that users use the profile
 (_dev_, _test_, _prod_), since the application is responsible for carrying out the necessary correspondence and mapping 
 between the profile names of the Blockchain Connector and those of DOME automatically.
 
+The DLT-Adapter is automatically deactivated when it detects that Desmos is down.
+
 #### How to validate a deployment
 
 All components are configured with health and readiness checks to validate their own status, therefor being the base for
