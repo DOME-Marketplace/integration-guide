@@ -405,7 +405,10 @@ These are the fields to configure:
 | prometheus.port                                        | Port Prometheus scrape is available at                                                                                  | 8080                           |
 | additionalEnvVars                                      | A list of additional environment variables to be set, check the blockchain-connector-core doc for all available options | [ ]                            |
 
-
+The Blockchain Connector uses the _dev_, _test_ and _prod_ configuration profiles. On the other hand, DOME uses the 
+profile names _sbx_, _dev_ and _prd_. It is important that users use the profile names used by the Blockchain Connector 
+(_dev_, _test_, _prod_), since the application is responsible for carrying out the necessary correspondence and mapping 
+between the profile names of the Blockchain Connector and those of DOME automatically.
 
 #### How to validate a deployment
 
