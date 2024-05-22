@@ -353,17 +353,18 @@ consulted.
 To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely changed by integrators.
 Blockchain connector fields present int this file are:
 
-| Key                                                      | Comment                                                              | Default Values                                                      |
-|----------------------------------------------------------|----------------------------------------------------------------------|---------------------------------------------------------------------|
-| access-node.desmos.app.operator.organizationIdentifier   | did of the operator                                                  | did:elsi:VATES-S9999999E                                            |
-| access-node.desmos.app.broker.externalDomain             | must be set since it is used by third parties to retrieve your data  | http://scorpio:9090                                                 |
-| access-node.desmos.app.db.username                       | db username to be used                                               | postgres                                                            |
-| access-node.desmos.app.db.password                       | db password to be used                                               | postgres                                                            |
-| access-node.dlt-adapter.env.PRIVATE_KEY                  | private key to sign transactions                                     | 0xe2afef2c880b138d741995ba56936e389b0b5dd2943e21e4363cc70d81c89346  |
-| access-node.dlt-adapter.env.RPC_ADDRESS                  | node address                                                         | https://red-t.alastria.io/v0/9461d9f4292b41230527d57ee90652a6       |
-| access-node.dlt-adapter.env.ISS                          | organization identifier hashed with SHA-256                          | 0x43b27fef24cfe8a0b797ed8a36de2884f9963c0c2a0da640e3ec7ad6cd0c493d  |
-| access-node.postgresql.auth.username                     | username to be used                                                  | postgres                                                            |
-| access-node.postgresql.auth.password                     | password to be used                                                  | postgres                                                            |
+| Key                                                    | Comment                                                             | Default Values                                                     |
+|--------------------------------------------------------|---------------------------------------------------------------------|--------------------------------------------------------------------|
+| access-node.desmos.app.profile                         | allows the environment filtering                                    | dev                                                                |
+| access-node.desmos.app.operator.organizationIdentifier | did of the operator                                                 | did:elsi:VATES-S9999999E                                           |
+| access-node.desmos.app.broker.externalDomain           | must be set since it is used by third parties to retrieve your data | http://scorpio:9090                                                |
+| access-node.desmos.app.db.username                     | db username to be used                                              | postgres                                                           |
+| access-node.desmos.app.db.password                     | db password to be used                                              | postgres                                                           |
+| access-node.dlt-adapter.env.PRIVATE_KEY                | private key to sign transactions                                    | 0xe2afef2c880b138d741995ba56936e389b0b5dd2943e21e4363cc70d81c89346 |
+| access-node.dlt-adapter.env.RPC_ADDRESS                | node address                                                        | https://red-t.alastria.io/v0/9461d9f4292b41230527d57ee90652a6      |
+| access-node.dlt-adapter.env.ISS                        | organization identifier hashed with SHA-256                         | 0x43b27fef24cfe8a0b797ed8a36de2884f9963c0c2a0da640e3ec7ad6cd0c493d |
+| access-node.postgresql.auth.username                   | username to be used                                                 | postgres                                                           |
+| access-node.postgresql.auth.password                   | password to be used                                                 | postgres                                                           |
 
 Fields to clarify in the original config:
 
