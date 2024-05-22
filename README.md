@@ -259,7 +259,10 @@ graph TD
     Context-Broker --> Persistence;
 ```
 
-TODO: Add description of blockchain connector
+The Blockchain Connector is a software component that facilitates the
+interaction between the Off-Chain Storage (Context Broker) and the
+On-Chain Storage (Blockchain). 
+It is composed of the Distributed Ledger Technology (DLT) and the Access Node.
 
 #### Overview and sub-components
 
