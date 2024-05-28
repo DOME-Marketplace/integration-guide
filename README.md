@@ -359,7 +359,9 @@ Blockchain connector fields present int this file are:
 | access-node.desmos.app.operator.organizationIdentifier | did of the operator                                                 | did:elsi:VATES-S9999999E                                           |
 | access-node.desmos.app.broker.externalDomain           | must be set since it is used by third parties to retrieve your data | http://scorpio:9090                                                |
 | access-node.desmos.app.db.username                     | db username to be used                                              | postgres                                                           |
-| access-node.desmos.app.db.password                     | db password to be used                                              | postgres                                                           |
+| access-node.desmos.app.db.existingSecret.enabled       | should an existing secret be used                                   | false                                                              |
+| access-node.desmos.app.db..existingSecret.name         | name of the secret                                                  | desmos-api-secret                                                  |
+| access-node.desmos.app.db..existingSecret.key          | desmos-db-password                                                  | desmos-db-password                                                 |
 | access-node.dlt-adapter.env.PRIVATE_KEY                | private key to sign transactions                                    | 0xe2afef2c880b138d741995ba56936e389b0b5dd2943e21e4363cc70d81c89346 |
 | access-node.dlt-adapter.env.RPC_ADDRESS                | node address                                                        | https://red-t.alastria.io/v0/9461d9f4292b41230527d57ee90652a6      |
 | access-node.dlt-adapter.env.ISS                        | organization identifier hashed with SHA-256                         | 0x43b27fef24cfe8a0b797ed8a36de2884f9963c0c2a0da640e3ec7ad6cd0c493d |
@@ -379,6 +381,48 @@ profile names _sbx_, _dev_ and _prd_. It is important that users use the profile
 between the profile names of the Blockchain Connector and those of DOME automatically.
 
 The DLT-Adapter is automatically deactivated when it detects that Desmos is down.
+
+##### Configure custom secrets
+
+To configure custom secrets you have to follow the next steps:
+
+1. Create a Plain Secret Manifest File:
+- Create a plain secret manifest file named ```<secret name>-plain-secret.yaml```. 
+- **IMPORTANT**: Add "*-plain-secret.yaml" to .gitignore fail to not push plain secret data to the repository
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <secret name>
+  namespace: <app namespace>
+data: 
+  <secret_key>: <base64 encoded value>
+```
+
+2. Seal the secret:
+- Seal the secret by executing the following command:
+
+```sh
+kubeseal -f <secret name>-plain-secret.yaml -w <secret name>-sealed-secret.yaml --controller-namespace sealed-secrets --controller-name sealed-secrets
+```
+
+3. Apply the secret configuration:
+- Apply the sealed secret configuration to the cluster by running the command:
+
+```sh
+kubectl apply -f <secret name>-sealed-secret.yaml
+```
+
+4. Update the Chart Values:
+- In the chart values.yaml file, modify the existingSecret section as follows:
+
+```yaml
+existingSecret:  
+  enabled: true  
+  name: <secret name>  
+  key: <secret_key>
+```
 
 #### How to validate a deployment
 
