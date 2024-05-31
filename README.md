@@ -259,7 +259,10 @@ graph TD
     Context-Broker --> Persistence;
 ```
 
-TODO: Add description of blockchain connector
+The Blockchain Connector is a software component that facilitates the
+interaction between the Off-Chain Storage (Context Broker) and the
+On-Chain Storage (Blockchain). 
+It is composed of the Distributed Ledger Technology (DLT) and the Access Node.
 
 #### Overview and sub-components
 
@@ -336,22 +339,95 @@ as a good starting point for an adoption. These values are also documented, enha
 the [respective charts](https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api) of the components should be
 consulted.
 
-| Component            | Chart                                                                                 |
-|----------------------|---------------------------------------------------------------------------------------|
-| TM-Forum-API         | https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api                   |
-| blockchain-connector | https://github.com/DOME-Marketplace/access-node/tree/main/charts/blockchain-connector |
-| broker-adapter       | https://github.com/DOME-Marketplace/access-node/tree/main/charts/broker-adapter       |
-| dlt-adapter          | https://github.com/DOME-Marketplace/access-node/tree/main/charts/dlt-adapter          |
-| kafka                | https://github.com/bitnami/charts/tree/main/bitnami/kafka                             |
-| postgresql           | https://github.com/bitnami/charts/tree/main/bitnami/postgresql                        |
-| scorpio-broker-aaio  | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio            |
-| scorpio-broker       | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker                 |
-
-TODO: Replace with charts [in](https://github.com/in2workspace/helm-charts/tree/main/charts) once they are used.
+| Component           | Chart                                                                       |
+|---------------------|-----------------------------------------------------------------------------|
+| TM-Forum-API        | https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api         |
+| desmos              | https://github.com/in2workspace/helm-charts/tree/main/charts/desmos         |
+| broker-adapter      | https://github.com/in2workspace/helm-charts/tree/main/charts/broker-adapter |
+| dlt-adapter         | https://github.com/alastria/helm-charts/tree/master/dlt-adapter             |
+| kafka               | https://github.com/bitnami/charts/tree/main/bitnami/kafka                   |
+| postgresql          | https://github.com/bitnami/charts/tree/main/bitnami/postgresql              |
+| scorpio-broker-aaio | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio  |
+| scorpio-broker      | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker       |
 
 To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely changed by integrators.
-TODO: include config for the blockchain components
+Blockchain connector fields present int this file are:
 
+| Key                                                    | Comment                                                             | Default Values                                                     |
+|--------------------------------------------------------|---------------------------------------------------------------------|--------------------------------------------------------------------|
+| access-node.desmos.app.profile                         | allows the environment filtering                                    | dev                                                                |
+| access-node.desmos.app.operator.organizationIdentifier | did of the operator                                                 | did:elsi:VATES-S9999999E                                           |
+| access-node.desmos.app.broker.externalDomain           | must be set since it is used by third parties to retrieve your data | http://scorpio:9090                                                |
+| access-node.desmos.app.db.host                         | host of the db                                                      | postgresql-connector                                               |
+| access-node.desmos.app.db.port                         | port of the host of the db                                          | 5432                                                               |
+| access-node.desmos.app.db.externalService              | should be true if is an external service                            | false                                                              |
+| access-node.desmos.app.db.name                         | name of the db                                                      | mktdb                                                              |
+| access-node.desmos.app.db.password                     | password to be used                                                 | postgres                                                           |
+| access-node.desmos.app.db.username                     | username to be used                                                 | postgres                                                           |
+| access-node.desmos.app.db.existingSecret.enabled       | should an existing secret be used                                   | false                                                              |
+| access-node.desmos.app.db.existingSecret.name          | name of the secret                                                  | desmos-api-secret                                                  |
+| access-node.desmos.app.db.existingSecret.key           | key to retrieve the password from                                   | desmos-db-password                                                 |
+| access-node.dlt-adapter.env.PRIVATE_KEY                | private key to sign transactions                                    | 0xe2afef2c880b138d741995ba56936e389b0b5dd2943e21e4363cc70d81c89346 |
+| access-node.dlt-adapter.env.RPC_ADDRESS                | node address                                                        | https://red-t.alastria.io/v0/9461d9f4292b41230527d57ee90652a6      |
+| access-node.dlt-adapter.env.ISS                        | organization identifier hashed with SHA-256                         | 0x43b27fef24cfe8a0b797ed8a36de2884f9963c0c2a0da640e3ec7ad6cd0c493d |
+| access-node.postgresql.auth.username                   | username to be used                                                 | postgres                                                           |
+| access-node.postgresql.auth.password                   | password to be used                                                 | postgres                                                           |
+
+Fields to clarify in the original config:
+
+| Key                                                 | Comment                                                       | Default Values                                                                                                                                               |
+|-----------------------------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| access-node.desmos.app.ngsiSubscription.entityTypes | this list ensures that you can work with all type of entities | catalog,product-offering,category,individual,organization,product,service-specification,product-offering-price,resource-specification,product-specification  |
+| access-node.desmos.app.txSubscription.entityTypes   | this list ensures that you can work with all type of entities | catalog,product-offering,category,individual,organization,product,service-specification,product-offering-price,resource-specification,product-specification  |
+
+The Blockchain Connector uses the _dev_, _test_ and _prod_ configuration profiles. On the other hand, DOME uses the 
+profile names _sbx_, _dev_ and _prd_. It is important that users use the profile names used by the Blockchain Connector 
+(_dev_, _test_, _prod_), since the application is responsible for carrying out the necessary correspondence and mapping 
+between the profile names of the Blockchain Connector and those of DOME automatically.
+
+The DLT-Adapter is automatically deactivated when it detects that Desmos is down.
+
+##### Configure custom secrets
+
+While secrets can be configured via plain helm/k8s entities, another more secure approach is to use [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets). To configure custom secrets you have to follow the next steps:
+
+1. **Create a Plain Secret Manifest File:**
+- Create a plain secret manifest file named ```<secret name>-plain-secret.yaml```. 
+- **IMPORTANT**: Add "*-plain-secret.yaml" to .gitignore file to not push plain secret data to the repository.
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <secret name>
+  namespace: <app namespace>
+data: 
+  <secret_key>: <base64 encoded value>
+```
+
+2. **Seal the secret:**
+- Seal the secret by executing the following command:
+
+```sh
+kubeseal -f <secret name>-plain-secret.yaml -w <secret name>-sealed-secret.yaml --controller-namespace sealed-secrets --controller-name sealed-secrets
+```
+
+3. **Apply the secret configuration:**
+- Apply the sealed secret configuration to the cluster by running the command:
+
+```sh
+kubectl apply -f <secret name>-sealed-secret.yaml
+```
+
+4. **Update the Chart Values:**
+- In the chart values.yaml file, modify the existingSecret section as follows:
+
+```yaml
+existingSecret:  
+  enabled: true  
+  name: <secret name>  
+  key: <secret_key>
+```
 
 #### How to validate a deployment
 
@@ -372,8 +448,9 @@ also be replaced if needed. The verbosity is controlled
 via [environment variables](https://github.com/FIWARE/helm-charts/blob/05552c4c97a21df68f14e78de80a56e3934e179d/charts/tm-forum-api/templates/deployment.yaml#L165)
 and can be fine tuned to the operators needs.
 
-TODO: Prometheus Metrics
-TODO: Grafana Dashboard
+We need to implement Grafana dashboards but for the moment the access node publishes metrics for Prometheus by default
+in "/actuator/prometheus".
+
 
 #### How to update
 
