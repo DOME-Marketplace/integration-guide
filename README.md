@@ -208,13 +208,13 @@ Once you scan the QR code and complete the issuance process, you will have in yo
 
 At this moment, you have in your mobile the credentials required to login to the DOME BAE Marketplace instance with a unique identity associated to your unique domain. Even though this credential does not have the level of legal certainty required for production use, it will allow you to test the features that the DOME BAE Marketplace instance provides to Service Providers.
 
-TODO: add instructions to login to the DOME BAE Marketplace instance.
+> TODO: add instructions to login to the DOME BAE Marketplace instance.
 
 ### Create a Product Offering in the DOME BAE Marketplace instance
 
 Once logged in, you are logged as a Service Provider with a unique identity associated to your unique domain. You can start creating Product Offerings and publishing them. The action of publishing the Product Offernings will make them visible to potential customers in the DOME BAE Marketplace instance and all other federated marketplaces which are connected to the DOME main instance.
 
-TODO: add instructions to create and publish Product Offerings.
+> TODO: add instructions to create and publish Product Offerings.
 
 ### Logoff from the DOME BAE Marketplace instance
 
@@ -422,7 +422,8 @@ existingSecret:
 
 All components are configured with health and readiness checks to validate their own status, therefor being the base for
 a validation. These checks are utilized in the kubernetes checks as defined in the helm charts.
-TODO: Include RapiDoc Container for validation and add explanation here
+
+> TODO: Include RapiDoc Container for validation and add explanation here
 
 #### How to operate
 
@@ -655,6 +656,4 @@ PEP, PDP - when are they needed and when not ?
 #### In front of Context Broker API
 
 > i.e. Access Node -to- Access Node
-
----
 
