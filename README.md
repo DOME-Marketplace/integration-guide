@@ -33,6 +33,7 @@
     - [Infrastructure requirements](#infrastructure-requirements)
     - [How to deploy](#how-to-deploy)
     - [How to configure](#how-to-configure)
+      - [Configure custom secrets](#configure-custom-secrets)
     - [How to validate a deployment](#how-to-validate-a-deployment)
     - [How to operate](#how-to-operate)
     - [How to update](#how-to-update)
@@ -49,8 +50,6 @@
     - [Release process](#release-process-1)
     - [Troubleshooting](#troubleshooting-1)
 - [Authentication](#authentication)
-  - [DOME Verifiable Credentials (LEAR)](#dome-verifiable-credentials-lear)
-  - [How to implement](#how-to-implement)
 - [Integration API (TMForum)](#integration-api-tmforum)
 - [Policies](#policies)
   - [Defining policies](#defining-policies)
@@ -59,22 +58,10 @@
   - [Enforcing policies](#enforcing-policies)
     - [In front of TMForum API](#in-front-of-tmforum-api)
     - [In front of Context Broker API](#in-front-of-context-broker-api)
-- [Example content (to be removed later)](#example-content-to-be-removed-later)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
----
-(to be removed later)  
->**_NOTE:_** 
-> We want future Participants to integrate successfully and efficiently, therefore we provide a clear, structured, step-by-step Integration Guide that is comprehensive, self-contained, self-explanatory and actionable.
-This Integration Guide should:
->- be the single point of entry for any stakeholder that wants to _execute_ on integrating and federating a marketplace in DOME
->- be the reference for what is _currently_ available to integrators and with what level of stability vs. expected change
->- not assume knowledge of DOME implementation details from the part of the reader
->- be comprehensive so as to allow an executing IT/eng team to work autonomously
->- provide detailed, self-contained, actionable instructions
->- include context when appropriate to facilitate the comprehension of the Why, the What, the How and the with Whom at each step.
----
+
 
 ## Introduction
 
@@ -219,13 +206,13 @@ Once you scan the QR code and complete the issuance process, you will have in yo
 
 At this moment, you have in your mobile the credentials required to login to the DOME BAE Marketplace instance with a unique identity associated to your unique domain. Even though this credential does not have the level of legal certainty required for production use, it will allow you to test the features that the DOME BAE Marketplace instance provides to Service Providers.
 
-TODO: add instructions to login to the DOME BAR Marketplace instance.
+> TODO: add instructions to login to the DOME BAE Marketplace instance.
 
 ### Create a Product Offering in the DOME BAE Marketplace instance
 
 Once logged in, you are logged as a Service Provider with a unique identity associated to your unique domain. You can start creating Product Offerings and publishing them. The action of publishing the Product Offernings will make them visible to potential customers in the DOME BAE Marketplace instance and all other federated marketplaces which are connected to the DOME main instance.
 
-TODO: add instructions to create and publish Product Offerings.
+> TODO: add instructions to create and publish Product Offerings.
 
 ### Logoff from the DOME BAE Marketplace instance
 
@@ -433,7 +420,8 @@ existingSecret:
 
 All components are configured with health and readiness checks to validate their own status, therefor being the base for
 a validation. These checks are utilized in the kubernetes checks as defined in the helm charts.
-TODO: Include RapiDoc Container for validation and add explanation here
+
+> TODO: Include RapiDoc Container for validation and add explanation here
 
 #### How to operate
 
@@ -608,15 +596,16 @@ Versioning of the components and sub-charts is recommended to use the same schem
 
 > To be filled once feedback from integrators comes in
 
+
+
+
 ## Authentication
 
-> One might also link or integrate this guide: [https://dome-marketplace.github.io/iam-guide/](https://dome-marketplace.github.io/iam-guide/)
+A description of the authentication process can be found in the [iam-guide](https://dome-marketplace.github.io/iam-guide/).
 
-### DOME Verifiable Credentials (LEAR)
 
-### How to implement
 
-> using wallets, OIDC4VC&VP. verification etc.
+
 
 ## Integration API (TMForum)
 
@@ -635,7 +624,12 @@ Versioning of the components and sub-charts is recommended to use the same schem
 > - How to: push billing information on the shared data layer
 > - How to: retrieve billing information on the shared data layer
 
+
+
+
 ## Policies
+
+> This section will be filled when policies and the authorization process have been defined and specified.
 
 ### Defining policies
 
@@ -660,35 +654,4 @@ PEP, PDP - when are they needed and when not ?
 #### In front of Context Broker API
 
 > i.e. Access Node -to- Access Node
-
----
-
-## Example content (to be removed later)
-
-Some content
-
-**Some table:**
-
-| Title 1 | Title 2 | Title 3 |
-|---------|---------|---------|
-| abc     | def     | ghi     |
-| 123     | 456     | 789     |
-| jkl     | mno     | pqr     |
-
-
-
-Some more content in a list
-* Entry 1
-* Entry 2
-* Entry 3
-
-Some mermaid diagram
-
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
 
