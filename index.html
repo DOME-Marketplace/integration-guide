@@ -1143,7 +1143,11 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 <li><a href="#overview-and-sub-components">Overview and sub-components</a></li>
 <li><a href="#infrastructure-requirements">Infrastructure requirements</a></li>
 <li><a href="#how-to-deploy">How to deploy</a></li>
-<li><a href="#how-to-configure">How to configure</a></li>
+<li><a href="#how-to-configure">How to configure</a>
+<ul>
+<li><a href="#configure-custom-secrets">Configure custom secrets</a></li>
+</ul>
+</li>
 <li><a href="#how-to-validate-a-deployment">How to validate a deployment</a></li>
 <li><a href="#how-to-operate">How to operate</a></li>
 <li><a href="#how-to-update">How to update</a></li>
@@ -1169,12 +1173,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 </li>
 </ul>
 </li>
-<li><a href="#authentication">Authentication</a>
-<ul>
-<li><a href="#dome-verifiable-credentials-lear">DOME Verifiable Credentials (LEAR)</a></li>
-<li><a href="#how-to-implement">How to implement</a></li>
-</ul>
-</li>
+<li><a href="#authentication">Authentication</a></li>
 <li><a href="#integration-api-tmforum">Integration API (TMForum)</a></li>
 <li><a href="#policies">Policies</a>
 <ul>
@@ -1192,25 +1191,8 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 </li>
 </ul>
 </li>
-<li><a href="#example-content-to-be-removed-later">Example content (to be removed later)</a></li>
 </ul>
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-<hr>
-<p>(to be removed later)</p>
-<blockquote>
-<p><strong><em>NOTE:</em></strong>
-We want future Participants to integrate successfully and efficiently, therefore we provide a clear, structured, step-by-step Integration Guide that is comprehensive, self-contained, self-explanatory and actionable.
-This Integration Guide should:</p>
-<ul>
-<li>be the single point of entry for any stakeholder that wants to <em>execute</em> on integrating and federating a marketplace in DOME</li>
-<li>be the reference for what is <em>currently</em> available to integrators and with what level of stability vs. expected change</li>
-<li>not assume knowledge of DOME implementation details from the part of the reader</li>
-<li>be comprehensive so as to allow an executing IT/eng team to work autonomously</li>
-<li>provide detailed, self-contained, actionable instructions</li>
-<li>include context when appropriate to facilitate the comprehension of the Why, the What, the How and the with Whom at each step.</li>
-</ul>
-</blockquote>
-<hr>
 <h2 id="introduction" tabindex="-1"><a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a> Introduction</h2>
 <p>This guide provides detailed, self-contained and actionable technical instructions for integrating and federating a marketplace in DOME.<br>
 It is meant to be the reference for what is <em>currently</em> technically available and ready to be used. When additional functionality, components and/or
@@ -1307,10 +1289,14 @@ infrastructure (like a cloud-hosted Kubernetes cluster) is required for running 
 <p>Once you scan the QR code and complete the issuance process, you will have in your Wallet the required credentials to login in the DOME BAE Marketplace.</p>
 <h3 id="login-to-the-dome-bae-marketplace-instance" tabindex="-1"><a class="anchor" href="#login-to-the-dome-bae-marketplace-instance" aria-hidden="true"><span class="octicon octicon-link"></span></a> Login to the DOME BAE Marketplace instance</h3>
 <p>At this moment, you have in your mobile the credentials required to login to the DOME BAE Marketplace instance with a unique identity associated to your unique domain. Even though this credential does not have the level of legal certainty required for production use, it will allow you to test the features that the DOME BAE Marketplace instance provides to Service Providers.</p>
-<p>TODO: add instructions to login to the DOME BAR Marketplace instance.</p>
+<blockquote>
+<p>TODO: add instructions to login to the DOME BAE Marketplace instance.</p>
+</blockquote>
 <h3 id="create-a-product-offering-in-the-dome-bae-marketplace-instance" tabindex="-1"><a class="anchor" href="#create-a-product-offering-in-the-dome-bae-marketplace-instance" aria-hidden="true"><span class="octicon octicon-link"></span></a> Create a Product Offering in the DOME BAE Marketplace instance</h3>
 <p>Once logged in, you are logged as a Service Provider with a unique identity associated to your unique domain. You can start creating Product Offerings and publishing them. The action of publishing the Product Offernings will make them visible to potential customers in the DOME BAE Marketplace instance and all other federated marketplaces which are connected to the DOME main instance.</p>
+<blockquote>
 <p>TODO: add instructions to create and publish Product Offerings.</p>
+</blockquote>
 <h3 id="logoff-from-the-dome-bae-marketplace-instance" tabindex="-1"><a class="anchor" href="#logoff-from-the-dome-bae-marketplace-instance" aria-hidden="true"><span class="octicon octicon-link"></span></a> Logoff from the DOME BAE Marketplace instance</h3>
 <p>Once you have finished interacting with the DOME BAE Marketplace instance, you can logoff from it. In case of inactivity, the BAE Marketplace will log you off automatically.</p>
 <p>Using your Wallet, you can login at any moment and continue working with the DOME BAE Marketplace. The Wallet has your credentials stored in your device and you can use them at any moment.</p>
@@ -1338,7 +1324,10 @@ persistence backend and change notificator.</p>
 </code></pre>
 </details>
 <!-- generated by mermaid compile action - END -->
-<p>TODO: Add description of blockchain connector</p>
+<p>The Blockchain Connector is a software component that facilitates the
+interaction between the Off-Chain Storage (Context Broker) and the
+On-Chain Storage (Blockchain).
+It is composed of the Distributed Ledger Technology (DLT) and the Access Node.</p>
 <h4 id="overview-and-sub-components" tabindex="-1"><a class="anchor" href="#overview-and-sub-components" aria-hidden="true"><span class="octicon octicon-link"></span></a> Overview and sub-components</h4>
 <p>The TM-Forum-API service is a cluster of individual services providing one specific API each, enabling the participant
 to only run the necessary subset for its use-case.
@@ -1445,16 +1434,16 @@ consulted.</p>
 <td>https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api</td>
 </tr>
 <tr>
-<td>blockchain-connector</td>
-<td>https://github.com/DOME-Marketplace/access-node/tree/main/charts/blockchain-connector</td>
+<td>desmos</td>
+<td>https://github.com/in2workspace/helm-charts/tree/main/charts/desmos</td>
 </tr>
 <tr>
 <td>broker-adapter</td>
-<td>https://github.com/DOME-Marketplace/access-node/tree/main/charts/broker-adapter</td>
+<td>https://github.com/in2workspace/helm-charts/tree/main/charts/broker-adapter</td>
 </tr>
 <tr>
 <td>dlt-adapter</td>
-<td>https://github.com/DOME-Marketplace/access-node/tree/main/charts/dlt-adapter</td>
+<td>https://github.com/alastria/helm-charts/tree/master/dlt-adapter</td>
 </tr>
 <tr>
 <td>kafka</td>
@@ -1474,13 +1463,181 @@ consulted.</p>
 </tr>
 </tbody>
 </table>
-<p>TODO: Replace with charts <a href="https://github.com/in2workspace/helm-charts/tree/main/charts">in</a> once they are used.</p>
 <p>To have a starting point, the <a href="./config/accessnode.yaml">this</a> minimal config reduces the configuration to items that are likely changed by integrators.
-TODO: include config for the blockchain components</p>
+Blockchain connector fields present int this file are:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Comment</th>
+<th>Default Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>access-node.desmos.app.profile</td>
+<td>allows the environment filtering</td>
+<td>dev</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.operator.organizationIdentifier</td>
+<td>did of the operator</td>
+<td>did:elsi:VATES-S9999999E</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.broker.externalDomain</td>
+<td>must be set since it is used by third parties to retrieve your data</td>
+<td>http://scorpio:9090</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.host</td>
+<td>host of the db</td>
+<td>postgresql-connector</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.port</td>
+<td>port of the host of the db</td>
+<td>5432</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.externalService</td>
+<td>should be true if is an external service</td>
+<td>false</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.name</td>
+<td>name of the db</td>
+<td>mktdb</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.password</td>
+<td>password to be used</td>
+<td>postgres</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.username</td>
+<td>username to be used</td>
+<td>postgres</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.existingSecret.enabled</td>
+<td>should an existing secret be used</td>
+<td>false</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.existingSecret.name</td>
+<td>name of the secret</td>
+<td>desmos-api-secret</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.db.existingSecret.key</td>
+<td>key to retrieve the password from</td>
+<td>desmos-db-password</td>
+</tr>
+<tr>
+<td>access-node.dlt-adapter.env.PRIVATE_KEY</td>
+<td>private key to sign transactions</td>
+<td>0xe2afef2c880b138d741995ba56936e389b0b5dd2943e21e4363cc70d81c89346</td>
+</tr>
+<tr>
+<td>access-node.dlt-adapter.env.RPC_ADDRESS</td>
+<td>node address</td>
+<td>https://red-t.alastria.io/v0/9461d9f4292b41230527d57ee90652a6</td>
+</tr>
+<tr>
+<td>access-node.dlt-adapter.env.ISS</td>
+<td>organization identifier hashed with SHA-256</td>
+<td>0x43b27fef24cfe8a0b797ed8a36de2884f9963c0c2a0da640e3ec7ad6cd0c493d</td>
+</tr>
+<tr>
+<td>access-node.postgresql.auth.username</td>
+<td>username to be used</td>
+<td>postgres</td>
+</tr>
+<tr>
+<td>access-node.postgresql.auth.password</td>
+<td>password to be used</td>
+<td>postgres</td>
+</tr>
+</tbody>
+</table>
+<p>Fields to clarify in the original config:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Comment</th>
+<th>Default Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>access-node.desmos.app.ngsiSubscription.entityTypes</td>
+<td>this list ensures that you can work with all type of entities</td>
+<td>catalog,product-offering,category,individual,organization,product,service-specification,product-offering-price,resource-specification,product-specification</td>
+</tr>
+<tr>
+<td>access-node.desmos.app.txSubscription.entityTypes</td>
+<td>this list ensures that you can work with all type of entities</td>
+<td>catalog,product-offering,category,individual,organization,product,service-specification,product-offering-price,resource-specification,product-specification</td>
+</tr>
+</tbody>
+</table>
+<p>The Blockchain Connector uses the <em>dev</em>, <em>test</em> and <em>prod</em> configuration profiles. On the other hand, DOME uses the
+profile names <em>sbx</em>, <em>dev</em> and <em>prd</em>. It is important that users use the profile names used by the Blockchain Connector
+(<em>dev</em>, <em>test</em>, <em>prod</em>), since the application is responsible for carrying out the necessary correspondence and mapping
+between the profile names of the Blockchain Connector and those of DOME automatically.</p>
+<p>The DLT-Adapter is automatically deactivated when it detects that Desmos is down.</p>
+<h5 id="configure-custom-secrets" tabindex="-1"><a class="anchor" href="#configure-custom-secrets" aria-hidden="true"><span class="octicon octicon-link"></span></a> Configure custom secrets</h5>
+<p>While secrets can be configured via plain helm/k8s entities, another more secure approach is to use <a href="https://github.com/bitnami-labs/sealed-secrets">Sealed Secrets</a>. To configure custom secrets you have to follow the next steps:</p>
+<ol>
+<li><strong>Create a Plain Secret Manifest File:</strong></li>
+</ol>
+<ul>
+<li>Create a plain secret manifest file named <code>&lt;secret name&gt;-plain-secret.yaml</code>.</li>
+<li><strong>IMPORTANT</strong>: Add "*-plain-secret.yaml" to .gitignore file to not push plain secret data to the repository.</li>
+</ul>
+<pre><code class="language-yaml"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Secret</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">&lt;secret</span> <span class="hljs-string">name&gt;</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">&lt;app</span> <span class="hljs-string">namespace&gt;</span>
+<span class="hljs-attr">data:</span> 
+  <span class="hljs-string">&lt;secret_key&gt;:</span> <span class="hljs-string">&lt;base64</span> <span class="hljs-string">encoded</span> <span class="hljs-string">value&gt;</span>
+</code></pre>
+<ol start="2">
+<li><strong>Seal the secret:</strong></li>
+</ol>
+<ul>
+<li>Seal the secret by executing the following command:</li>
+</ul>
+<pre><code class="language-sh">kubeseal -f &lt;secret name&gt;-plain-secret.yaml -w &lt;secret name&gt;-sealed-secret.yaml --controller-namespace sealed-secrets --controller-name sealed-secrets
+</code></pre>
+<ol start="3">
+<li><strong>Apply the secret configuration:</strong></li>
+</ol>
+<ul>
+<li>Apply the sealed secret configuration to the cluster by running the command:</li>
+</ul>
+<pre><code class="language-sh">kubectl apply -f &lt;secret name&gt;-sealed-secret.yaml
+</code></pre>
+<ol start="4">
+<li><strong>Update the Chart Values:</strong></li>
+</ol>
+<ul>
+<li>In the chart values.yaml file, modify the existingSecret section as follows:</li>
+</ul>
+<pre><code class="language-yaml"><span class="hljs-attr">existingSecret:</span>  
+  <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span>  
+  <span class="hljs-attr">name:</span> <span class="hljs-string">&lt;secret</span> <span class="hljs-string">name&gt;</span>  
+  <span class="hljs-attr">key:</span> <span class="hljs-string">&lt;secret_key&gt;</span>
+</code></pre>
 <h4 id="how-to-validate-a-deployment" tabindex="-1"><a class="anchor" href="#how-to-validate-a-deployment" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to validate a deployment</h4>
 <p>All components are configured with health and readiness checks to validate their own status, therefor being the base for
-a validation. These checks are utilized in the kubernetes checks as defined in the helm charts.
-TODO: Include RapiDoc Container for validation and add explanation here</p>
+a validation. These checks are utilized in the kubernetes checks as defined in the helm charts.</p>
+<blockquote>
+<p>TODO: Include RapiDoc Container for validation and add explanation here</p>
+</blockquote>
 <h4 id="how-to-operate" tabindex="-1"><a class="anchor" href="#how-to-operate" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to operate</h4>
 <blockquote>
 <ul>
@@ -1494,8 +1651,8 @@ in a production environment. The use of managed database is strongly encouraged 
 also be replaced if needed. The verbosity is controlled
 via <a href="https://github.com/FIWARE/helm-charts/blob/05552c4c97a21df68f14e78de80a56e3934e179d/charts/tm-forum-api/templates/deployment.yaml#L165">environment variables</a>
 and can be fine tuned to the operators needs.</p>
-<p>TODO: Prometheus Metrics
-TODO: Grafana Dashboard</p>
+<p>We need to implement Grafana dashboards but for the moment the access node publishes metrics for Prometheus by default
+in "/actuator/prometheus".</p>
 <h4 id="how-to-update" tabindex="-1"><a class="anchor" href="#how-to-update" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to update</h4>
 <p>Upgrade to both a different chart version and new configuration can be accomplished with the following command</p>
 <pre><code>  helm upgrade &lt;RELEASE_NAME&gt; dome-access-node/access-node --namespace &lt;NAME_SPACE&gt; --version &lt;CHART_VERSION&gt; -f values.yaml
@@ -1667,14 +1824,7 @@ reviewers must set the label according to the <a href="https://semver.org/">SemV
 <p>To be filled once feedback from integrators comes in</p>
 </blockquote>
 <h2 id="authentication" tabindex="-1"><a class="anchor" href="#authentication" aria-hidden="true"><span class="octicon octicon-link"></span></a> Authentication</h2>
-<blockquote>
-<p>One might also link or integrate this guide: <a href="https://dome-marketplace.github.io/iam-guide/">https://dome-marketplace.github.io/iam-guide/</a></p>
-</blockquote>
-<h3 id="dome-verifiable-credentials-lear" tabindex="-1"><a class="anchor" href="#dome-verifiable-credentials-lear" aria-hidden="true"><span class="octicon octicon-link"></span></a> DOME Verifiable Credentials (LEAR)</h3>
-<h3 id="how-to-implement" tabindex="-1"><a class="anchor" href="#how-to-implement" aria-hidden="true"><span class="octicon octicon-link"></span></a> How to implement</h3>
-<blockquote>
-<p>using wallets, OIDC4VC&amp;VP. verification etc.</p>
-</blockquote>
+<p>A description of the authentication process can be found in the <a href="https://dome-marketplace.github.io/iam-guide/">iam-guide</a>.</p>
 <h2 id="integration-api-tmforum" tabindex="-1"><a class="anchor" href="#integration-api-tmforum" aria-hidden="true"><span class="octicon octicon-link"></span></a> Integration API (TMForum)</h2>
 <blockquote>
 <p>Samples &amp; tutorials for implementing core federation scenarios using the TMForum APIs (with focus on semantics and workflow, beyond the API reference)</p>
@@ -1694,6 +1844,9 @@ reviewers must set the label according to the <a href="https://semver.org/">SemV
 </ul>
 </blockquote>
 <h2 id="policies" tabindex="-1"><a class="anchor" href="#policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Policies</h2>
+<blockquote>
+<p>This section will be filled when policies and the authorization process have been defined and specified.</p>
+</blockquote>
 <h3 id="defining-policies" tabindex="-1"><a class="anchor" href="#defining-policies" aria-hidden="true"><span class="octicon octicon-link"></span></a> Defining policies</h3>
 <blockquote>
 <ul>
@@ -1719,59 +1872,10 @@ PEP, PDP - when are they needed and when not ?</p>
 <blockquote>
 <p>i.e. Access Node -to- Access Node</p>
 </blockquote>
-<hr>
-<h2 id="example-content-to-be-removed-later" tabindex="-1"><a class="anchor" href="#example-content-to-be-removed-later" aria-hidden="true"><span class="octicon octicon-link"></span></a> Example content (to be removed later)</h2>
-<p>Some content</p>
-<p><strong>Some table:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Title 1</th>
-<th>Title 2</th>
-<th>Title 3</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>abc</td>
-<td>def</td>
-<td>ghi</td>
-</tr>
-<tr>
-<td>123</td>
-<td>456</td>
-<td>789</td>
-</tr>
-<tr>
-<td>jkl</td>
-<td>mno</td>
-<td>pqr</td>
-</tr>
-</tbody>
-</table>
-<p>Some more content in a list</p>
-<ul>
-<li>Entry 1</li>
-<li>Entry 2</li>
-<li>Entry 3</li>
-</ul>
-<p>Some mermaid diagram</p>
-<!-- generated by mermaid compile action - START -->
-<p><img src="data:image/png;base64,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" alt="~mermaid diagram 2~"></p>
-<details>
-  <summary>Mermaid markup</summary>
-<pre><code class="language-mermaid">graph TD;
-    A--&gt;B;
-    A--&gt;C;
-    B--&gt;D;
-    C--&gt;D;
-</code></pre>
-</details>
-<!-- generated by mermaid compile action - END -->
 
 		</main>
 
 		<hr />
-		<small>Version: 0.5.0</small>
+		<small>Version: 0.6.0</small>
 	</body>
 </html>
