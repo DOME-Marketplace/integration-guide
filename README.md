@@ -33,6 +33,7 @@
     - [Infrastructure requirements](#infrastructure-requirements)
     - [How to deploy](#how-to-deploy)
     - [How to configure](#how-to-configure)
+      - [Configure custom secrets](#configure-custom-secrets)
     - [How to validate a deployment](#how-to-validate-a-deployment)
     - [How to operate](#how-to-operate)
     - [How to update](#how-to-update)
@@ -49,8 +50,6 @@
     - [Release process](#release-process-1)
     - [Troubleshooting](#troubleshooting-1)
 - [Authentication](#authentication)
-  - [DOME Verifiable Credentials (LEAR)](#dome-verifiable-credentials-lear)
-  - [How to implement](#how-to-implement)
 - [Integration API (TMForum)](#integration-api-tmforum)
 - [Policies](#policies)
   - [Defining policies](#defining-policies)
@@ -59,7 +58,6 @@
   - [Enforcing policies](#enforcing-policies)
     - [In front of TMForum API](#in-front-of-tmforum-api)
     - [In front of Context Broker API](#in-front-of-context-broker-api)
-- [Example content (to be removed later)](#example-content-to-be-removed-later)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
