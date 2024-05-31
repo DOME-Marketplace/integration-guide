@@ -389,7 +389,7 @@ The DLT-Adapter is automatically deactivated when it detects that Desmos is down
 
 ##### Configure custom secrets
 
-To configure custom secrets you have to follow the next steps:
+While secrets can be configured via plain helm/k8s entities, another more secure approach is to use [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets). To configure custom secrets you have to follow the next steps:
 
 1. **Create a Plain Secret Manifest File:**
 - Create a plain secret manifest file named ```<secret name>-plain-secret.yaml```. 
