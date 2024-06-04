@@ -387,6 +387,15 @@ between the profile names of the Blockchain Connector and those of DOME automati
 
 The DLT-Adapter is automatically deactivated when it detects that Desmos is down.
 
+##### Desmos profiles
+Table to clarify the relation between the desmos-api profiles and the DOME-Gitops environments:
+
+| desmos-api profiles  | DOME-Gitops environments |
+|:--------------------:|:------------------------:|
+|         dev          |           sbx            |
+|         test         |           dev            |
+|         prod         |           prd            |
+
 ##### Configure custom secrets
 
 While secrets can be configured via plain helm/k8s entities, another more secure approach is to use [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets). To configure custom secrets you have to follow the next steps:
