@@ -355,7 +355,7 @@ Blockchain connector fields present int this file are:
 
 | Key                                                    | Comment                                                             | Default Values                                                     |
 |--------------------------------------------------------|---------------------------------------------------------------------|--------------------------------------------------------------------|
-| access-node.desmos.app.profile                         | allows the environment filtering                                    | dev                                                                |
+| access-node.desmos.app.profile                         | allows the environment filtering                                    | test                                                               |
 | access-node.desmos.app.operator.organizationIdentifier | did of the operator                                                 | did:elsi:VATES-S9999999E                                           |
 | access-node.desmos.app.broker.externalDomain           | must be set since it is used by third parties to retrieve your data | http://scorpio:9090                                                |
 | access-node.desmos.app.db.host                         | host of the db                                                      | postgresql-connector                                               |
