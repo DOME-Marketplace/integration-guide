@@ -33,6 +33,7 @@
     - [Infrastructure requirements](#infrastructure-requirements)
     - [How to deploy](#how-to-deploy)
     - [How to configure](#how-to-configure)
+      - [Desmos profiles](#desmos-profiles)
       - [Configure custom secrets](#configure-custom-secrets)
     - [How to validate a deployment](#how-to-validate-a-deployment)
     - [How to operate](#how-to-operate)
