@@ -11,7 +11,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 <!-- param::title::**Table of Contents**:: -->
-**Table of Contents**
 
 - [Introduction](#introduction)
   - [Who is this guide for?](#who-is-this-guide-for)
@@ -33,6 +32,7 @@
     - [Infrastructure requirements](#infrastructure-requirements)
     - [How to deploy](#how-to-deploy)
     - [How to configure](#how-to-configure)
+      - [Desmos profiles](#desmos-profiles)
       - [Configure custom secrets](#configure-custom-secrets)
     - [How to validate a deployment](#how-to-validate-a-deployment)
     - [How to operate](#how-to-operate)
