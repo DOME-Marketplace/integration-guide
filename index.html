@@ -1145,6 +1145,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 <li><a href="#how-to-deploy">How to deploy</a></li>
 <li><a href="#how-to-configure">How to configure</a>
 <ul>
+<li><a href="#desmos-profiles">Desmos profiles</a></li>
 <li><a href="#configure-custom-secrets">Configure custom secrets</a></li>
 </ul>
 </li>
@@ -1477,7 +1478,7 @@ Blockchain connector fields present int this file are:</p>
 <tr>
 <td>access-node.desmos.app.profile</td>
 <td>allows the environment filtering</td>
-<td>dev</td>
+<td>test</td>
 </tr>
 <tr>
 <td>access-node.desmos.app.operator.organizationIdentifier</td>
@@ -1588,6 +1589,30 @@ profile names <em>sbx</em>, <em>dev</em> and <em>prd</em>. It is important that 
 (<em>dev</em>, <em>test</em>, <em>prod</em>), since the application is responsible for carrying out the necessary correspondence and mapping
 between the profile names of the Blockchain Connector and those of DOME automatically.</p>
 <p>The DLT-Adapter is automatically deactivated when it detects that Desmos is down.</p>
+<h5 id="desmos-profiles" tabindex="-1"><a class="anchor" href="#desmos-profiles" aria-hidden="true"><span class="octicon octicon-link"></span></a> Desmos profiles</h5>
+<p>Table to clarify the relation between the desmos-api profiles and the DOME-Gitops environments:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">desmos-api profiles</th>
+<th style="text-align:center">DOME-Gitops environments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">dev</td>
+<td style="text-align:center">sbx</td>
+</tr>
+<tr>
+<td style="text-align:center">test</td>
+<td style="text-align:center">dev</td>
+</tr>
+<tr>
+<td style="text-align:center">prod</td>
+<td style="text-align:center">prd</td>
+</tr>
+</tbody>
+</table>
 <h5 id="configure-custom-secrets" tabindex="-1"><a class="anchor" href="#configure-custom-secrets" aria-hidden="true"><span class="octicon octicon-link"></span></a> Configure custom secrets</h5>
 <p>While secrets can be configured via plain helm/k8s entities, another more secure approach is to use <a href="https://github.com/bitnami-labs/sealed-secrets">Sealed Secrets</a>. To configure custom secrets you have to follow the next steps:</p>
 <ol>
@@ -1876,6 +1901,6 @@ PEP, PDP - when are they needed and when not ?</p>
 		</main>
 
 		<hr />
-		<small>Version: 0.6.0</small>
+		<small>Version: 0.6.1</small>
 	</body>
 </html>
