@@ -58,8 +58,8 @@ access-node.desmos:
   enabled: true
   ## deployment specific configuration
   app:
-    ## profile (dev == sbx)
-    profile: dev
+    ## profile (test == dev)
+    profile: test
     ## information about the access-node operator
     operator:
       # -- did of the organization running the node
