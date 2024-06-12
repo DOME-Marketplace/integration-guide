@@ -575,6 +575,8 @@ it is suggested to consult the respective charts listed below and check their do
 | dsba-pdp                   | https://github.com/FIWARE/helm-charts/tree/main/charts/dsba-pdp                   |
 | kong                       | https://github.com/Kong/charts/tree/main/charts/kong                              |
 
+To have a starting point, you can use [this](./config/iam-components.yaml) values file as a minimal config.
+
 #### How to validate a deployment
 
 All components are configured with health and readiness checks to validate their own status, therefore being the base
