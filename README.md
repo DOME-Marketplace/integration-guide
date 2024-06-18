@@ -33,6 +33,8 @@
     - [Infrastructure requirements](#infrastructure-requirements)
     - [How to deploy](#how-to-deploy)
     - [How to configure](#how-to-configure)
+      - [Desmos profiles](#desmos-profiles)
+      - [Configure custom secrets](#configure-custom-secrets)
     - [How to validate a deployment](#how-to-validate-a-deployment)
     - [How to operate](#how-to-operate)
     - [How to update](#how-to-update)
@@ -49,8 +51,6 @@
     - [Release process](#release-process-1)
     - [Troubleshooting](#troubleshooting-1)
 - [Authentication](#authentication)
-  - [DOME Verifiable Credentials (LEAR)](#dome-verifiable-credentials-lear)
-  - [How to implement](#how-to-implement)
 - [Integration API (TMForum)](#integration-api-tmforum)
 - [Policies](#policies)
   - [Defining policies](#defining-policies)
@@ -59,22 +59,10 @@
   - [Enforcing policies](#enforcing-policies)
     - [In front of TMForum API](#in-front-of-tmforum-api)
     - [In front of Context Broker API](#in-front-of-context-broker-api)
-- [Example content (to be removed later)](#example-content-to-be-removed-later)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
----
-(to be removed later)  
->**_NOTE:_** 
-> We want future Participants to integrate successfully and efficiently, therefore we provide a clear, structured, step-by-step Integration Guide that is comprehensive, self-contained, self-explanatory and actionable.
-This Integration Guide should:
->- be the single point of entry for any stakeholder that wants to _execute_ on integrating and federating a marketplace in DOME
->- be the reference for what is _currently_ available to integrators and with what level of stability vs. expected change
->- not assume knowledge of DOME implementation details from the part of the reader
->- be comprehensive so as to allow an executing IT/eng team to work autonomously
->- provide detailed, self-contained, actionable instructions
->- include context when appropriate to facilitate the comprehension of the Why, the What, the How and the with Whom at each step.
----
+
 
 ## Introduction
 
@@ -219,13 +207,13 @@ Once you scan the QR code and complete the issuance process, you will have in yo
 
 At this moment, you have in your mobile the credentials required to login to the DOME BAE Marketplace instance with a unique identity associated to your unique domain. Even though this credential does not have the level of legal certainty required for production use, it will allow you to test the features that the DOME BAE Marketplace instance provides to Service Providers.
 
-TODO: add instructions to login to the DOME BAR Marketplace instance.
+> TODO: add instructions to login to the DOME BAE Marketplace instance.
 
 ### Create a Product Offering in the DOME BAE Marketplace instance
 
 Once logged in, you are logged as a Service Provider with a unique identity associated to your unique domain. You can start creating Product Offerings and publishing them. The action of publishing the Product Offernings will make them visible to potential customers in the DOME BAE Marketplace instance and all other federated marketplaces which are connected to the DOME main instance.
 
-TODO: add instructions to create and publish Product Offerings.
+> TODO: add instructions to create and publish Product Offerings.
 
 ### Logoff from the DOME BAE Marketplace instance
 
@@ -259,7 +247,10 @@ graph TD
     Context-Broker --> Persistence;
 ```
 
-TODO: Add description of blockchain connector
+The Blockchain Connector is a software component that facilitates the
+interaction between the Off-Chain Storage (Context Broker) and the
+On-Chain Storage (Blockchain). 
+It is composed of the Distributed Ledger Technology (DLT) and the Access Node.
 
 #### Overview and sub-components
 
@@ -336,28 +327,111 @@ as a good starting point for an adoption. These values are also documented, enha
 the [respective charts](https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api) of the components should be
 consulted.
 
-| Component            | Chart                                                                                 |
-|----------------------|---------------------------------------------------------------------------------------|
-| TM-Forum-API         | https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api                   |
-| blockchain-connector | https://github.com/DOME-Marketplace/access-node/tree/main/charts/blockchain-connector |
-| broker-adapter       | https://github.com/DOME-Marketplace/access-node/tree/main/charts/broker-adapter       |
-| dlt-adapter          | https://github.com/DOME-Marketplace/access-node/tree/main/charts/dlt-adapter          |
-| kafka                | https://github.com/bitnami/charts/tree/main/bitnami/kafka                             |
-| postgresql           | https://github.com/bitnami/charts/tree/main/bitnami/postgresql                        |
-| scorpio-broker-aaio  | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio            |
-| scorpio-broker       | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker                 |
-
-TODO: Replace with charts [in](https://github.com/in2workspace/helm-charts/tree/main/charts) once they are used.
+| Component           | Chart                                                                       |
+|---------------------|-----------------------------------------------------------------------------|
+| TM-Forum-API        | https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api         |
+| desmos              | https://github.com/in2workspace/helm-charts/tree/main/charts/desmos         |
+| broker-adapter      | https://github.com/in2workspace/helm-charts/tree/main/charts/broker-adapter |
+| dlt-adapter         | https://github.com/alastria/helm-charts/tree/master/dlt-adapter             |
+| kafka               | https://github.com/bitnami/charts/tree/main/bitnami/kafka                   |
+| postgresql          | https://github.com/bitnami/charts/tree/main/bitnami/postgresql              |
+| scorpio-broker-aaio | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio  |
+| scorpio-broker      | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker       |
 
 To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely changed by integrators.
-TODO: include config for the blockchain components
+Blockchain connector fields present int this file are:
 
+| Key                                                    | Comment                                                                                 | Default Values                                                     |
+|--------------------------------------------------------|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| access-node.desmos.app.profile                         | allows the environment filtering                                                        | test                                                               |
+| access-node.desmos.app.operator.organizationIdentifier | did of the operator                                                                     | did:elsi:VATES-S9999999E                                           |
+| access-node.desmos.app.broker.externalDomain           | must be set since it is used by third parties to retrieve your data; it should be https | http://scorpio:9090                                                |
+| access-node.desmos.app.db.host                         | host of the db                                                                          | postgresql-connector                                               |
+| access-node.desmos.app.db.port                         | port of the host of the db                                                              | 5432                                                               |
+| access-node.desmos.app.db.externalService              | should be true if is an external service                                                | false                                                              |
+| access-node.desmos.app.db.name                         | name of the db                                                                          | mktdb                                                              |
+| access-node.desmos.app.db.password                     | password to be used                                                                     | postgres                                                           |
+| access-node.desmos.app.db.username                     | username to be used                                                                     | postgres                                                           |
+| access-node.desmos.app.db.existingSecret.enabled       | should an existing secret be used                                                       | false                                                              |
+| access-node.desmos.app.db.existingSecret.name          | name of the secret                                                                      | desmos-api-secret                                                  |
+| access-node.desmos.app.db.existingSecret.key           | key to retrieve the password from                                                       | desmos-db-password                                                 |
+| access-node.dlt-adapter.env.PRIVATE_KEY                | private key to sign transactions                                                        | 0xe2afef2c880b138d741995ba56936e389b0b5dd2943e21e4363cc70d81c89346 |
+| access-node.dlt-adapter.env.RPC_ADDRESS                | node address                                                                            | https://red-t.alastria.io/v0/9461d9f4292b41230527d57ee90652a6      |
+| access-node.dlt-adapter.env.ISS                        | organization identifier hashed with SHA-256                                             | 0x43b27fef24cfe8a0b797ed8a36de2884f9963c0c2a0da640e3ec7ad6cd0c493d |
+| access-node.postgresql.auth.username                   | username to be used                                                                     | postgres                                                           |
+| access-node.postgresql.auth.password                   | password to be used                                                                     | postgres                                                           |
+
+Fields to clarify in the original config:
+
+| Key                                                 | Comment                                                       | Default Values                                                                                                                                               |
+|-----------------------------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| access-node.desmos.app.ngsiSubscription.entityTypes | this list ensures that you can work with all type of entities | catalog,product-offering,category,individual,organization,product,service-specification,product-offering-price,resource-specification,product-specification  |
+| access-node.desmos.app.txSubscription.entityTypes   | this list ensures that you can work with all type of entities | catalog,product-offering,category,individual,organization,product,service-specification,product-offering-price,resource-specification,product-specification  |
+
+The Blockchain Connector uses the _dev_, _test_ and _prod_ configuration profiles. On the other hand, DOME uses the 
+profile names _sbx_, _dev_ and _prd_. It is important that users use the profile names used by the Blockchain Connector 
+(_dev_, _test_, _prod_), since the application is responsible for carrying out the necessary correspondence and mapping 
+between the profile names of the Blockchain Connector and those of DOME automatically.
+
+The DLT-Adapter is automatically deactivated when it detects that Desmos is down.
+
+##### Desmos profiles
+Table to clarify the relation between the desmos-api profiles and the DOME-Gitops environments:
+
+| desmos-api profiles  | DOME-Gitops environments |
+|:--------------------:|:------------------------:|
+|         dev          |           sbx            |
+|         test         |           dev            |
+|         prod         |           prd            |
+
+##### Configure custom secrets
+
+While secrets can be configured via plain helm/k8s entities, another more secure approach is to use [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets). To configure custom secrets you have to follow the next steps:
+
+1. **Create a Plain Secret Manifest File:**
+- Create a plain secret manifest file named ```<secret name>-plain-secret.yaml```. 
+- **IMPORTANT**: Add "*-plain-secret.yaml" to .gitignore file to not push plain secret data to the repository.
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <secret name>
+  namespace: <app namespace>
+data: 
+  <secret_key>: <base64 encoded value>
+```
+
+2. **Seal the secret:**
+- Seal the secret by executing the following command:
+
+```sh
+kubeseal -f <secret name>-plain-secret.yaml -w <secret name>-sealed-secret.yaml --controller-namespace sealed-secrets --controller-name sealed-secrets
+```
+
+3. **Apply the secret configuration:**
+- Apply the sealed secret configuration to the cluster by running the command:
+
+```sh
+kubectl apply -f <secret name>-sealed-secret.yaml
+```
+
+4. **Update the Chart Values:**
+- In the chart values.yaml file, modify the existingSecret section as follows:
+
+```yaml
+existingSecret:  
+  enabled: true  
+  name: <secret name>  
+  key: <secret_key>
+```
 
 #### How to validate a deployment
 
 All components are configured with health and readiness checks to validate their own status, therefor being the base for
 a validation. These checks are utilized in the kubernetes checks as defined in the helm charts.
-TODO: Include RapiDoc Container for validation and add explanation here
+
+> TODO: Include RapiDoc Container for validation and add explanation here
 
 #### How to operate
 
@@ -372,8 +446,9 @@ also be replaced if needed. The verbosity is controlled
 via [environment variables](https://github.com/FIWARE/helm-charts/blob/05552c4c97a21df68f14e78de80a56e3934e179d/charts/tm-forum-api/templates/deployment.yaml#L165)
 and can be fine tuned to the operators needs.
 
-TODO: Prometheus Metrics
-TODO: Grafana Dashboard
+We need to implement Grafana dashboards but for the moment the access node publishes metrics for Prometheus by default
+in "/actuator/prometheus".
+
 
 #### How to update
 
@@ -500,6 +575,8 @@ it is suggested to consult the respective charts listed below and check their do
 | dsba-pdp                   | https://github.com/FIWARE/helm-charts/tree/main/charts/dsba-pdp                   |
 | kong                       | https://github.com/Kong/charts/tree/main/charts/kong                              |
 
+To have a starting point, you can use [this](./config/iam-components.yaml) values file as a minimal config.
+
 #### How to validate a deployment
 
 All components are configured with health and readiness checks to validate their own status, therefore being the base
@@ -531,15 +608,16 @@ Versioning of the components and sub-charts is recommended to use the same schem
 
 > To be filled once feedback from integrators comes in
 
+
+
+
 ## Authentication
 
-> One might also link or integrate this guide: [https://dome-marketplace.github.io/iam-guide/](https://dome-marketplace.github.io/iam-guide/)
+A description of the authentication process can be found in the [iam-guide](https://dome-marketplace.github.io/iam-guide/).
 
-### DOME Verifiable Credentials (LEAR)
 
-### How to implement
 
-> using wallets, OIDC4VC&VP. verification etc.
+
 
 ## Integration API (TMForum)
 
@@ -804,6 +882,8 @@ please refer to the particular Swagger documentation of the API.
 
 ## Policies
 
+> This section will be filled when policies and the authorization process have been defined and specified.
+
 ### Defining policies
 
 >- How can a Service Provider create policies that concern the Products that they offer ?
@@ -827,35 +907,4 @@ PEP, PDP - when are they needed and when not ?
 #### In front of Context Broker API
 
 > i.e. Access Node -to- Access Node
-
----
-
-## Example content (to be removed later)
-
-Some content
-
-**Some table:**
-
-| Title 1 | Title 2 | Title 3 |
-|---------|---------|---------|
-| abc     | def     | ghi     |
-| 123     | 456     | 789     |
-| jkl     | mno     | pqr     |
-
-
-
-Some more content in a list
-* Entry 1
-* Entry 2
-* Entry 3
-
-Some mermaid diagram
-
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
 
