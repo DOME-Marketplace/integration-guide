@@ -13,52 +13,54 @@
 <!-- param::title::**Table of Contents**:: -->
 **Table of Contents**
 
-- [Introduction](#introduction)
-  - [Who is this guide for?](#who-is-this-guide-for)
-  - [What is DOME?](#what-is-dome)
-  - [What will I accomplish following this guide?](#what-will-i-accomplish-following-this-guide)
-  - [Pre-requisites](#pre-requisites)
-- [Onboarding as a DOME Service Provider with did:web](#onboarding-as-a-dome-service-provider-with-didweb)
-  - [What will I accomplish following this section?](#what-will-i-accomplish-following-this-section)
-  - [Pre-requisites](#pre-requisites-1)
-  - [Install and configure Keycloack as a Verifiable Credential Issuer](#install-and-configure-keycloack-as-a-verifiable-credential-issuer)
-  - [Configure the Credential type and the Claims in the Issuer](#configure-the-credential-type-and-the-claims-in-the-issuer)
-  - [Issue and receive the Verifiable Credential in your Wallet](#issue-and-receive-the-verifiable-credential-in-your-wallet)
-  - [Login to the DOME BAE Marketplace instance](#login-to-the-dome-bae-marketplace-instance)
-  - [Create a Product Offering in the DOME BAE Marketplace instance](#create-a-product-offering-in-the-dome-bae-marketplace-instance)
-  - [Logoff from the DOME BAE Marketplace instance](#logoff-from-the-dome-bae-marketplace-instance)
-- [Distributed components](#distributed-components)
-  - [Access Node](#access-node)
-    - [Overview and sub-components](#overview-and-sub-components)
-    - [Infrastructure requirements](#infrastructure-requirements)
-    - [How to deploy](#how-to-deploy)
-    - [How to configure](#how-to-configure)
-      - [Desmos profiles](#desmos-profiles)
-      - [Configure custom secrets](#configure-custom-secrets)
-    - [How to validate a deployment](#how-to-validate-a-deployment)
-    - [How to operate](#how-to-operate)
-    - [How to update](#how-to-update)
-    - [Release process](#release-process)
-    - [Troubleshooting](#troubleshooting)
-      - [Timeouts occur while querying TM-Forum-API](#timeouts-occur-while-querying-tm-forum-api)
-  - [IAM components](#iam-components)
-    - [Overview and subcomponents](#overview-and-subcomponents)
-    - [How to deploy](#how-to-deploy-1)
-    - [How to configure](#how-to-configure-1)
-    - [How to validate a deployment](#how-to-validate-a-deployment-1)
-    - [How to operate](#how-to-operate-1)
-    - [How to update](#how-to-update-1)
-    - [Release process](#release-process-1)
-    - [Troubleshooting](#troubleshooting-1)
-- [Authentication](#authentication)
-- [Integration API (TMForum)](#integration-api-tmforum)
-- [Policies](#policies)
-  - [Defining policies](#defining-policies)
-    - [Local policies](#local-policies)
-    - [Distributed policies](#distributed-policies)
-  - [Enforcing policies](#enforcing-policies)
-    - [In front of TMForum API](#in-front-of-tmforum-api)
-    - [In front of Context Broker API](#in-front-of-context-broker-api)
+- [DOME Marketplace Integration and Federation Guide](#dome-marketplace-integration-and-federation-guide)
+  - [Introduction](#introduction)
+    - [Who is this guide for?](#who-is-this-guide-for)
+    - [What is DOME?](#what-is-dome)
+    - [What will I accomplish following this guide?](#what-will-i-accomplish-following-this-guide)
+    - [Pre-requisites](#pre-requisites)
+  - [Onboarding as a DOME Service Provider with did:web](#onboarding-as-a-dome-service-provider-with-didweb)
+    - [What will I accomplish following this section?](#what-will-i-accomplish-following-this-section)
+    - [Pre-requisites](#pre-requisites-1)
+    - [Install and configure Keycloack as a Verifiable Credential Issuer](#install-and-configure-keycloack-as-a-verifiable-credential-issuer)
+    - [Configure the Credential type and the Claims in the Issuer](#configure-the-credential-type-and-the-claims-in-the-issuer)
+    - [Issue and receive the Verifiable Credential in your Wallet](#issue-and-receive-the-verifiable-credential-in-your-wallet)
+    - [Login to the DOME BAE Marketplace instance](#login-to-the-dome-bae-marketplace-instance)
+    - [Create a Product Offering in the DOME BAE Marketplace instance](#create-a-product-offering-in-the-dome-bae-marketplace-instance)
+    - [Logoff from the DOME BAE Marketplace instance](#logoff-from-the-dome-bae-marketplace-instance)
+  - [Distributed components](#distributed-components)
+    - [Access Node](#access-node)
+      - [Overview and sub-components](#overview-and-sub-components)
+      - [Infrastructure requirements](#infrastructure-requirements)
+      - [How to deploy](#how-to-deploy)
+      - [How to configure](#how-to-configure)
+        - [Desmos profiles](#desmos-profiles)
+        - [Generating a private key for the DLT](#generating-a-private-key-for-the-dlt)
+        - [Configure custom secrets](#configure-custom-secrets)
+      - [How to validate a deployment](#how-to-validate-a-deployment)
+      - [How to operate](#how-to-operate)
+      - [How to update](#how-to-update)
+      - [Release process](#release-process)
+      - [Troubleshooting](#troubleshooting)
+        - [Timeouts occur while querying TM-Forum-API](#timeouts-occur-while-querying-tm-forum-api)
+    - [IAM components](#iam-components)
+      - [Overview and subcomponents](#overview-and-subcomponents)
+      - [How to deploy](#how-to-deploy-1)
+      - [How to configure](#how-to-configure-1)
+      - [How to validate a deployment](#how-to-validate-a-deployment-1)
+      - [How to operate](#how-to-operate-1)
+      - [How to update](#how-to-update-1)
+      - [Release process](#release-process-1)
+      - [Troubleshooting](#troubleshooting-1)
+  - [Authentication](#authentication)
+  - [Integration API (TMForum)](#integration-api-tmforum)
+  - [Policies](#policies)
+    - [Defining policies](#defining-policies)
+      - [Local policies](#local-policies)
+      - [Distributed policies](#distributed-policies)
+    - [Enforcing policies](#enforcing-policies)
+      - [In front of TMForum API](#in-front-of-tmforum-api)
+      - [In front of Context Broker API](#in-front-of-context-broker-api)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -323,7 +325,7 @@ access-node can be used as followed:
 
 The chart is released with a set
 of [default values](https://github.com/DOME-Marketplace/access-node/blob/main/charts/access-node/values.yaml) which act
-as a good starting point for an adoption. These values are also documented, enhancing the understanding. Additionally,
+as a good starting point for adoption. These values are also documented, enhancing the understanding. Additionally,
 the [respective charts](https://github.com/FIWARE/helm-charts/tree/main/charts/tm-forum-api) of the components should be
 consulted.
 
@@ -338,7 +340,7 @@ consulted.
 | scorpio-broker-aaio | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker-aaio  |
 | scorpio-broker      | https://github.com/FIWARE/helm-charts/tree/main/charts/scorpio-broker       |
 
-To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely changed by integrators.
+To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely to be changed by integrators.
 Blockchain connector fields present int this file are:
 
 | Key                                                    | Comment                                                                                 | Default Values                                                     |
@@ -383,6 +385,11 @@ Table to clarify the relation between the desmos-api profiles and the DOME-Gitop
 |         dev          |           sbx            |
 |         test         |           dev            |
 |         prod         |           prd            |
+
+
+##### Generating a private key for the DLT   
+To generate a private key to use as access-node.dlt-adapter.env.PRIVATE_KEY you can use openssl standard CLI command `openssl rand -hex 32 `. Ensure that you add the 0x hexadecimal prefi upon entering that as an access-node.dlt-adapter.env.PRIVATE_KEY
+
 
 ##### Configure custom secrets
 
