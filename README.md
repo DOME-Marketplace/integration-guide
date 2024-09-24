@@ -621,21 +621,6 @@ A description of the authentication process can be found in the [iam-guide](http
 
 ## Integration API (TMForum)
 
-> Samples & tutorials for implementing core federation scenarios using the TMForum APIs (with focus on semantics and workflow, beyond the API reference)
->
-> Some content also required for the Knowledgebase, which should be added here as well:
-> - How to: autenticate the marketplace on the shared data layer
-> - How to: retrieve DOME ecosystem notifications
-> - How to: retrieve a list of products from the shared catalog
-> - How to: retrieve the product description from the shared catalog
-> - How to: retrieve the product price model from the shared catalog
-> - How to: push a product on the shared catalog
-> - How to: retrieve an order from other marketplaces
-> - How to: push a provisioning status on the shared data layer
-> - How to: push metering information on the shared data layer
-> - How to: push billing information on the shared data layer
-> - How to: retrieve billing information on the shared data layer
-
 ### How to retrieve your organization party
 
 When working with the TMForum data models, most of the entities created include information about the
@@ -800,21 +785,269 @@ GET [Catalog API Endpoint]/productOffering?category.name=PaaS
 
 ### How to publish a product offering
 
-When dealing with product offerings, the TMForum datamodel splits the technical
-and business information in different entities that needs to be created.
+#### Service and Resource Specifications
 
-On the one hand, the different services and resources that made up the product
-to be published need to be modeled as Service and Resource Specifications
+When dealing with product offerings, the TMForum data model splits the technical
+and business information in different entities that need to be created.
 
-Create service and resource specifications
+First of all, the different services and resources that made up the product to be
+published can be modeled as Service and Resource Specifications.
 
-Create a product specification
+On the one hand, a Resource Specification defines a class of physical or digital resources
+that are needed by the offered services to operate. An example of Resource Specification
+could be physical storage, servers, virtual machines, etc. This model allows providers to
+provide all the needed information about their resources so they can be procured and
+instantiated, during the procurement phase, after a product offering is acquired. 
 
-Create a product offering
+Resource Specifications can be created using the Resource Catalog API, making a
+POST request as follows:
 
+```
+POST [Resource Catalog API Endpoint]/resourceSpecification
+{
+  "name": "Processing Server",
+  "description": "A Server used by our services",
+  "lifecycleStatus": "active",
+  "relatedParty": [{
+      "id": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+      "href": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+      "role": "owner"
+  }],
+  "resourceSpecCharacteristic": [
+    {
+      "id": "urn:ngsi-ld:characteristic:58e41694-594c-42e1-bff9-b249984e42e1",
+      "name": "string",
+      "configurable": false,
+      "description": "string",
+      "valueType": "string",
+      "resourceSpecCharacteristicValue": [
+        {
+          "isDefault": true,
+          "rangeInterval": "string",
+          "regex": "string",
+          "unitOfMeasure": "string",
+          "valueType": "string",
+          "value": "string",
+        }
+      ]
+    }
+  ]
+}
+```
 
-Launch the different objects
+The TMForum API is defining the resourceSpecCharacteristic attribute. This attribute can be used
+to register any information
 
+In addition, the *configurable* flag can be used to define a characteristic with multiple values.
+In that scennario, potential customers will be able to select the value they prefer, so the procurement
+system can instantiate the resources accordingly.
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Resource Catalog API [here](https://github.com/FIWARE/tmforum-api/blob/main/api/tm-forum/resource-catalog/api.json)
+
+On the other hand, a Service Specification defines the different classes of services
+that can be offered as part of a product offering, so they can be procured and
+instantiated during the procurement phase.
+
+Service specifications can be created using the Service Catalog Management API, making a
+POST request as follows:
+
+```
+POST [Service Catalog API Endpoint]/serviceSpecification
+{
+  "name": "Computing Service",
+  "description": "A computing service offered in our cloud",
+  "lifecycleStatus": "active",
+  "relatedParty": [{
+      "id": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+      "href": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+      "role": "owner"
+  }],
+  "specCharacteristic": [
+    {
+      "id": "urn:ngsi-ld:characteristic:58e41694-594c-42e1-bff9-b249984e42e1",
+      "name": "string",
+      "configurable": false,
+      "description": "string",
+      "valueType": "string",
+      "characteristicValueSpecification": [
+        {
+          "isDefault": true,
+          "rangeInterval": "string",
+          "regex": "string",
+          "unitOfMeasure": "string",
+          "valueType": "string",
+          "value": "string",
+        }
+      ]
+    }
+  ]
+}
+```
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Service Catalog API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/service-catalog/api.json)
+
+#### Product Specification
+
+Once Resource and Service Specification have been defined, the next step is defining a Product Specification.
+The Product Specification will include links to the Service and Resource Specifications, a set of attachments
+such as pictures, documentation, etc, and the list characteristics of the product specification.
+
+Product Specifications can be created in the Product Catalog Management API using a POST request,
+as follows:
+
+```
+POST [Product Catalog API Endpoint]/productSpecification
+{
+    "brand": "FICODES",
+    "description": "Description of a vCPU Service Product",
+    "isBundle": false,
+    "lastUpdate": "2024-07-01T16:26:40.515817138Z",
+    "lifecycleStatus": "Active",
+    "name": "vCPU Service Product",
+    "productNumber": "1",
+    "version": "0.1",
+    "attachment": [
+        {
+            "attachmentType": "image/png",
+            "name": "Profile Picture",
+            "url": "https://myserver.org/media/image.png"
+        }
+    ],
+    "productSpecCharacteristic": [
+        {
+            "id": "urn:ngsi-ld:characteristic:e368668c-9009-4277-8e06-35fa834b5cab",
+            "description": "vCPU Service Product Characteristic desc",
+            "name": "vCPU Service Product Characteristic",
+            "productSpecCharacteristicValue": [
+                {
+                    "isDefault": true,
+                    "value": "1"
+                }
+            ]
+        }
+    ],
+    "relatedParty": [
+        {
+            "id": "urn:ngsi-ld:organization:98a67a91-0e05-4dda-af43-253de1e4864c",
+            "href": "urn:ngsi-ld:organization:98a67a91-0e05-4dda-af43-253de1e4864c",
+            "role": "Owner",
+            "@referredType": ""
+        }
+    ],
+    "resourceSpecification": [
+        {
+            "id": "urn:ngsi-ld:resource-specification:fd251d2f-aa13-45b4-bd4e-4bbb154a0b24",
+            "href": "urn:ngsi-ld:resource-specification:fd251d2f-aa13-45b4-bd4e-4bbb154a0b24",
+            "name": "vCPU"
+        }
+    ],
+    "serviceSpecification": [
+        {
+            "id": "urn:ngsi-ld:service-specification:a2fcfb3c-b7ab-45ad-8870-889b2b8017b6",
+            "href": "urn:ngsi-ld:service-specification:a2fcfb3c-b7ab-45ad-8870-889b2b8017b6",
+            "name": "vCPU Service"
+        }
+    ],
+    "validFor": {
+        "startDateTime": "2024-07-01T16:21:25.585Z"
+    }
+}
+```
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Product Catalog API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-catalog/api.json)
+
+#### Compliance profile
+
+The compliance profile imformation is stored as Product Specification characteristics, having
+one characteristic per certification, including the link to the certification file as
+characteristic value. The following is an example of a profile including 2 certifications:
+
+```
+"productSpecCharacteristic": [
+  {
+    "id": "urn:ngsi-ld:characteristic:b4c7d804-72fb-4f4f-b063-fd1e774a3c01",
+    "name": "ISO 22301:2019",
+    "productSpecCharacteristicValue": [
+      {
+        "isDefault": true,
+        "value": "https://myserver.com/media/iso22301.pdf"
+      }
+    ]
+  },
+  {
+    "id": "urn:ngsi-ld:characteristic:5200d37f-0d85-4749-b0c8-5bdd2564bbdf",
+    "name": "ISO/IEC 27001:2022",
+    "productSpecCharacteristicValue": [
+      {
+        "isDefault": true,
+        "value": "https://myserver.com/media/iso27001.pdf"
+      }
+    ]
+  }
+  ...
+]
+```
+
+If such certifications have been verified, the Verifiable Credential issued by the verification
+service needs to be provided using another characteristic with name *Compliance:VC*, providing the
+encoded VC as value.
+
+```
+"productSpecCharacteristic": [
+  {
+    "id": "urn:ngsi-ld:characteristic:b4c7d804-72fb-4f4f-b063-fd1e774a3c01",
+    "name": "Compliance:VC",
+    "productSpecCharacteristicValue": [
+      {
+        "isDefault": true,
+        "value": "encoded token ..."
+      }
+    ]
+  }
+  ...
+]
+```
+
+#### Product Offering
+
+The final step is creating a Product Offering. This entity includes the link to the Product Specification,
+the terms and conditions, and the pricing model.
+
+Product Offerings can be created in the Product Catalog API using the following POST request:
+
+```
+POST [Product Catalog API Endpoint]/productOffering
+{
+  "name": "My Offer",
+  "description": "Description of the product offering",
+  "isBundle": false,
+  "lastUpdate": "2024-07-01T16:34:49.956115566Z",
+  "lifecycleStatus": "Active",
+  "version": "0.1",
+  "productOfferingPrice": [
+    {
+      "id": "urn:ngsi-ld:product-offering-price:3dd1b61d-2ecb-4b86-889c-4ed3c18b44c1",
+      "href": "urn:ngsi-ld:product-offering-price:3dd1b61d-2ecb-4b86-889c-4ed3c18b44c1",
+      "name": "VCPU"
+    }
+  ],
+  "productSpecification": {
+    "id": "urn:ngsi-ld:product-specification:f3ef1391-b54e-4a02-b1ba-fdbc7e9295cc",
+    "href": "urn:ngsi-ld:product-specification:f3ef1391-b54e-4a02-b1ba-fdbc7e9295cc",
+    "name": "vCPU Service Product",
+    "version": "0.1"
+  },
+  "validFor": {
+    "startDateTime": "2024-07-01T16:34:50.033Z"
+  }
+}
+```
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Product Catalog API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-catalog/api.json)
 
 ### How to subscribe to events
 
