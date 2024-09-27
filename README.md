@@ -621,22 +621,496 @@ A description of the authentication process can be found in the [iam-guide](http
 
 ## Integration API (TMForum)
 
-> Samples & tutorials for implementing core federation scenarios using the TMForum APIs (with focus on semantics and workflow, beyond the API reference)
+### How to retrieve your organization party
+
+When working with the TMForum data models, most of the entities created include information about the
+parties that are related to them. This includes, thought it is not limited to, the owner, customers,
+etc.
+
+All the organizations onboarded in DOME should have a Party object, created during the onboarding, that
+can be retrieved using the TMForum Party Management API.
+
+The Party object of a particular organization can be retrieved quering the Party API, using the Organization ID
+provided in the mandator of the Verifiable Credential.
+
+```
+GET [Party API Endpoint]/organization?externalReference.name=[VC Org ID]
+[{
+  {
+        "id": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+        "href": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+        "tradingName": "Test Org, S.L",
+        "externalReference": [
+            {
+                "externalReferenceType": "idm_id",
+                "name": "VATES-B12341234"
+            }
+        ]
+    }
+}]
+```
+
+Knowing the ID of the Party object is quite relevant as will be needed to create any other
+entity in the TMForum APIs
+
+
+### How to create custom categories
+
+DOME allows Service Providers to define their custom Product Categories in addition to the ones provided
+by the DOME Marketplace. These Product Categories are created as part of the TMForum Product Catalog Management API
+and are attached to the Service Provider Product Catalog. For a complete reference of the Product Catalog
+Management API, please refer to the [Swagger Doc.](https://github.com/FIWARE/tmforum-api/blob/main/api/tm-forum/product-catalog/api.json)
+
+The first step to define a set of categories is creating the Service Provider Product Catalog. This can be done
+via HTTP making the following POST request to the Product Catalog API
+
+```
+POST [Catalog API Endpoint]/catalog
+{
+  "name": "Provider Catalog",
+  "description": "A Provider Product Catalog",
+  "lifecycleStatus": "active",
+  "relatedParty": [{
+    "id": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+    "href": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+    "role": "owner"
+  }],
+  "category": []
+}
+```
+
+As part of the Product Catalog it must be included:
+* **name**: A name for the Product Catalog
+* **description**: A description for the Product Catalog
+* **lifecycleStatus**: The status of the Product Catalog. When creating a new entity it should be set to *active*
+* **relatedParty**: The parties related to the catalogue. At least the owner party must be included providing its ID and the *owner* role
+
+Once the Product Catalog is ready, root categories can be created. Product Categories
+are created in the Product Catalog API using the following request:
+
+```
+POST [Catalog API Endpoint]/category
+{
+  "name": "IaaS Service",
+  "description": "Products offering IaaS Services",
+  "lifecycleStatus": "active",
+  "isRoot": true,
+}
+```
+
+Note that when creating a root category the *isRoot* attribute is set to *true*
+
+New root categories can be attached to the provider catalog updating the *category* field using
+a PATCH request.
+
+```
+PATCH [Catalog API Endpoint]/catalog/[Catalog ID]
+
+{
+  "category": [{
+    "id": "urn:ngsi-ld:product-category:58e41694-594c-42e1-bff9-b249984e42e1",
+    "href": "urn:ngsi-ld:product-category:58e41694-594c-42e1-bff9-b249984e42e1"
+  }]
+}
+```
+
+Finally, children categories can be created using the *parentId* attribute to add the parent category ID
+and setting the *isRoot* attribute to *false*. These children categories doesn't need to be included in
+the service provider catalog, as they can be reached from its parents to build the whole category tree.
+
+```
+POST [Catalog API Endpoint]/category
+{
+  "name": "Computing Service",
+  "description": "Products offering Computing Services",
+  "lifecycleStatus": "active",
+  "isRoot": false,
+  "parentId": "urn:ngsi-ld:product-category:58e41694-594c-42e1-bff9-b249984e42e1"
+}
+```
+
+There are some considerations to be taken into account regarding the lifecycle status.
+As defined by TMForum model, the different product catalog elements can be discovered
+by potential customers when they are in *launched* state. In this regard, it is adviced
+to create the different entities in *active* state, allowing the provider to keep on making
+modifications before they are discovered.
+
+In the particular case of the catalogue and the categories, it is adviced to keep them
+in *active* state until there is a Product Offering within it. This way,
+potential customers will not browse an empty category. 
+
+
+### How to discover product offerings
+
+There are multiple filtering options that allow potential customers to browse
+the product offering catalog. The TMForum API defines a query language that
+allows to search by any of the fields included in the particular TMForum model
+using query params in a GET request.
+
+In general, a query is defined with the following rules:
+* The attribute from the TMForum model that is used as filter is provided as a
+query param of a GET request
+* When the attribute value is a nested object, it is possible to query by nested attributes
+using dots
+* Multiple attributes can be used at the same time using different query params, the query will be an AND
+* Multiple values separated by comma can be used to create an OR query
+* Results can be paged using the *start* and *limit* query params
+
+The following is an example of a query retrieving all the *Launched* Product Offerings of a given
+provider
+
+```
+GET [Catalog API Endpoint]/productOffering?lifecycleStatus=launched&relatedParty.id=urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1
+```
+
+As described in the previous section, the different Product Offerings can be categorized
+using Product Categories. These categories can be used for filtering the results as any
+other field of the product offering.
+
+The following is an example filtering offerings by category ID
+
+```
+GET [Catalog API Endpoint]/productOffering?category.id=urn:ngsi-ld:product-category:58e41694-594c-42e1-bff9-b249984e42e1
+```
+
+The following is an example filtering offerings by category name
+
+```
+GET [Catalog API Endpoint]/productOffering?category.name=PaaS
+```
+
+> Note that the examples in this section are applied to the Product Catalog Management API;
+> nevertheless, the same query mechanism is used in all the TMForum APIs
 >
-> Some content also required for the Knowledgebase, which should be added here as well:
-> - How to: autenticate the marketplace on the shared data layer
-> - How to: retrieve DOME ecosystem notifications
-> - How to: retrieve a list of products from the shared catalog
-> - How to: retrieve the product description from the shared catalog
-> - How to: retrieve the product price model from the shared catalog
-> - How to: push a product on the shared catalog
-> - How to: retrieve an order from other marketplaces
-> - How to: push a provisioning status on the shared data layer
-> - How to: push metering information on the shared data layer
-> - How to: push billing information on the shared data layer
-> - How to: retrieve billing information on the shared data layer
 
+### How to publish a product offering
 
+#### Service and Resource Specifications
+
+When dealing with product offerings, the TMForum data model splits the technical
+and business information in different entities that need to be created.
+
+First of all, the different services and resources that made up the product to be
+published can be modeled as Service and Resource Specifications.
+
+On the one hand, a Resource Specification defines a class of physical or digital resources
+that are needed by the offered services to operate. An example of Resource Specification
+could be physical storage, servers, virtual machines, etc. This model allows providers to
+provide all the needed information about their resources so they can be procured and
+instantiated, during the procurement phase, after a product offering is acquired. 
+
+Resource Specifications can be created using the Resource Catalog API, making a
+POST request as follows:
+
+```
+POST [Resource Catalog API Endpoint]/resourceSpecification
+{
+  "name": "Processing Server",
+  "description": "A Server used by our services",
+  "lifecycleStatus": "active",
+  "relatedParty": [{
+      "id": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+      "href": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+      "role": "owner"
+  }],
+  "resourceSpecCharacteristic": [
+    {
+      "id": "urn:ngsi-ld:characteristic:58e41694-594c-42e1-bff9-b249984e42e1",
+      "name": "string",
+      "configurable": false,
+      "description": "string",
+      "valueType": "string",
+      "resourceSpecCharacteristicValue": [
+        {
+          "isDefault": true,
+          "rangeInterval": "string",
+          "regex": "string",
+          "unitOfMeasure": "string",
+          "valueType": "string",
+          "value": "string",
+        }
+      ]
+    }
+  ]
+}
+```
+
+The TMForum API is defining the resourceSpecCharacteristic attribute. This attribute can be used
+to register any information
+
+In addition, the *configurable* flag can be used to define a characteristic with multiple values.
+In that scennario, potential customers will be able to select the value they prefer, so the procurement
+system can instantiate the resources accordingly.
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Resource Catalog API [here](https://github.com/FIWARE/tmforum-api/blob/main/api/tm-forum/resource-catalog/api.json)
+
+On the other hand, a Service Specification defines the different classes of services
+that can be offered as part of a product offering, so they can be procured and
+instantiated during the procurement phase.
+
+Service specifications can be created using the Service Catalog Management API, making a
+POST request as follows:
+
+```
+POST [Service Catalog API Endpoint]/serviceSpecification
+{
+  "name": "Computing Service",
+  "description": "A computing service offered in our cloud",
+  "lifecycleStatus": "active",
+  "relatedParty": [{
+      "id": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+      "href": "urn:ngsi-ld:organization:58e41694-594c-42e1-bff9-b249984e42e1",
+      "role": "owner"
+  }],
+  "specCharacteristic": [
+    {
+      "id": "urn:ngsi-ld:characteristic:58e41694-594c-42e1-bff9-b249984e42e1",
+      "name": "string",
+      "configurable": false,
+      "description": "string",
+      "valueType": "string",
+      "characteristicValueSpecification": [
+        {
+          "isDefault": true,
+          "rangeInterval": "string",
+          "regex": "string",
+          "unitOfMeasure": "string",
+          "valueType": "string",
+          "value": "string",
+        }
+      ]
+    }
+  ]
+}
+```
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Service Catalog API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/service-catalog/api.json)
+
+#### Product Specification
+
+Once Resource and Service Specification have been defined, the next step is defining a Product Specification.
+The Product Specification will include links to the Service and Resource Specifications, a set of attachments
+such as pictures, documentation, etc, and the list characteristics of the product specification.
+
+Product Specifications can be created in the Product Catalog Management API using a POST request,
+as follows:
+
+```
+POST [Product Catalog API Endpoint]/productSpecification
+{
+    "brand": "FICODES",
+    "description": "Description of a vCPU Service Product",
+    "isBundle": false,
+    "lastUpdate": "2024-07-01T16:26:40.515817138Z",
+    "lifecycleStatus": "Active",
+    "name": "vCPU Service Product",
+    "productNumber": "1",
+    "version": "0.1",
+    "attachment": [
+        {
+            "attachmentType": "image/png",
+            "name": "Profile Picture",
+            "url": "https://myserver.org/media/image.png"
+        }
+    ],
+    "productSpecCharacteristic": [
+        {
+            "id": "urn:ngsi-ld:characteristic:e368668c-9009-4277-8e06-35fa834b5cab",
+            "description": "vCPU Service Product Characteristic desc",
+            "name": "vCPU Service Product Characteristic",
+            "productSpecCharacteristicValue": [
+                {
+                    "isDefault": true,
+                    "value": "1"
+                }
+            ]
+        }
+    ],
+    "relatedParty": [
+        {
+            "id": "urn:ngsi-ld:organization:98a67a91-0e05-4dda-af43-253de1e4864c",
+            "href": "urn:ngsi-ld:organization:98a67a91-0e05-4dda-af43-253de1e4864c",
+            "role": "Owner",
+            "@referredType": ""
+        }
+    ],
+    "resourceSpecification": [
+        {
+            "id": "urn:ngsi-ld:resource-specification:fd251d2f-aa13-45b4-bd4e-4bbb154a0b24",
+            "href": "urn:ngsi-ld:resource-specification:fd251d2f-aa13-45b4-bd4e-4bbb154a0b24",
+            "name": "vCPU"
+        }
+    ],
+    "serviceSpecification": [
+        {
+            "id": "urn:ngsi-ld:service-specification:a2fcfb3c-b7ab-45ad-8870-889b2b8017b6",
+            "href": "urn:ngsi-ld:service-specification:a2fcfb3c-b7ab-45ad-8870-889b2b8017b6",
+            "name": "vCPU Service"
+        }
+    ],
+    "validFor": {
+        "startDateTime": "2024-07-01T16:21:25.585Z"
+    }
+}
+```
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Product Catalog API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-catalog/api.json)
+
+#### Compliance profile
+
+The compliance profile imformation is stored as Product Specification characteristics, having
+one characteristic per certification, including the link to the certification file as
+characteristic value. The following is an example of a profile including 2 certifications:
+
+```
+"productSpecCharacteristic": [
+  {
+    "id": "urn:ngsi-ld:characteristic:b4c7d804-72fb-4f4f-b063-fd1e774a3c01",
+    "name": "ISO 22301:2019",
+    "productSpecCharacteristicValue": [
+      {
+        "isDefault": true,
+        "value": "https://myserver.com/media/iso22301.pdf"
+      }
+    ]
+  },
+  {
+    "id": "urn:ngsi-ld:characteristic:5200d37f-0d85-4749-b0c8-5bdd2564bbdf",
+    "name": "ISO/IEC 27001:2022",
+    "productSpecCharacteristicValue": [
+      {
+        "isDefault": true,
+        "value": "https://myserver.com/media/iso27001.pdf"
+      }
+    ]
+  }
+  ...
+]
+```
+
+If such certifications have been verified, the Verifiable Credential issued by the verification
+service needs to be provided using another characteristic with name *Compliance:VC*, providing the
+encoded VC as value.
+
+```
+"productSpecCharacteristic": [
+  {
+    "id": "urn:ngsi-ld:characteristic:b4c7d804-72fb-4f4f-b063-fd1e774a3c01",
+    "name": "Compliance:VC",
+    "productSpecCharacteristicValue": [
+      {
+        "isDefault": true,
+        "value": "encoded token ..."
+      }
+    ]
+  }
+  ...
+]
+```
+
+#### Product Offering
+
+The final step is creating a Product Offering. This entity includes the link to the Product Specification,
+the terms and conditions, and the pricing model.
+
+Product Offerings can be created in the Product Catalog API using the following POST request:
+
+```
+POST [Product Catalog API Endpoint]/productOffering
+{
+  "name": "My Offer",
+  "description": "Description of the product offering",
+  "isBundle": false,
+  "lastUpdate": "2024-07-01T16:34:49.956115566Z",
+  "lifecycleStatus": "Active",
+  "version": "0.1",
+  "productOfferingPrice": [
+    {
+      "id": "urn:ngsi-ld:product-offering-price:3dd1b61d-2ecb-4b86-889c-4ed3c18b44c1",
+      "href": "urn:ngsi-ld:product-offering-price:3dd1b61d-2ecb-4b86-889c-4ed3c18b44c1",
+      "name": "VCPU"
+    }
+  ],
+  "productSpecification": {
+    "id": "urn:ngsi-ld:product-specification:f3ef1391-b54e-4a02-b1ba-fdbc7e9295cc",
+    "href": "urn:ngsi-ld:product-specification:f3ef1391-b54e-4a02-b1ba-fdbc7e9295cc",
+    "name": "vCPU Service Product",
+    "version": "0.1"
+  },
+  "validFor": {
+    "startDateTime": "2024-07-01T16:34:50.033Z"
+  }
+}
+```
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Product Catalog API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-catalog/api.json)
+
+### How to subscribe to events
+
+All the TMForum APIs allow to subscribe to certain events over the different entities managed in
+the particular API. To do that, the TMForum APIs define a set of endpoints that can be used
+to register listeners for the different events.
+
+In general, the following events are triggered for a TMForum entity:
+* **Create**: This event is triggered when a new entity is created
+* **Attribute Value Change**: This event is triggered when the value of an attribute of the entity is changed
+* **State Change**: This event is triggered when the lifecycle status of an entity is changed
+* **Delete**: This event is triggered when an entity is deleted
+
+To register a listener for the different events a POST request to the *hub* endpoint is used. Such an endpoint is available in all the TMForum APIs and receives two params, a query filtering the
+entities you are interested and the callback to be called when an event is triggered.
+
+The following is an example of creating a listener:
+
+```
+POST [Catalog API Endpoint]/hub
+
+{
+  "callback": "https://provider.com",
+  "query": ""
+}
+```
+
+Once the listener is registered, the particular TMForum API will call the given
+callback URL every time an event is triggered. To do that, the TMForum API will
+send a POST request and encode the particular event as part of the path of the
+request.
+
+The following is an example request made by the TMForum API when a new Product Offering
+is created
+
+```
+POST https://provider.com/listener/productOfferingCreateEvent
+
+{
+  "event": {
+    "productOffering": {
+      ...
+    }
+  },
+  "eventId": "string",
+  "eventTime": "2024-05-07T08:24:01.581Z",
+  "eventType": "string",
+  "correlationId": "string",
+  "domain": "string",
+  "title": "string",
+  "description": "string",
+  "priority": "string",
+  "timeOcurred": "2024-05-07T08:24:01.581Z"
+}
+```
+
+The event content will include on the one hand, some information about the event itself, like the time
+when it was triggered or the event type. On the other hand, the field *event* will
+include the updated TMForum entity the event refers to.
+
+It can be seen, that the TMForum API is making the POST request to the */listener/productOfferingCreateEvent*, that URL encodes the particular event, addding the
+model followed by the event type. For a complete list of all the listener URL options
+please refer to the particular Swagger documentation of the API.
 
 
 ## Policies
