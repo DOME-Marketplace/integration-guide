@@ -228,10 +228,9 @@ Using your Wallet, you can login at any moment and continue working with the DOM
 
 ### Access Node
 
-The [DOME Access-Node](https://github.com/DOME-Marketplace/access-node) is a set of services, that can be used to access
-the DOME Marketplace. A registered participant can use it to act as a federated marketplace in DOME.
+The [DOME Access-Node](https://github.com/DOME-Marketplace/access-node) is a set of services for the integration with the DOME Marketplace. A registered participant can use it to act as a federated marketplace in DOME.
 
-The Access-Nodes consists of 3 logical building blocks:
+The Access-Nodes consists of 3 logical componentes:
 
 ![Building Blocks](doc/img/building-blocks.png)
 
@@ -282,42 +281,56 @@ persistence layer. The Postgresql is extended with [Postgis](https://postgis.net
 The base memory consumption per deployed pod is listed below but is will increase with the amount of traffic, therefor
 should only be used as a rough estimate.
 
-| Service            | Memory (Mi) |
-|--------------------|-------------|
-| TM-Forum-API Pod   | 250         |
-| Scorpio            | 400         |
-| Postgresql/Postgis | 150         |
-| Redis              | 10          |
-|                    |             |
-|                    |             |
+| Service                              | Memory (Mi) |
+|--------------------------------------|-------------|
+| TM Forum API                         | 250 |
+| NGSI-LD Context Broker (Scorpio)     | 400 |
+| Persistance Layer (Postgres/Postgis) | 150 |
+| External Cache (Redis)               | 10  |
+|                                      |     |
 
 Apart from the database service, no other service will maintain a own persistence, therefor only for this service a
 persistent volume claim has to be dimensioned.
 
 #### How to deploy
 
-The recommended and endorsed way of deployment is via the provided helm charts ( optionally wrapped in ArgoCD
-Applications).
+The recommended and endorsed way of deployment is via the provided Helm Chart ( optionally wrapped in ArgoCD Applications).
 
-To deploy a setup,
-the [umbrella chart](https://helm.sh/docs/howto/charts_tips_and_tricks/#complex-charts-with-many-dependencies) of the
-access-node can be used as followed:
+To deploy the Access Node, an [Umbrella Helm Chart](https://helm.sh/docs/howto/charts_tips_and_tricks/#complex-charts-with-many-dependencies) can be used as followed:
 
-- create a configuration values file according to the own environment, as described [here](#how-to-configure).
-- add helm chart repository to helm installation
+1. Register as a valid organization following the instructions in the [DOME Access Node Directory](https://github.com/DOME-Marketplace/dome-access-node-directory).
+
+2. Create a configuration file for your DOME Access Node. A [configuration file](config/accessnode.yaml) is provided with default values, but you have to complete the following ones:
+
+| Key | Sample Value | Description |
+|-----|--------------|-------------|
+| access-node. desmos. app. operator. organizationIdentifier (line 36) | did:elsi:VATFR-696240139 | DID of the operator in the format **did:elsi:VAT{VAT_NUMBER}**. VAT_NUMBER is the VAT idetification number of the operator. |
+| access-node. desmos. app. privateKey (line 71) | 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE | Private key of the operator to sign JWT. Alternatively, you can add it as a sealed secret. |
+| access-node. dlt-adapter. env. PRIVATE_KEY (line 112)| 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE | Private key of the operator in the Alastria Red-T Blockchain to sign transactions. Alternatively, you can add it as a sealed secret. |
+
+If you want to update the default values, please refer to the [How to configure](#how-to-configure) section.
+
+3. Add the DOME Helm Chart Repository to your helm installation
+
   ```
     helm repo add dome-access-node https://dome-marketplace.github.io/access-node
     helm repo update
   ```
+
   > :bulb: All releases of the Access-Node reside in the helm-repository https://dome-marketplace.github.io/access-node.
   In addition to that, all Pre-Release versions(build from the Pull Requests) are provided in the
   pre-repo https://dome-marketplace.github.io/access-node/pre. The pre-repo will be cleaned-up from time to time, in
   order to keep the index manageable.
 
-- install the components using the prepared configuration
+4. Install the DOME Access Node
   ```
-    helm install <RELEASE_NAME> dome-access-node/access-node --namespace <NAME_SPACE> --version <CHART_VERSION> -f values.yaml
+    helm install access-node dome-access-node/access-node --namespace <NAMESPACE> -f config/accessnode.yaml
   ```
+
+NAMESPACE: The Kubernetes Cluster namespace where the DOME Access Node will be deployed.
+
+The Helm Chart will deploy the required pods:
+![access-node-pods](doc/img/access-node-pods.png)
 
 #### How to configure
 
@@ -341,7 +354,7 @@ consulted.
 To have a starting point, the [this](./config/accessnode.yaml) minimal config reduces the configuration to items that are likely changed by integrators.
 Blockchain connector fields present int this file are:
 
-| Key                                                    | Comment                                                                                 | Default Values                                                     |
+| Key                                                    | Description                                                                                 | Default Values                                                     |
 |--------------------------------------------------------|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------|
 | access-node.desmos.app.profile                         | allows the environment filtering                                                        | test                                                               |
 | access-node.desmos.app.operator.organizationIdentifier | did of the operator                                                                     | did:elsi:VATES-S9999999E                                           |
