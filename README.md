@@ -330,6 +330,7 @@ If you want to update the default values, please refer to the [How to configure]
 NAMESPACE: The Kubernetes Cluster namespace where the DOME Access Node will be deployed.
 
 The Helm Chart will deploy the required pods:
+
 ![access-node-pods](doc/img/access-node-pods.png)
 
 #### How to configure
