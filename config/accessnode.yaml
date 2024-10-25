@@ -64,9 +64,6 @@ access-node:
         entityTypes: catalog,product-offering,category,individual,organization,product,service-specification,product-offering-price,resource-specification,product-specification
       # -- URL of the Marketplace of the operator
       externalDomain: "https://www.operator-marketplace.com"
-      externalAccessNodesUrls:
-        enableCustomUrls: true
-        customUrls: ""
       # -- Private key of the operator to sign JWT. Alternatively, you can add it as a sealed secret.
       privateKey: 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE (Sample Value)
       #privateKey:
