@@ -300,11 +300,12 @@ A [configuration file](config/access-node/values.yaml) is provided with default 
 
 The values you have to complete are:
 
-| Key                                                                  | Sample Value                                                          | Description                                                                                                                |
-|----------------------------------------------------------------------|-----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| Key                                                                                                        | Sample Value                                                          | Description                                                                                                                    |
+|------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
 | access-node. desmos. app. operator. organizationIdentifier ([line 37](config/access-node/values.yaml#L37)) | did:elsi:VATFR-696240139                                              | DID of the operator in the format **did:elsi:VAT{VAT_NUMBER}**. VAT_NUMBER is the VAT idetification number of the organization.|
-| access-node. desmos. app. privateKey (line 71)                       | 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE | Private key of the operator to sign JWT. Alternatively, you can add it as a sealed secret.|
-| access-node. dlt-adapter. env. PRIVATE_KEY (line 112)                | 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE | Private key of the operator in the Alastria Red-T Blockchain to sign transactions. Alternatively, you can add it as a sealed secret.|
+| access-node. desmos. app. privateKey ([line 76](config/access-node/values.yaml#L76))                       | 0x15aa33a07f6680d1bb3e75 24ea3f6ce6ba0eb39a3efa14 6c3d84a0487505d9f8  | Private key of the operator to sign JWT. Alternatively, you can add it as a sealed secret.|
+| access-node. dlt-adapter. env. PRIVATE_KEY ([line 123](config/access-node/values.yaml#L123))               | 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE | Private key of the operator in the Alastria Red-T Blockchain to sign transactions. Alternatively, you can add it as a sealed secret.|
+| access-node. dlt-adapter. env. ISS ([line 126](config/access-node/values.yaml#L126))                       | 0xb34dcb3fcccc37d89a4742 617eef81d0920cbd2e0204ce ea2bb3ddd1f8b85876  | |
 
 If you want to update the default values, please refer to the [How to configure](#how-to-configure) section.
 
