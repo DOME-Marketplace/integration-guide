@@ -294,19 +294,18 @@ persistent volume claim has to be dimensioned.
 
 #### How to deploy
 
-The recommended and endorsed way of deployment is via the provided Helm Chart ( optionally wrapped in ArgoCD Applications).
+Please follow the instructions in [DOME Access-Node | How to deploy](https://github.com/DOME-Marketplace/access-node/?tab=readme-ov-file#how-to-deploy).
 
-To deploy the Access Node, an [Umbrella Helm Chart](https://helm.sh/docs/howto/charts_tips_and_tricks/#complex-charts-with-many-dependencies) can be used as followed:
+A [configuration file](config/access-node/values.yaml) is provided with default values, but you have to complete with your own values following the [DOME Access-Node | How to deploy](https://github.com/DOME-Marketplace/access-node/?tab=readme-ov-file#how-to-deploy) guide.
 
-1. Register as a valid organization following the instructions in the [DOME Trust Framework](https://github.com/DOME-Marketplace/trust-framework).
+The values you have to complete are:
 
-2. Create a configuration file for your DOME Access Node. A [configuration file](config/accessnode.yaml) is provided with default values, but you have to complete the following ones:
-
-| Key                                                                  | Sample Value                                                          | Description                                                                                                                |
-|----------------------------------------------------------------------|-----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
-| access-node. desmos. app. operator. organizationIdentifier (line 36) | did:elsi:VATFR-696240139                                              | DID of the operator in the format **did:elsi:VAT{VAT_NUMBER}**. VAT_NUMBER is the VAT idetification number of the operator.|
-| access-node. desmos. app. privateKey (line 71)                       | 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE | Private key of the operator to sign JWT. Alternatively, you can add it as a sealed secret.|
-| access-node. dlt-adapter. env. PRIVATE_KEY (line 112)                | 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE | Private key of the operator in the Alastria Red-T Blockchain to sign transactions. Alternatively, you can add it as a sealed secret.|
+| Key                                                                                                        | Sample Value                                                          | Description                                                                                                                    |
+|------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| access-node. desmos. app. operator. organizationIdentifier ([line 37](config/access-node/values.yaml#L37)) | did:elsi:VATFR-696240139                                              | DID of the operator in the format **did:elsi:VAT{VAT_NUMBER}**. VAT_NUMBER is the VAT idetification number of the organization.|
+| access-node. desmos. app. privateKey ([line 76](config/access-node/values.yaml#L76))                       | 0x15aa33a07f6680d1bb3e75 24ea3f6ce6ba0eb39a3efa14 6c3d84a0487505d9f8  | Private key of the operator to sign JWT. Alternatively, you can add it as a sealed secret.|
+| access-node. dlt-adapter. env. PRIVATE_KEY ([line 123](config/access-node/values.yaml#L123))               | 0x4c88c1c84e65e82b9ed6b4 9313c6a624d58b2b11e40b4b 64e3b9d0a1d5e4dfajE | Private key of the operator in the Alastria Red-T Blockchain to sign transactions. Alternatively, you can add it as a sealed secret.|
+| access-node. dlt-adapter. env. ISS ([line 126](config/access-node/values.yaml#L126))                       | 0xb34dcb3fcccc37d89a4742 617eef81d0920cbd2e0204ce ea2bb3ddd1f8b85876  | |
 
 If you want to update the default values, please refer to the [How to configure](#how-to-configure) section.
 
