@@ -1057,6 +1057,32 @@ POST [Product Catalog API Endpoint]/productOffering
     "startDateTime": "2024-07-01T16:34:50.033Z"
   }
 }
+
+```
+##### Adding information for Replication and Access Control
+
+In order to properly drive the replication process, all major TMForum entities, including ProductOfferings, must carry information about involved stakeholders.
+In particular, a ProductOffering, within its 'realtedParty' attribute, should include the indentity of the Seller and the identity of operator of the Access Node where the offering is published.
+
+This information will be later propagated to Orders, Products, Bills, etc. related to this offering, together with the same information on the Buyer side.
+
+```
+"relatedParty": [
+  {
+    "href": "urn:ngsi-ld:party:221f6434-ec82-4c62",
+    "id": "urn:ngsi-ld:party:221f6434-ec82-4c62",
+    "name": "did:elsi:VATES-12341234",
+    "role": "Seller",
+    "@referredType": "Organization"
+  },
+  {
+    "href": "urn:ngsi-ld:party:221f6434-ec82-4c62",
+    "id": "urn:ngsi-ld:party:221f6434-ec82-4c62",
+    "name": "did:elsi:VATES-12341234",
+    "role": "SellerOperator",
+    "@referredType": "Organization"
+  }
+]
 ```
 
 For a complete reference of all the available attributes and options, please refer to the
