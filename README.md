@@ -1182,21 +1182,11 @@ To check the status of recurring payments, the TMForum APIs are used to retrieve
     
 > GET [Customer Bill Management API Endpoint]/customerBill
 
-2 **How to retrieve all the CustomerBill for a billing period** 
-  - To retrieve the list of the CustomerBill related to a specific billing period you can use the GET method provided by the TMForum specification with the **fields** and **filters** in the query string:
-    
-> GET [Customer Bill Management API Endpoint]/customerBill?fields=...&{filtering}
-
-The following is an example of getting all *CustomerBill* using only filters in the *query string* related to a specific **billing period**:
-
-```
-GET /[Customer Bill Management API Endpoint]/customerBill?periodCoverage.startDateTime.eq=2025-06-19T10:04:38.983Z&periodCoverage.endDateTime.eq=2025-06-21T10:04:38.983Z
-```
-
-3 **How to retrieve all the CustomeBill that have been fully paid**
+2 **How to retrieve all the CustomeBill that have been fully paid**
 - To retrieve the list of the CustomerBill that have been fully paid you can use the GET method provided by the TMForum specification using **filters** in the query string in order to get the CusterBill with the attribute `amountDue` set to `0`:
 
-```
+The following is an example of getting all *CustomerBill* using filters in the *query string* to specify the **amountDue**:
+``` 
 GET [Customer Bill Management API Endpoint]/customerBill?amountDue.eq=0
 ```
 
