@@ -61,7 +61,9 @@
     - [Compliance profile](#compliance-profile)
     - [Product Offering](#product-offering)
       - [Adding information for Replication and Access Control](#adding-information-for-replication-and-access-control)
-  - [How to subscribe to events](#how-to-subscribe-to-events)
+    - [How to creare a Product](#how-to-create-a-product)
+      - [Product mandatory attribute for billing processing](#product-mandatory-attribute-for-billing-processing)
+   - [How to subscribe to events](#how-to-subscribe-to-events)
   - [Billing & Payment](#billing--payment)
     - [How to check if recurring payments have been made](#how-to-check-if-recurring-payments-have-been-made)
 - [Policies](#policies)
@@ -1099,6 +1101,99 @@ This information will be later propagated to Orders, Products, Bills, etc. relat
 
 For a complete reference of all the available attributes and options, please refer to the
 Swagger file of the Product Catalog API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-catalog/api.json)
+
+### How to create a Product
+
+The Product resource represents an instance of a Product Offering procured by a Customer. 
+The Product will include links to the Product Offering and to the service(s) and / or resource(s) realizing the Product.
+
+The Product can be created in the Product Inventory Management API using a POST request,
+as follows:
+
+```
+POST [Product Inventory Management API Endpoint]/product
+ {
+    "id": "urn:ngsi-ld:product:b669d51d-5fc0-4f3a-aa13-532f5b45bbbc",
+    "href": "urn:ngsi-ld:product:b669d51d-5fc0-4f3a-aa13-532f5b45bbbc",
+    "description": "Description of the Product",
+    "name": "VM Product",
+    "startDate": "2025-10-14T11:00:00Z",
+    "terminationDate": "2025-12-30T10:00:00Z",
+    "billingAccount": {
+      "id": "urn:ngsi-ld:billing-account:c84d03ff-fc74-435c-a54c-fed6e95ff80a",
+      "href": "urn:ngsi-ld:billing-account:c84d03ff-fc74-435c-a54c-fed6e95ff80a"
+    },
+    "productCharacteristic": [
+      {
+        "name": "CPU",
+        "value": 2
+      },
+      {
+        "name": "RAM",
+        "value": 4
+      }
+    ],
+    "productOffering": {
+      "id": "urn:ngsi-ld:product-offering:f1646ae0-a1c6-4655-b24a-681b1114f88b",
+      "href": "urn:ngsi-ld:product-offering:f1646ae0-a1c6-4655-b24a-681b1114f88b"
+    },
+    "productPrice": [
+      {
+        "priceType": null,
+        "price": null,
+        "productOfferingPrice": {
+          "id": "urn:ngsi-ld:product-offering-price:5bfe47e3-2466-4381-a22c-da072b5a333c",
+          "href": "urn:ngsi-ld:product-offering-price:5bfe47e3-2466-4381-a22c-da072b5a333c"
+        }
+      }
+    ],
+    "productSpecification": {
+      "id": "urn:ngsi-ld:product-specification:021517fe-650f-4834-92f1-4bf29487c5e3",
+      "href": "urn:ngsi-ld:product-specification:021517fe-650f-4834-92f1-4bf29487c5e3"
+    },
+    "relatedParty": [
+      {
+        "id": "urn:ngsi-ld:organization:95fdc12e-6889-4f08-8ff8-296b10e8e781",
+        "href": "urn:ngsi-ld:organization:95fdc12e-6889-4f08-8ff8-296b10e8e781",
+        "role": "Seller",
+        "@referredType": "organization"
+      },
+      {
+        "id": "urn:ngsi-ld:organization:df924e5d-e8c8-4ea4-aca8-edaf5acdc109",
+        "href": "urn:ngsi-ld:organization:df924e5d-e8c8-4ea4-aca8-edaf5acdc109",
+        "name": "DOME Foundation",
+        "role": "SellerOperator",
+        "@referredType": "organization"
+      },
+      {
+        "id": "urn:ngsi-ld:organization:a2f5ebea-49c9-4015-a9d6-56f2c566f6c9",
+        "href": "urn:ngsi-ld:organization:a2f5ebea-49c9-4015-a9d6-56f2c566f6c9",
+        "role": "Buyer",
+        "@referredType": "organization"
+      },
+      {
+        "id": "urn:ngsi-ld:organization:df924e5d-e8c8-4ea4-aca8-edaf5acdc109",
+        "href": "urn:ngsi-ld:organization:df924e5d-e8c8-4ea4-aca8-edaf5acdc109",
+        "name": "DOME Foundation",
+        "role": "BuyerOperator",
+        "@referredType": "organization"
+      }
+    ],
+    "status": "active"
+  }
+```
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Product Inventory API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-inventory/api.json)
+
+#### Product mandatory attribute for billing processing
+In order to calculare the bills the following Product's attributes must be present in the Product:
+* **status**: lifecycle status of the Product. The bills will be generated only for products with status _active_.
+* **startDate**: the date from which the Product starts.
+* **billingAccount**: the reference to the billing account.
+* **relatedParty**: the related parties (Seller/Buyer/SellerOperator/BuyerOperator) involved in the Product.
+* **productPrice**: the list of ProductPrice representing the actual price components paid by the Customer for the purchase. In each ProductPrice entity **must** be present the reference to the **ProductOfferingPrice**. The _ProductOfferingPrice_ TMForum entity defines information about the price applied for a service/resourse realizing the Product, according to the Product Offering (e.g., information such as price type, price, charge period etc.). The billing components require the presence of the ProductOfferingPrice's reference on the ProductPrice to calculate the bills.
+
 
 ### How to subscribe to events
 
