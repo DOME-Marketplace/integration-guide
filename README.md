@@ -63,6 +63,8 @@
       - [Adding information for Replication and Access Control](#adding-information-for-replication-and-access-control)
     - [How to creare a Product](#how-to-create-a-product)
       - [Product mandatory attribute for billing processing](#product-mandatory-attribute-for-billing-processing)
+    - [How to creare a ProductOfferingPrice](#how-to-create-a-productofferingprice)
+      - [ProductOfferingPrice mandatory attribute for billing processing](#productofferingprice-mandatory-attribute-for-billing-processing)
    - [How to subscribe to events](#how-to-subscribe-to-events)
   - [Billing & Payment](#billing--payment)
     - [How to check if recurring payments have been made](#how-to-check-if-recurring-payments-have-been-made)
@@ -1193,6 +1195,103 @@ In order to calculare the bills the following Product's attributes must be prese
 * **billingAccount**: the reference to the billing account.
 * **relatedParty**: the related parties (Seller/Buyer/SellerOperator/BuyerOperator) involved in the Product.
 * **productPrice**: the list of ProductPrice representing the actual price components paid by the Customer for the purchase. In each ProductPrice entity **must** be present the reference to the **ProductOfferingPrice**. The _ProductOfferingPrice_ TMForum entity defines information about the price applied for a service/resourse realizing the Product, according to the Product Offering (e.g., information such as price type, price, charge period etc.). The billing components require the presence of the ProductOfferingPrice's reference on the ProductPrice to calculate the bills.
+
+
+### How to create a ProductOfferingPrice
+
+The ProductOfferingPrice resource represents the price plan applied for a service/resource in a Product Offering. 
+A ProductOfferingPrice could represent also an alteration of the price, for instance to manage discounting.
+The ProductOfferingPrice may represent a _bundle_ ProductOfferingPrice (i.e., the parent) with references to _simple_ ProductOfferingPrice (i.e., child). A ProductOfferingPrice may participate in more than one bundle relationship. Moreover, a ProductOfferingPrice may include links to ProductOfferingPrice relationships, to manage, for instance, a price alteration such as discount.
+
+The ProductOfferingPrice can be created in the Product Catalog Management API using a POST request,
+as follows:
+
+```
+POST [Product Catalog Management API Endpoint]/productOfferingPrice
+ {
+    "id": "urn:ngsi-ld:product-offering-price:a824e4b5-b235-434b-acc5-5db0199432f3",
+    "href": "urn:ngsi-ld:product-offering-price:a824e4b5-b235-434b-acc5-5db0199432f3",
+    "description": "This is a bundle ProductOfferingPrice",
+    "isBundle": true,
+    "lastUpdate": "2025-09-18T07:36:39.934918183Z",
+    "lifecycleStatus": "active",
+    "name": "Bundle ProductOfferingPrice",
+    "bundledPopRelationship": [
+      {
+        "id": "urn:ngsi-ld:product-offering-price:43afdc36-6981-4019-8f58-d69f56f40f6e",
+        "href": "urn:ngsi-ld:product-offering-price:43afdc36-6981-4019-8f58-d69f56f40f6e",
+        "name": "vCore"
+      },
+      {
+        "id": "urn:ngsi-ld:product-offering-price:a0f8fe96-f382-4f56-aae6-6d90cec6797e",
+        "href": "urn:ngsi-ld:product-offering-price:a0f8fe96-f382-4f56-aae6-6d90cec6797e",
+        "name": "Floating IPs"
+      },
+      {
+        "id": "urn:ngsi-ld:product-offering-price:b3eb4c12-803f-4fec-8925-9a333d6f587a",
+        "href": "urn:ngsi-ld:product-offering-price:b3eb4c12-803f-4fec-8925-9a333d6f587a",
+        "name": "Space (Gold)"
+      },
+      {
+        "id": "urn:ngsi-ld:product-offering-price:5cce5f34-9a42-4a9d-991e-b72845ded1a9",
+        "href": "urn:ngsi-ld:product-offering-price:5cce5f34-9a42-4a9d-991e-b72845ded1a9",
+        "name": "vRAM"
+      },
+      {
+        "id": "urn:ngsi-ld:product-offering-price:16a1dc71-7e91-40d2-b07e-d8e5e275cf8a",
+        "href": "urn:ngsi-ld:product-offering-price:16a1dc71-7e91-40d2-b07e-d8e5e275cf8a",
+        "name": "Region"
+      }
+    ],
+    "validFor": {
+      "startDateTime": "2025-09-18T07:36:39.928Z"
+    }
+  }
+
+```
+```
+POST [Product Catalog Management API Endpoint]/productOfferingPrice
+ {
+    "id": "urn:ngsi-ld:product-offering-price:43afdc36-6981-4019-8f58-d69f56f40f6e",
+    "href": "urn:ngsi-ld:product-offering-price:43afdc36-6981-4019-8f58-d69f56f40f6e",
+    "description": "A simple ProductOfferingPrice",
+    "isBundle": fasle,
+    "lastUpdate": "2025-09-18T07:36:37.895560948Z",
+    "lifecycleStatus": "active",
+    "name": "vCore",
+    "priceType": "recurring-prepaid",
+    "recurringChargePeriodLength": 1,
+    "recurringChargePeriodType": "month",
+    "price": {
+      "unit": "EUR",
+      "value": 2
+    },  
+    "prodSpecCharValueUse": [
+      {
+        "id": "urn:ngsi-ld:characteristic:11ab960c-449f-4d56-85aa-139b7371e851",
+        "description": "",
+        "name": "vCore"
+      }
+    ],
+    "validFor": {
+      "startDateTime": "2025-09-18T07:36:37.859Z"
+    }
+  }
+```
+
+For a complete reference of all the available attributes and options, please refer to the
+Swagger file of the Product Catalog Management API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-catalog/api.json)
+
+#### ProductOfferingPrice mandatory attribute for billing processing
+In order to calculare the bills the following ProductOfferingPrice's attributes must be present in the ProductOfferingPrice:
+* **lifecycleStatus**: lifecycle status of the ProductOfferingPrice. The bills will be generated only for product offering price with status _active_ or _launched_.
+* **isBundle**: a flag indicating if the ProductOfferingPrice is _bundle_ (true) or _simple_ (false).
+* **bundledPopRelationship**: the references to the _simple_ ProductOfferingPrice (i.e., chield) included in a _bundle_ ProductOfferingPrice. If the _isBundle_ attribute is true at least one bundled relashionship **must** be present.
+* **priceType**: a string representing the type of price. The possible values are: _onetime_, _recurring-postpaid_, _recurring-prepaid_, _usage_, _custom_. **Notes**: _usage_ refers to the pay-per-use as a recurring-postpaid; _custom_ means that only the provider is able to manage the price. In case of _bundle_ ProductOfferingPrice the _priceType_ can be omitted, but in case of _simple_ ProductOfferingPrice the _priceType **must** be present.
+* **recurringChargePeriodLength**: an integer representing the period of the recurring charge: 1, 2 etc. If the _priceType_ is _recurring-prepaid_ or _recurring-postpaid_ or _usage_ this attribute **must** be present.
+* **recurringChargePeriodType**: a string representing the period to repeat the application of the price. The possible value are: _day_, _week_, _month_, _year_. If the _priceType_ is _recurring-prepaid_ or _recurring-postpaid_ or _usage_ this attribute **must** be present.
+* **price**: the amount of money that characterizes the price.  If the _isBundle_ attribute is false (i.e., _simple_ ProductOfferingPrice) this attribute **must** be present.
+* **unitOfMeasure**: A quantity (i.e., a number and unit) representing how many of an ProductOffering is available at the offered price (e.g., 1 GB). If the _priceType_ is _usage_ this attribute **must** be present.
 
 
 ### How to subscribe to events
