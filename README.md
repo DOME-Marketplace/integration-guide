@@ -68,6 +68,7 @@
    - [How to subscribe to events](#how-to-subscribe-to-events)
   - [Billing & Payment](#billing--payment)
     - [How to check if recurring payments have been made](#how-to-check-if-recurring-payments-have-been-made)
+  - [Integration of an external Billing Engine in DOME](#integration-of-an-external-billing-engine-in-dome)
 - [Policies](#policies)
   - [Defining policies](#defining-policies)
     - [Local policies](#local-policies)
@@ -1391,7 +1392,38 @@ The following is an example of getting all *AppliedCustomerBillingRate* related 
 
 ```
 GET [Customer Bill Management API Endpoint]/appliedCustomerBillingRate?bill.id.eq=urn:ngsi-ld:customer-bill:c6fbe257-2084-4573-a814-7f86a5b9a1ae
-```  
+```
+
+### Integration of an external Billing Engine in DOME
+> This section outlines the guidelines for integrating an external billing engine with the DOME billing workflow.
+
+#### Billing Engine – Overview
+
+The Billing Engine is a core component of the DOME architecture, responsible for calculating the amounts due by consumers for purchased products. Billing is the functionality that determines the charges associated with product acquisition and usage. These charges are computed according to pricing models, which may include discount policies and different charging modes such as one-time payments, subscriptions (i.e. recurring payments), and usage-based charges (i.e. pay-per-use).
+
+The main responsibilities of the Billing Engine are:
+* Performing real-time **cost estimation (price preview)** before a purchase is committed, enabling transparency and informed decision-making.
+* Computing the **actual bill** amounts based on the applicable pricing model (fixed price, pay-per-use), including discounts and charging rules (i.e., one-time, recurring pre-paid, recurring post-paid)
+
+DOME’s billing system is designed to support a wide range of **pricing combinations** across three main dimensions, as summarized in the following table:
+
+|                     | Option1 | Option2 | Option3 |
+|---------------------|---------|---------|---------|
+| **Pricing model**      |    Fixed Price     |   Pay-Per-Use      | Hybrid (Fixed + Variable)        |
+| **Charge model**      |      One-Time   |    Recurring (Monthly, Annual)     |    Custom Period (Every 3 months, 1st of month)     |
+| **Invoice generation model** |  Pre-Paid (at start of period)   |   Post-Paid (at end of period)      |  -     |
+
+In addition, the DOME billing system supports advanced features such as **Tiered Pricing**, enabling different prices based on volume or subscription levels; **Promotions and Discounts**, allowing temporary promotional pricing; and **Multi-Component Pricing**, for example a base subscription fee combined with usage-based charges, or a fixed recurring component alongside variable consumption-based charges.
+
+The DOME ecosystem provides a native **DOME Billing Engine** that implements the responsibilities described above (i.e. cost estimation and final bill calculation according to pricing logic and charging models). At the same time, the DOME architecture is designed to ensure flexibility for billing scenarios that extend beyond the supported models or that require direct control over billing data.
+For this reason, providers may maintain full operational and computational autonomy by integrating their own **custom billing engine** within the DOME billing workflow.
+
+The next sections provide guidelines on how to integrate an external Billing Engine.
+
+#### Billing Engine – REST APIs
+
+An external Billing Engine 
+
 
 ## Policies
 
