@@ -1420,10 +1420,23 @@ For this reason, providers may maintain full operational and computational auton
 
 The next sections provide guidelines on how to integrate an external Billing Engine.
 
-#### Billing Engine – REST APIs
+#### REST API Specification for External Billing Engines
 
-An external Billing Engine 
+This section defines the REST APIs that an external Billing Engine must expose in order to integrate with the DOME billing workflow. These APIs represent the integration contract between DOME and a Billing Engine, allowing DOME to delegate cost estimation and billing calculations while preserving provider autonomy over pricing logic and billing data. The specification focuses on _what_ the APIs must provide, not on _how_ the Billing Engine internally performs billing calculations.
 
+The following assumptions apply to all Billing Engine APIs:
+* APIs are exposed as **RESTful** services;
+* Request and response payloads use JSON encoding.
+
+APIs are synchronous.
+
+API versi*oning is supported (e.g. /v1/).
+
+All monetary amounts include a currency code compliant with ISO 4217.
+
+Authentication and authorization are handled at the DOME platform level and are out of scope for this specification.
+
+Error responses follow standard HTTP status codes.
 
 ## Policies
 
