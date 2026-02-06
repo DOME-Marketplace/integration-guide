@@ -1394,10 +1394,10 @@ The following is an example of getting all *AppliedCustomerBillingRate* related 
 GET [Customer Bill Management API Endpoint]/appliedCustomerBillingRate?bill.id.eq=urn:ngsi-ld:customer-bill:c6fbe257-2084-4573-a814-7f86a5b9a1ae
 ```
 
-### Integration of an external Billing Engine in DOME
+## Integration of an external Billing Engine in DOME
 > This section outlines the guidelines for integrating an external billing engine with the DOME billing workflow.
 
-#### Billing Engine – Overview
+### Billing Engine – Overview
 
 The Billing Engine is a core component of the DOME architecture, responsible for calculating the amounts due by consumers for purchased products. Billing is the functionality that determines the charges associated with product acquisition and usage. These charges are computed according to pricing models, which may include discount policies and different charging modes such as one-time payments, subscriptions (i.e. recurring payments), and usage-based charges (i.e. pay-per-use).
 
@@ -1420,23 +1420,23 @@ For this reason, providers may maintain full operational and computational auton
 
 The next sections provide guidelines on how to integrate an external Billing Engine.
 
-#### REST API Specification for External Billing Engines
+### REST API Specification for External Billing Engines
 
 This section defines the REST APIs that an external Billing Engine must expose in order to integrate with the DOME billing workflow. These APIs represent the integration contract between DOME and a Billing Engine, allowing DOME to delegate cost estimation and billing calculations while preserving provider autonomy over pricing logic and billing data. The specification focuses on _what_ the APIs must provide, not on _how_ the Billing Engine internally performs billing calculations.
 
 The following assumptions apply to all Billing Engine APIs:
 * APIs are exposed as **RESTful** services;
-* Request and response payloads use JSON encoding.
+* Request and response payloads use **JSON** encoding;
+* Monetary amounts include a currency code compliant with [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html);
+* Error responses follow standard HTTP status codes.
 
-APIs are synchronous.
+#### Reference Data Model
 
-API versi*oning is supported (e.g. /v1/).
+The Billing Engine APIs rely on a reference data model that combines:
+* Standardized entities defined by _TM Forum Open API specifications_;
+* _DOME-specific Data Transfer Objects_ (DTOs) introduced to structure API requests and responses.
 
-All monetary amounts include a currency code compliant with ISO 4217.
-
-Authentication and authorization are handled at the DOME platform level and are out of scope for this specification.
-
-Error responses follow standard HTTP status codes.
+This hybrid allows DOME to maximize interoperability by reusing industry-standard billing models, while preserving flexibility to support platform-specific integration needs.
 
 ## Policies
 
