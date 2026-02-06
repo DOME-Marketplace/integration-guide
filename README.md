@@ -1452,21 +1452,22 @@ The following table summarizes the TMForum entities involved in the DOME billing
 | `ProductOrder` | Represents a product order submitted by a customer | TMF 622 – Product Ordering Management |
 | `Usage` | Represents usage or consumption data used for usage-based billing | TMF 365 – Usage Management |
 
-
-
-DOME-Specific Data Transfer Objects
-
-In addition to TM Forum entities, DOME defines a set of DOME-specific DTOs to act as API-level contracts between DOME and external Billing Engines.
-
-DOME DTOs are used to:
-
-encapsulate one or more TM Forum entities when required,
-
-simplify API payloads,
-
-provide a stable and controlled integration interface.
-
+In addition to TM Forum entities, DOME defines a set of _DOME-specific DTOs_ to act as API-level contracts between DOME and external Billing Engines. The DOME DTOs are used to:
+* Encapsulate one or more TMForum entities when required;
+* Simplify API payloads;
+* Provide a stable and controlled integration interface.
 DOME DTOs do not redefine billing semantics, but serve as composition and transport structures.
+
+The following table summarizes the DOME DTOs entities involved in the DOME billing API.
+
+| DOME DTO | Description | TM Forum Entities Used |
+|----------|-------------|------------------------|
+| `BillingRequestDTO` | Input DTO used to trigger billing calculation for a given product and billing period | `TimePeriod` (TMF 678) |
+| `Invoice` | Output DTO representing the result of a billing operation | `CustomerBill`, `AppliedCustomerBillingRate` (TMF 678) |
+| `CostEstimationRequestDTO` | Input DTO used to request a price preview before purchase | `Product` (TMF 637), `TimePeriod` (TMF 678) |
+| `CostEstimationResponseDTO` | Output DTO containing the estimated cost and pricing breakdown | – |
+| `UsageSubmissionDTO` | Input DTO used to submit usage data for usage-based billing | `Usage` (TMF 365), `TimePeriod` (TMF 678) |
+Consiglio di coerenza (molto utile)
 
 ## Policies
 
