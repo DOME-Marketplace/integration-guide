@@ -1436,7 +1436,37 @@ The Billing Engine APIs rely on a reference data model that combines:
 * Standardized entities defined by _TM Forum Open API specifications_;
 * _DOME-specific Data Transfer Objects_ (DTOs) introduced to structure API requests and responses.
 
-This hybrid allows DOME to maximize interoperability by reusing industry-standard billing models, while preserving flexibility to support platform-specific integration needs.
+This approach allows DOME to maximize interoperability by reusing industry-standard billing models, while preserving flexibility to support platform-specific integration needs.
+
+The Billing Engine APIs reuse entities defined in the _TMForum Open API_ data model.
+_TMForum entities_ are used as authoritative reference models for core billing concepts such as invoices, bill items, and billing periods, and adopted as defined in the TMForum Open API specifications, without semantic modification.
+
+The following table summarizes the TMForum entities involved in the DOME billing APIs and their corresponding TMForum specifications (version 4).
+
+| TM Forum Entity | Description | TM Forum Specification (v4) |
+|-----------------|-------------|------------------------------|
+| `CustomerBill` | Represents a bill issued to a customer, including total amount and billing period | TMF 678 – Customer Bill Management |
+| `AppliedCustomerBillingRate` | Represents an applied billing rate (i.e., bill item) contributing to the final bill amount | TMF 678 – Customer Bill Management |
+| `TimePeriod` | Represents a time interval used to define billing periods and charging intervals | TMF 678 – Customer Bill Management |
+| `Product` | Represents a product offering instance purchased by a customer | TMF 637 – Product Inventory Management |
+| `ProductOrder` | Represents a product order submitted by a customer | TMF 622 – Product Ordering Management |
+| `Usage` | Represents usage or consumption data used for usage-based billing | TMF 365 – Usage Management |
+
+
+
+DOME-Specific Data Transfer Objects
+
+In addition to TM Forum entities, DOME defines a set of DOME-specific DTOs to act as API-level contracts between DOME and external Billing Engines.
+
+DOME DTOs are used to:
+
+encapsulate one or more TM Forum entities when required,
+
+simplify API payloads,
+
+provide a stable and controlled integration interface.
+
+DOME DTOs do not redefine billing semantics, but serve as composition and transport structures.
 
 ## Policies
 
