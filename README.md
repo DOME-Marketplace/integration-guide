@@ -1443,7 +1443,7 @@ The following table summarizes the REST APIs that an external Billing Engine mus
 |-----------------|-------------|----------|---------|-----------------------|
 | Cost Estimation |  `/billing/previewPrice` | POST | Yes | Calculates a price preview of a product order. In case of a usage-based product offering, it provides cost extimation according to the customer's usage simulation|
 | Billing Calculation |  `/billing/bill` | POST | Yes | Computes the actual bill amount for a purchased product within a billing period, according to the product offering pricing logic  and charging models|
-| Billing Calculation |  `/billing/instantBill` | POST | Yes | Computes the actual bill amount for a product at a given instant in time, meaning that the billing period has the same start and end date|
+| Billing Calculation |  `/billing/instantBill` | POST | Yes | Computes the actual bill amount for a product at a given instant in time (i.e., the billing period has the same start and end date), according to the product offering pricing logic |
 
 #### Reference Data Model
 
