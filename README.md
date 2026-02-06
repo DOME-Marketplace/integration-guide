@@ -1424,11 +1424,26 @@ The next sections provide guidelines on how to integrate an external Billing Eng
 
 This section defines the REST APIs that an external Billing Engine must expose in order to integrate with the DOME billing workflow. These APIs represent the integration contract between DOME and a Billing Engine, allowing DOME to delegate cost estimation and billing calculations while preserving provider autonomy over pricing logic and billing data. The specification focuses on _what_ the APIs must provide, not on _how_ the Billing Engine internally performs billing calculations.
 
+#### General Assumptions 
 The following assumptions apply to all Billing Engine APIs:
 * APIs are exposed as **RESTful** services;
 * Request and response payloads use **JSON** encoding;
 * Monetary amounts include a currency code compliant with [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html);
 * Error responses follow standard HTTP status codes.
+
+#### API Categories
+
+The Billing Engine APIs are grouped according to the main billing responsibilities:
+* Cost Estimation APIs: to obtain a real-time price preview before a purchase is committed;
+* Billing Calculation APIs to compute the final bill amounts according to the applicable pricing model.
+
+The following table summarizes the REST APIs that an external Billing Engine must expose to achieve the integration with the DOME ecosystem.
+
+| Category | Endpoint | Method | Mandatory | Description |
+|-----------------|-------------|----------|---------|-----------------------|
+| Cost Estimation |  `/billing/previewPrice` | POST | Yes | Calculates a price preview of a product order. In case of a usage-based product offering, it provides cost extimation according to the customer's usage simulation|
+| Billing Calculation |  `/billing/bill` | POST | Yes | Computes the actual bill amount for a purchased product within a billing period, according to the product offering pricing logic  and charging models|
+| Billing Calculation |  `/billing/instantBill` | POST | Yes | Computes the actual bill amount for a product at a given instant in time, meaning that the billing period has the same start and end date|
 
 #### Reference Data Model
 
