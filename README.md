@@ -1471,18 +1471,18 @@ In addition to TM Forum entities, DOME defines a set of _DOME-specific DTOs_ to 
 * Encapsulate one or more TMForum entities when required;
 * Simplify API payloads;
 * Provide a stable and controlled integration interface.
+
 DOME DTOs do not redefine billing semantics, but serve as composition and transport structures.
 
 The following table summarizes the DOME DTOs entities involved in the DOME billing API.
 
-| DOME DTO | Description | TM Forum Entities Used |
-|----------|-------------|------------------------|
-| `BillingRequestDTO` | Input DTO used to trigger billing calculation for a given product and billing period | `TimePeriod` (TMF 678) |
-| `Invoice` | Output DTO representing the result of a billing operation | `CustomerBill`, `AppliedCustomerBillingRate` (TMF 678) |
-| `CostEstimationRequestDTO` | Input DTO used to request a price preview before purchase | `Product` (TMF 637), `TimePeriod` (TMF 678) |
-| `CostEstimationResponseDTO` | Output DTO containing the estimated cost and pricing breakdown | – |
-| `UsageSubmissionDTO` | Input DTO used to submit usage data for usage-based billing | `Usage` (TMF 365), `TimePeriod` (TMF 678) |
-Consiglio di coerenza (molto utile)
+| DOME DTO | Description | 
+|----------|-------------|
+| `BillingPreviewRequestDTO` | Input DTO used to trigger the cost estimation of a product offering during the ordering phase |
+| `BillingRequestDTO` | Input DTO used to trigger billing calculation for a given purchased product and billing period |
+| `InstantBillingRequestDTO` | Input DTO used to trigger billing calculation for a given product on-demand at a given instant in time |
+| `Invoice` | Output DTO representing the result of a billing operation | 
+
 
 ## Policies
 
