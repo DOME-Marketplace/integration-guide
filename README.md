@@ -1467,7 +1467,7 @@ The following table summarizes the TMForum entities involved in the DOME billing
 | `ProductOrder` | Represents a product order submitted by a customer | TMF 622 – Product Ordering Management |
 | `Usage` | Represents usage or consumption data used for usage-based billing | TMF 365 – Usage Management |
 
-In addition to TM Forum entities, DOME defines a set of _DOME-specific DTOs_ to act as API-level contracts between DOME and external Billing Engines. The DOME DTOs are used to:
+In addition to TM Forum entities, DOME defines a set of _DOME-specific Data Transfer Object (DTO)_ to act as API-level contracts between DOME and external Billing Engines. The DOME DTOs are used to:
 * Encapsulate one or more TMForum entities when required;
 * Simplify API payloads;
 * Provide a stable and controlled integration interface.
@@ -1481,8 +1481,28 @@ The following table summarizes the DOME DTOs entities involved in the DOME billi
 | `BillingPreviewRequestDTO` | Input DTO used to trigger the cost estimation of a product offering during the ordering phase |
 | `BillingRequestDTO` | Input DTO used to trigger billing calculation for a given purchased product and billing period |
 | `InstantBillingRequestDTO` | Input DTO used to trigger billing calculation for a given product on-demand at a given instant in time |
-| `Invoice` | Output DTO representing the result of a billing operation | 
+| `Invoice` | Output DTO representing the result of a billing operation |
 
+The following class diagram depicts the DOME-specific DTOs mentioned above, showing their attributes and, in particular, the TMForum entities they include.
+![Billing Engine Reference Data Model](doc/img/data-model.png)
+
+**BillingPreviewRequestDTO**
+The `BillingPreviewRequestDTO` is a DOME-specific input DTO used to calculate the total order price of an order made by a customer, and aggregates standard TMForum entities.
+In particular, to obtain a cost estimation, this DTO aggregates the information about the instance of the order made by the customer and, in case of a usage-based product offering, information about simulated usage of the services/resources that the customer is going to purchase.
+
+| Attribute | Type | Required | Description |
+|----------|------|----------|-------------|
+|`productOrder`|`ProductOrder` (TMF622) |Yes | Istance of the order made by the customer. The order refers one or more services/resources (i.e., order items)|
+|`usage`|`List<Usage>` (TMF365) |No | Usage data used in case of pay-per-use plans to simulate the consumptions and calculate the price according to the specified usage |
+
+**BillingRequestDTO**
+The `BillingRequestDTO` is a DOME-specific input DTO used to calculate the total order price of an order made by a customer, and aggregates standard TMForum entities.
+In particular, to obtain a cost estimation, this DTO aggregates the information about the instance of the order made by the customer and, in case of a usage-based product offering, information about simulated usage of the services/resources that the customer is going to purchase.
+
+| Attribute | Type | Required | Description |
+|----------|------|----------|-------------|
+|`productId`|`string` |Yes | Identifier of the purchased product instance to be billed |
+|`usage`|`List<Usage>` (TMF365) |No | Usage data used in case of pay-per-use plans to simulate the consumptions and calculate the price according to the specified usage |
 
 ## Policies
 
