@@ -1504,6 +1504,15 @@ In particular, this DTO is used by the Billing Engine to evaluate and calculate 
 |`productId`|`string` |Yes | Identifier of the purchased product instance to be billed |
 |`billingPeriod`|`TimePeriod` (TMF678) |Yes| Time interval for which the billing calculation is performed. The BE must check if bills are due for the specified product within the billing period and, in case, calcutate them |
 
+**InstantBillingRequestDTO**
+The `InstantBillingRequestDTO` is a DOME-specific input DTO used to calculate a bill on demand for a given product at a specific point in time.
+In particular, this DTO enables the Billing Engine to verifies whether, at the specified time (the billing period start and end coincide), the product includes price components that must be billed. The referenced product represents a product instance that may not yet be persisted, supporting use cases such as one-time charges (e.g. initial fees prior to order completion).
+
+| Attribute | Type | Required | Description |
+|----------|------|----------|-------------|
+|`product`|`Product` (TMF637) |Yes | Product instance for which billing must be calculated |
+|`date`|`OffsetDateTime `|Yes| The point in time at which the billing calculation is requested for the product (i.e. start and end date of billing period coincide)
+
 ## Policies
 
 > This section will be filled when policies and the authorization process have been defined and specified.
