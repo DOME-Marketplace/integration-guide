@@ -1496,13 +1496,13 @@ In particular, to obtain a cost estimation, this DTO aggregates the information 
 |`usage`|`List<Usage>` (TMF365) |No | Usage data used in case of pay-per-use plans to simulate the consumptions and calculate the price according to the specified usage |
 
 **BillingRequestDTO**
-The `BillingRequestDTO` is a DOME-specific input DTO used to calculate the total order price of an order made by a customer, and aggregates standard TMForum entities.
-In particular, to obtain a cost estimation, this DTO aggregates the information about the instance of the order made by the customer and, in case of a usage-based product offering, information about simulated usage of the services/resources that the customer is going to purchase.
+The `BillingRequestDTO` is a DOME-specific input DTO used to calculate the bills due for a product in a specifid billing period, and includes standard TMForum entities.
+In particular, this DTO is used by the Billing Engine to evaluate and calculate the billing amounts due for a specific product within a defined billing period. It enables the Billing Engine to verify whether billing charges are applicable for the product in the specified period, according to its pricing components, and to generate the corresponding billing records.
 
 | Attribute | Type | Required | Description |
 |----------|------|----------|-------------|
 |`productId`|`string` |Yes | Identifier of the purchased product instance to be billed |
-|`usage`|`List<Usage>` (TMF365) |No | Usage data used in case of pay-per-use plans to simulate the consumptions and calculate the price according to the specified usage |
+|`billingPeriod`|`TimePeriod` (TMF678) |Yes| Time interval for which the billing calculation is performed. The BE must check if bills are due for the specified product within the billing period and, in case, calcutate them |
 
 ## Policies
 
