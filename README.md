@@ -1511,7 +1511,16 @@ In particular, this DTO enables the Billing Engine to verifies whether, at the s
 | Attribute | Type | Required | Description |
 |----------|------|----------|-------------|
 |`product`|`Product` (TMF637) |Yes | Product instance for which billing must be calculated |
-|`date`|`OffsetDateTime `|Yes| The point in time at which the billing calculation is requested for the product (i.e. start and end date of billing period coincide)
+|`date`|`OffsetDateTime `|Yes| The point in time at which the billing calculation is requested for the product (i.e. start and end date of billing period coincide|
+
+**Invoice**
+The `Invoice` is a DOME-specific output DTO representing the invoice returned to the customer as the result of a billing calculation performed by the Billing Engine, and includes standard TMForum entities.
+In particular, this DTO includes the invoice summarizing the total amount to be paid, as well as the list of individual bill items corresponding to the product’s pricing components, which together contribute to the final amount due.
+
+| Attribute | Type | Required | Description |
+|----------|------|----------|-------------|
+|`customerBill`|`CustomerBill ` (TMF678) |Yes | The customer invoice representing the total amount to pay in a billing period for a product according to the bills items|
+|`appliedCustomerBillingRates`|`List<AppliedCustomerBillingRate>`(TMF678) |Yes| Detailed billing rates applied to compute the final amount |
 
 ## Policies
 
