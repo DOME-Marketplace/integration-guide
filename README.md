@@ -1533,7 +1533,7 @@ This API provides the cost estimation (i.e., price preview) of an order made by 
 <ins>OUTPUT</ins>: `ProductOrder`
 
 As described in the [Reference Data Model](#reference-data-model), the `BillingPreviewRequestDTO` in input incapsulates the information about the `ProductOrder` for which is requested cost extimation, and, in case of a pay-per-use, provides also information about the simulate `Usage` data.
-In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price calculation.
+In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price preview calculation.
 
 **ProductOrder TMF622**
 * _productOrderItem_: a list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). The `ProductOfferingPrice` TMForum entity is detailed in [How to create a ProductOfferingPrice](#how-to-create-a-productofferingprice) section,
