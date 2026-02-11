@@ -1522,6 +1522,23 @@ In particular, this DTO includes the invoice summarizing the total amount to be 
 |`customerBill`|`CustomerBill ` (TMF678) |Yes | The customer invoice representing the total amount to pay in a billing period for a product according to the bills items|
 |`appliedCustomerBillingRates`|`List<AppliedCustomerBillingRate>`(TMF678) |Yes| Detailed billing rates applied to compute the final amount |
 
+#### API Description
+
+**Endpoint**
+`POST /billing/previewPrice`
+
+This API provides the cost estimation (i.e., price preview) of an order made by the customer during the ordering phase.
+
+<ins>INPUT</ins>: `BillingPreviewRequestDTO`
+<ins>OUTPUT</ins>: `ProductOrder`
+
+As described in the [Reference Data Model](#reference-data-model), the `BillingPreviewRequestDTO` in input incapsulates the information about the `ProductOrder` for which is requested cost extimation, and, in case of a pay-per-use, provides also information about the simulate `Usage` data.
+In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price calculation.
+
+**ProductOrder TMF622**
+* _productOrderItem_: a list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). The `ProductOfferingPrice` TMForum entity is detailed in [How to create a ProductOfferingPrice](#how-to-create-a-productofferingprice) section,
+ 
+
 ## Policies
 
 > This section will be filled when policies and the authorization process have been defined and specified.
