@@ -1409,11 +1409,17 @@ DOME’s billing system is designed to support a wide range of **pricing combina
 
 |                     | Option1 | Option2 | Option3 |
 |---------------------|---------|---------|---------|
-| **Pricing model**      |    Fixed Price     |   Pay-Per-Use      | Hybrid (Fixed + Variable)        |
+| **Pricing model**      |    Fixed Price     |   Pay-per-Use      | Hybrid (Fixed + Variable)        |
 | **Charge model**      |      One-Time   |    Recurring (Monthly, Annual)     |    Custom Period (Every 3 months, 1st of month)     |
 | **Invoice generation model** |  Pre-Paid (at start of period)   |   Post-Paid (at end of period)      |  -     |
 
 In addition, the DOME billing system supports advanced features such as **Tiered Pricing**, enabling different prices based on volume or subscription levels; **Promotions and Discounts**, allowing temporary promotional pricing; and **Multi-Component Pricing**, for example a base subscription fee combined with usage-based charges, or a fixed recurring component alongside variable consumption-based charges.
+
+Below are provided some baseline cooncepts about the **Pay-per-Use** price model enabling the marketing/sales and technical teams to better understand the functional logic.
+
+Pay-per-Use model considers the calulation of price-preview and actual bill to be based on some “consumption metrics” that are continuously collected from the delivery platform. In particular, for the calculation of the price preview during the purchase of a product by a Customer, the usage data can be simulated through the DOME Marketplace dashboard. For the calculation of the consolidated bill, the usage data published in TMForum by the Provider are considerad.
+The _metric_ in the DOME context represents the measurable resource or service parameter that is monitored and billed according to actual consumption (e.g. CPU, RAM, storage, API calls).
+
 
 The DOME ecosystem provides a native **DOME Billing Engine** that implements the responsibilities described above (i.e. cost estimation and final bill calculation according to pricing logic and charging models). At the same time, the DOME architecture is designed to ensure flexibility for billing scenarios that extend beyond the supported models or that require direct control over billing data.
 For this reason, providers may maintain full operational and computational autonomy by integrating their own **custom billing engine** within the DOME billing workflow.
@@ -1537,7 +1543,9 @@ In the following are reported the attributes that are expected to be valorized i
 
 **ProductOrder TMF622**
 * _productOrderItem_: a list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). The `ProductOfferingPrice` TMForum entity is detailed in [How to create a ProductOfferingPrice](#how-to-create-a-productofferingprice) section,
- 
+
+ **Usage TMF635**
+* _productOrderItem_: a list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). The `ProductOfferingPrice` TMForum entity is detailed in [How to create a ProductOfferingPrice](#how-to-create-a-productofferingprice) section,
 
 ## Policies
 
