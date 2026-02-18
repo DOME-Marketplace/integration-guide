@@ -1293,7 +1293,7 @@ In order to calculare the bills the following ProductOfferingPrice's attributes 
 * **recurringChargePeriodType**: a string representing the period to repeat the application of the price. The possible value are: _day_, _week_, _month_, _year_. If the _priceType_ is _recurring-prepaid_ or _recurring-postpaid_ or _usage_ this attribute **must** be present.
 * **price**: the amount of money that characterizes the price.  If the _isBundle_ attribute is false (i.e., _simple_ ProductOfferingPrice) this attribute **must** be present.
 * **unitOfMeasure**: A quantity (i.e., a number and unit) representing how many of an ProductOffering is available at the offered price (e.g., 1 GB). If the _priceType_ is _usage_ this attribute **must** be present.
-
+* **relatedParty**: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator). This TMForum entity does not include by default the _relatedParty_ attribute, therefore the _@schemaLocation_ attribute, according to the ones indicated in the [DOME GitHub Schemas repository](#https://github.com/DOME-Marketplace/tmf-api/tree/main/DOME), must be present.  
 
 ### How to subscribe to events
 
@@ -1540,14 +1540,16 @@ This API provides the cost estimation (i.e., price preview) of an order made by 
 <ins>INPUT</ins>: `BillingPreviewRequestDTO`
 <ins>OUTPUT</ins>: `ProductOrder`
 
-As described in the [Reference Data Model](#reference-data-model), the `BillingPreviewRequestDTO` in input incapsulates the information about the `ProductOrder` for which is requested cost extimation, and, in case of a pay-per-use, provides also information about the simulate `Usage` data.
+As described in the [Reference Data Model](#reference-data-model), the `BillingPreviewRequestDTO` in input incapsulates the information about the `ProductOrder` for which is requested cost extimation, and, in case of a pay-per-use, provides also information about the simulate `Usage` data (i.e., the information about the usage data are required in case of pay-per-use offering, otherwise this information won't be present).
 In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price preview calculation.
 
 **ProductOrder TMF622**
 * _productOrderItem_: a list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). Detailed information about the attributes required in the `ProductOfferingPrice` TMForum entity are reported in [ProductOfferingPrice mandatory attribute for billing processing](#productOfferingPrice-mandatory-attribute-for-billing-processing) section.
+* _relatedParty_: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
 
  **Usage TMF635**
- This entity represents a usage event that can have charges applied to it. It's main attributes are:
+ This entity represents a usage event that can have charges applied to it. ThThe required attributes are:
+* _id_:  The unique identifier
 * _id_:  The unique identifier
 
 ## Policies
