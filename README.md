@@ -1548,16 +1548,31 @@ In the following are reported the attributes that are expected to be valorized i
 * _relatedParty_: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
 
  **Usage TMF635**
- This entity represents a usage event that can have charges applied to it. ThThe required attributes are:
+ This entity represents a usage event that can have charges applied to it. The required attributes are:
 * _id_:  The unique identifier
-* _id_:  The unique identifier
+* _ratedProductUsage_: a list of RatedProductUsage (TMF635). The list containes an instance of RatedProductUsage, referring in the _productRef_ attribute the Product object of the usage
+* _usageDate_: represents the date time of the metering collection, respecting the previous usage event
+* _usageCharacteristic_: a list of UsageCharacteristic (TMF635) representing the specific metrics of the usage event. In the UsageCharacteristic the attribute _name_ represents the metric (e.g.,CPU/hours, RAM/hours), while the attribute _value_ be used to store the total amount of the consumption for the metric (e.g., if a customer uses 2 CPU for 3 hours the total consumption is 6 CPU/hours, therefore `name=CPU/hours` and `value=6`
+* _relatedParty_: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
 
+The ProductOrder (TMF622) in output MUST provide the total amount to pay in the _orderTotalPrice_ attribute.
+
+**Endpoint**
+`POST /billing//bill`
+
+This API Computes the actual bill amount for a purchased product within a billing period
+
+<ins>INPUT</ins>: `BillingRequestDTO`
+<ins>OUTPUT</ins>: `Invoice`
+
+As described in the [Reference Data Model](#reference-data-model), the `BillingRequestDTO` in input incapsulates the information about the identifier of the purchased Product for which is requested the calculation of the bill within a billing period which is a TimePeriod (TMF678). 
+In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price preview calculation.
+  
 ## Policies
 
 > This section will be filled when policies and the authorization process have been defined and specified.
 
 ### Defining policies
-
 >- How can a Service Provider create policies that concern the Products that they offer ?
 >- How can a Marketplace Operator create policites that concern the Products that they host ?
 
