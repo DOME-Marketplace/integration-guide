@@ -1189,6 +1189,7 @@ POST [Product Inventory Management API Endpoint]/product
 For a complete reference of all the available attributes and options, please refer to the
 Swagger file of the Product Inventory API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-inventory/api.json)
 
+<a name="product-anchor-point"></a>
 #### Product mandatory attribute for billing processing
 In order to calculare the bills the following Product's attributes must be present in the Product:
 * **status**: lifecycle status of the Product. The bills will be generated only for products with status _active_.
@@ -1283,6 +1284,7 @@ POST [Product Catalog Management API Endpoint]/productOfferingPrice
 For a complete reference of all the available attributes and options, please refer to the
 Swagger file of the Product Catalog Management API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-catalog/api.json)
 
+<a name="productOfferingPrice-anchor-point"></a>
 #### ProductOfferingPrice mandatory attribute for billing processing
 In order to calculare the bills the following ProductOfferingPrice's attributes must be present in the ProductOfferingPrice:
 * **lifecycleStatus**: lifecycle status of the ProductOfferingPrice. The bills will be generated only for product offering price with status _active_ or _launched_.
@@ -1530,43 +1532,36 @@ In particular, this DTO includes the invoice summarizing the total amount to be 
 |`customerBill`|`CustomerBill ` (TMF678) |Yes | The customer invoice representing the total amount to pay in a billing period for a product according to the bills items|
 |`appliedCustomerBillingRates`|`List<AppliedCustomerBillingRate>`(TMF678) |Yes| Detailed billing rates applied to compute the final amount |
 
-#### API Description
+### API Description
 
-**Endpoint**
-`POST /billing/previewPrice`
+ Endpoint | Method | Description | INPUT | OUTPUT
+|-----------------|-------------|----------|---------|--------|
+| `/billing/previewPrice` |  POST | This API provides the cost estimation (i.e., price preview) of an order made by the customer during the ordering phase|`BillingPreviewRequestDTO`|`ProductOrder`|
 
-This API provides the cost estimation (i.e., price preview) of an order made by the customer during the ordering phase.
-
-<ins>INPUT</ins>: `BillingPreviewRequestDTO`
-<ins>OUTPUT</ins>: `ProductOrder`
-
-As described in the [Reference Data Model](#reference-data-model), the `BillingPreviewRequestDTO` in input incapsulates the information about the `ProductOrder` for which is requested cost extimation, and, in case of a pay-per-use, provides also information about the simulate `Usage` data (i.e., the information about the usage data are required in case of pay-per-use offering, otherwise this information won't be present).
+As described in the [Reference Data Model](#reference-data-model), the `BillingPreviewRequestDTO` in input incapsulates the information about the `ProductOrder` for which is requested cost extimation, and, in case of a pay-per-use, provides also information about the simulated `Usage` data (otherwise this information won't be present).
 In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price preview calculation.
 
-**ProductOrder TMF622**
-* _productOrderItem_: a list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). Detailed information about the attributes required in the `ProductOfferingPrice` TMForum entity are reported in [ProductOfferingPrice mandatory attribute for billing processing](#productOfferingPrice-mandatory-attribute-for-billing-processing) section.
-* _relatedParty_: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
+_ProductOrder_ (TMF622)
+* _productOrderItem_: A list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). Detailed information about the attributes required in the `ProductOfferingPrice` TMForum entity are reported in [ProductOfferingPrice mandatory attribute for billing processing](#productOfferingPrice-anchor-point);
+* _relatedParty_: The list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
 
- **Usage TMF635**
- This entity represents a usage event that can have charges applied to it. The required attributes are:
-* _id_:  The unique identifier
-* _ratedProductUsage_: a list of RatedProductUsage (TMF635). The list containes an instance of RatedProductUsage, referring in the _productRef_ attribute the Product object of the usage
-* _usageDate_: represents the date time of the metering collection, respecting the previous usage event
-* _usageCharacteristic_: a list of UsageCharacteristic (TMF635) representing the specific metrics of the usage event. In the UsageCharacteristic the attribute _name_ represents the metric (e.g.,CPU/hours, RAM/hours), while the attribute _value_ be used to store the total amount of the consumption for the metric (e.g., if a customer uses 2 CPU for 3 hours the total consumption is 6 CPU/hours, therefore `name=CPU/hours` and `value=6`
+_Usage_ (TMF635)
+This entity represents a usage event that can have charges applied to it. The required attributes are:
+
+* _id_:  The unique identifier;
+* _ratedProductUsage_: A list of RatedProductUsage (TMF635). The list containes an instance of RatedProductUsage, referring in the _productRef_ attribute the Product object of the usage;
+* _usageDate_: The date time of the metering collection, respecting the previous usage event;
+* _usageCharacteristic_: A list of UsageCharacteristic (TMF635) representing the specific metrics of the usage event. In the UsageCharacteristic the attribute _name_ represents the metric (e.g.,CPU/hours, RAM/hours), while the attribute _value_ is used to store the total amount of the consumption for the metric (e.g., if a customer uses 2 CPU for 3 hours the total consumption is 6 CPU/hours, therefore `name=CPU/hours` and `value=6`);
 * _relatedParty_: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
 
 The ProductOrder (TMF622) in output MUST provide the total amount to pay in the _orderTotalPrice_ attribute.
 
-**Endpoint**
-`POST /billing//bill`
+ Endpoint | Method | Description | INPUT | OUTPUT
+|-----------------|-------------|----------|---------|--------|
+| `/billing//bill` | POST | This API computes the actual bill amount for a purchased product within a billing periode|`BillingRequestDTO`|`Invoice`|
 
-This API Computes the actual bill amount for a purchased product within a billing period
-
-<ins>INPUT</ins>: `BillingRequestDTO`
-<ins>OUTPUT</ins>: `Invoice`
-
-As described in the [Reference Data Model](#reference-data-model), the `BillingRequestDTO` in input incapsulates the information about the identifier of the purchased Product for which is requested the calculation of the bill within a billing period which is a TimePeriod (TMF678). 
-In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price preview calculation.
+As described in the [Reference Data Model](#reference-data-model), the `BillingRequestDTO` in input incapsulates the information about the identifier of the purchased Product (TMF637) and the billing period for which is requested the calculation of the bill, if any. 
+The Product instance will be retrived from the DOME Persistence Layer through the product identifier. The Billing Engine will check if any bill is due within the specified billing period and calculates them according to the price plan. Detailed information about the attributes required in the `Product` TMForum entity are reported in [Product mandatory attribute for billing processing](#product-anchor-point);  
   
 ## Policies
 
