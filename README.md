@@ -1380,11 +1380,11 @@ To check the status of recurring payments, the TMForum APIs are used to retrieve
 > GET [Customer Bill Management API Endpoint]/customerBill
 
 2 **How to retrieve all the CustomeBill that have been fully paid**
-- To retrieve the list of the CustomerBill that have been fully paid you can use the GET method provided by the TMForum specification using **filters** in the query string in order to get the CusterBill with the attribute `amountDue` set to `0`:
+- To retrieve the list of the CustomerBill that have been fully paid you can use the GET method provided by the TMForum specification using **filters** in the query string in order to get the CusterBill with the attribute `state` set to `settled`:
 
-The following is an example of getting all *CustomerBill* using filters in the *query string* to specify the **amountDue**:
+The following is an example of getting all *CustomerBill* using filters in the *query string* to specify the **state**:
 ``` 
-GET [Customer Bill Management API Endpoint]/customerBill?amountDue.eq=0
+GET [Customer Bill Management API Endpoint]/customerBill?state=settled
 ```
 
 4 **How to retrieve the product(s) associated to a CustomerBill**
@@ -1533,7 +1533,7 @@ In particular, this DTO includes the invoice summarizing the total amount to be 
 |`appliedCustomerBillingRates`|`List<AppliedCustomerBillingRate>`(TMF678) |Yes| Detailed billing rates applied to compute the final amount |
 
 ### API Description
-
+#### Cost Estimation
  Endpoint | Method | Description | INPUT | OUTPUT
 |-----------------|-------------|----------|---------|--------|
 | `/billing/previewPrice` |  POST | This API provides the cost estimation (i.e., price preview) of an order made by the customer during the ordering phase|`BillingPreviewRequestDTO`|`ProductOrder`|
@@ -1542,10 +1542,14 @@ As described in the [Reference Data Model](#reference-data-model), the `BillingP
 In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price preview calculation.
 
 _ProductOrder_ (TMF622)
-* _productOrderItem_: A list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). Detailed information about the attributes required in the `ProductOfferingPrice` TMForum entity are reported in [ProductOfferingPrice mandatory attribute for billing processing](#productOfferingPrice-anchor-point);
+
+This entity represents an order made by a Customer. The required attributes are:
+
+* _productOrderItem_: A list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). Detailed information about the attributes required in the `ProductOfferingPrice` are reported in [ProductOfferingPrice mandatory attribute for billing processing](#productOfferingPrice-anchor-point);
 * _relatedParty_: The list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
 
 _Usage_ (TMF635)
+
 This entity represents a usage event that can have charges applied to it. The required attributes are:
 
 * _id_:  The unique identifier;
@@ -1554,14 +1558,18 @@ This entity represents a usage event that can have charges applied to it. The re
 * _usageCharacteristic_: A list of UsageCharacteristic (TMF635) representing the specific metrics of the usage event. In the UsageCharacteristic the attribute _name_ represents the metric (e.g.,CPU/hours, RAM/hours), while the attribute _value_ is used to store the total amount of the consumption for the metric (e.g., if a customer uses 2 CPU for 3 hours the total consumption is 6 CPU/hours, therefore `name=CPU/hours` and `value=6`);
 * _relatedParty_: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
 
-The ProductOrder (TMF622) in output MUST provide the total amount to pay in the _orderTotalPrice_ attribute.
+The `ProductOrder` (TMF622) in output MUST provide the total amount to pay in the _orderTotalPrice_ attribute.
+
+#### Billing Calculation
 
  Endpoint | Method | Description | INPUT | OUTPUT
 |-----------------|-------------|----------|---------|--------|
 | `/billing//bill` | POST | This API computes the actual bill amount for a purchased product within a billing periode|`BillingRequestDTO`|`Invoice`|
 
 As described in the [Reference Data Model](#reference-data-model), the `BillingRequestDTO` in input incapsulates the information about the identifier of the purchased Product (TMF637) and the billing period for which is requested the calculation of the bill, if any. 
-The Product instance will be retrived from the DOME Persistence Layer through the product identifier. The Billing Engine will check if any bill is due within the specified billing period and calculates them according to the price plan. Detailed information about the attributes required in the `Product` TMForum entity are reported in [Product mandatory attribute for billing processing](#product-anchor-point);  
+The Product instance will be retrived from the DOME Persistence Layer through the product identifier. The Billing Engine will check if any bill is due within the specified billing period and calculates them according to the price plan. Detailed information about the attributes required in the `Product` are reported in [Product mandatory attribute for billing processing](#product-anchor-point);  
+
+
   
 ## Policies
 
