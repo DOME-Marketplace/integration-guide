@@ -1610,7 +1610,16 @@ The `Invoice` DTO in output, as described in the [Reference Data Model](#referen
 |-----------------|-------------|----------|---------|--------|
 | `/billing/instantBill` | POST | This API computes the actual bill amount for a product at a given instant in time. The typical usage scenario for this API is during the ordering phase, when purchasing a product with an initial fee to pay.|`InstantBillingRequestDTO`|`Invoice`|
 
-As described in the [Reference Data Model](#reference-data-model), the `InstantBillingRequestDTO` in input encapsulates the information about the Product (TMF637), not yet be persisted, that the Customer is going to purchase and the specific point in time (i.e., an OffesetDateTime) when is required to calculate the bill. The API verifies if the Product contains price components (e.g., one-time prices) that must be billed and calculates the bill.
+As described in the [Reference Data Model](#reference-data-model), the `InstantBillingRequestDTO` in input encapsulates the information about the Product (TMF637), not yet be persisted, the Customer is going to purchase and the specific point in time (i.e., an OffesetDateTime) when is required to calculate the bill. The API verifies if the Product contains price components (e.g., one-time prices) that must be billed and calculates the bill.
+
+An `Invoice` DTO is produced in output.
+
+#### Assumption about Invoice and Tax generation
+
+* The external BE must generate invoices according to a specific billing period (i.e., time period).  If your offering has explicit periodicity, use it to generate invoices that fall in that time period OR to lookup existing invoices you've already generated.
+* Your engine must returns TMF-compliant invoices. If your invoices lack taxes, DOME applies VAT; otherwise, it respects your system's tax logic.
+Invoice persistence
+* The provider is left free to decide whether the invoices generated through it’s own external BE will be persisted in the DOME persistence layer by DOME or will be the provider itself that take care of it. If no invoices are returned to DOME (either because no invoices are available on the billing period or because they have already persisted) no further actions are required by DOME.
   
 ## Policies
 
