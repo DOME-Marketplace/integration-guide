@@ -1599,12 +1599,18 @@ The `ProductOrder` (TMF622) in output MUST provide the total amount to pay in th
 
  Endpoint | Method | Description | INPUT | OUTPUT
 |-----------------|-------------|----------|---------|--------|
-| `/billing//bill` | POST | This API computes the actual bill amount for a purchased product within a billing periode|`BillingRequestDTO`|`Invoice`|
+| `/billing//bill` | POST | This API computes the actual bill amount for a purchased product within a billing period|`BillingRequestDTO`|`Invoice`|
 
 As described in the [Reference Data Model](#reference-data-model), the `BillingRequestDTO` in input incapsulates the information about the identifier of the purchased Product (TMF637) and the billing period for which is requested the calculation of the bill, if any. 
 The Product instance will be retrived from the DOME Persistence Layer through the product identifier. The Billing Engine will check if any bill is due within the specified billing period and calculates them according to the price plan. Detailed information about the attributes required in the `Product` are reported in [Product mandatory attribute for billing processing](#product-anchor-point);  
 
+The `Invoice` DTO in output, as described in the [Reference Data Model](#reference-data-model), incapsulates the information about the generated _CustomerBill_ (TMF678) with the total amount to pay, and the list of the _AppliedCustomerBillingRate_ (TMF678) representing each bill item.  Detailed information about the attributes required in the `CustomeBill` are reported in [CustomerBill mandatory attributes](#customerBill-anchor-point), while detailed information about the attributes required in the `AppliedCustomerBillingRate` are reported in [AppliedCustomerBillingRate mandatory attributes](#acbr-anchor-point).
 
+ Endpoint | Method | Description | INPUT | OUTPUT
+|-----------------|-------------|----------|---------|--------|
+| `/billing/instantBill` | POST | This API computes the actual bill amount for a product at a given instant in time. The typical usage scenario for this API is during the ordering phase, when purchasing a product with an initial fee to pay.|`InstantBillingRequestDTO`|`Invoice`|
+
+As described in the [Reference Data Model](#reference-data-model), the `InstantBillingRequestDTO` in input encapsulates the information about the Product (TMF637), not yet be persisted, that the Customer is going to purchase and the specific point in time (i.e., an OffesetDateTime) when is required to calculate the bill. The API verifies if the Product contains price components (e.g., one-time prices) that must be billed and calculates the bill.
   
 ## Policies
 
