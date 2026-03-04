@@ -1614,7 +1614,7 @@ As described in the [Reference Data Model](#reference-data-model), the `InstantB
 
 An `Invoice` DTO is produced in output.
 
-#### Assumption about Invoice and Tax generation
+#### Assumptions about Invoice and Tax generation
 
 * The external BE must generate invoices according to a specific billing period (i.e., time period).  If your offering has explicit periodicity, use it to generate invoices that fall in that time period OR to lookup existing invoices you've already generated.
 * Your engine must returns TMF-compliant invoices. If your invoices lack taxes, DOME applies VAT; otherwise, it respects your system's tax logic.
