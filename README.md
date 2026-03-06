@@ -61,13 +61,23 @@
     - [Compliance profile](#compliance-profile)
     - [Product Offering](#product-offering)
       - [Adding information for Replication and Access Control](#adding-information-for-replication-and-access-control)
-    - [How to creare a Product](#how-to-create-a-product)
-      - [Product mandatory attribute for billing processing](#product-mandatory-attribute-for-billing-processing)
-    - [How to creare a ProductOfferingPrice](#how-to-create-a-productofferingprice)
-      - [ProductOfferingPrice mandatory attribute for billing processing](#productofferingprice-mandatory-attribute-for-billing-processing)
-   - [How to subscribe to events](#how-to-subscribe-to-events)
+  - [How to create a Product](#how-to-create-a-product)
+    - [Product mandatory attribute for billing processing](#product-mandatory-attribute-for-billing-processing)
+  - [How to create a ProductOfferingPrice](#how-to-create-a-productofferingprice)
+    - [ProductOfferingPrice mandatory attribute for billing processing](#productofferingprice-mandatory-attribute-for-billing-processing)
+  - [How to subscribe to events](#how-to-subscribe-to-events)
   - [Billing & Payment](#billing--payment)
     - [How to check if recurring payments have been made](#how-to-check-if-recurring-payments-have-been-made)
+- [Integration of an external Billing Engine in DOME](#integration-of-an-external-billing-engine-in-dome)
+  - [Billing Engine – Overview](#billing-engine--overview)
+  - [REST API Specification for External Billing Engines](#rest-api-specification-for-external-billing-engines)
+    - [General Assumptions](#general-assumptions)
+    - [API Categories](#api-categories)
+    - [Reference Data Model](#reference-data-model)
+  - [API Description](#api-description)
+    - [Cost Estimation](#cost-estimation)
+    - [Billing Calculation](#billing-calculation)
+    - [Assumptions about Invoice and Tax generation](#assumptions-about-invoice-and-tax-generation)
 - [Policies](#policies)
   - [Defining policies](#defining-policies)
     - [Local policies](#local-policies)
@@ -1188,6 +1198,7 @@ POST [Product Inventory Management API Endpoint]/product
 For a complete reference of all the available attributes and options, please refer to the
 Swagger file of the Product Inventory API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-inventory/api.json)
 
+<a name="product-anchor-point"></a>
 #### Product mandatory attribute for billing processing
 In order to calculare the bills the following Product's attributes must be present in the Product:
 * **status**: lifecycle status of the Product. The bills will be generated only for products with status _active_.
@@ -1282,6 +1293,7 @@ POST [Product Catalog Management API Endpoint]/productOfferingPrice
 For a complete reference of all the available attributes and options, please refer to the
 Swagger file of the Product Catalog Management API [here](https://raw.githubusercontent.com/FIWARE/tmforum-api/refs/heads/main/api/tm-forum/product-catalog/api.json)
 
+<a name="productOfferingPrice-anchor-point"></a>
 #### ProductOfferingPrice mandatory attribute for billing processing
 In order to calculare the bills the following ProductOfferingPrice's attributes must be present in the ProductOfferingPrice:
 * **lifecycleStatus**: lifecycle status of the ProductOfferingPrice. The bills will be generated only for product offering price with status _active_ or _launched_.
@@ -1292,7 +1304,7 @@ In order to calculare the bills the following ProductOfferingPrice's attributes 
 * **recurringChargePeriodType**: a string representing the period to repeat the application of the price. The possible value are: _day_, _week_, _month_, _year_. If the _priceType_ is _recurring-prepaid_ or _recurring-postpaid_ or _usage_ this attribute **must** be present.
 * **price**: the amount of money that characterizes the price.  If the _isBundle_ attribute is false (i.e., _simple_ ProductOfferingPrice) this attribute **must** be present.
 * **unitOfMeasure**: A quantity (i.e., a number and unit) representing how many of an ProductOffering is available at the offered price (e.g., 1 GB). If the _priceType_ is _usage_ this attribute **must** be present.
-
+* **relatedParty**: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator). This TMForum entity does not include by default the _relatedParty_ attribute, therefore the _@schemaLocation_ attribute, according to the ones indicated in the [DOME GitHub Schemas repository](#https://github.com/DOME-Marketplace/tmf-api/tree/main/DOME), must be present.  
 
 ### How to subscribe to events
 
@@ -1367,9 +1379,44 @@ The system must support checking whether recurring payments (for both prepaid an
 To check the status of recurring payments, the TMForum APIs are used to retrieve and check the status of the TMForum entities.
 
 - **Involved TMForum entities**:
-  - _CustomerBill_ (TMF678). This resource represents a customer bill as a regular recurring bill or as an extra bill on demand by the customer or the cloud service provider. The _CustomerBill_ could define the total amount to pay (i.e., `amountDue` attribute) considering more bills generated during the billing process (see the _AppliedCustomerBillingRate_ entity below) belonging to the same billing period (i.e., `billingPeriod` attribute). The customer bill is considered fully paid <ins>only</ins> if the attribute `amountDue` is set to `0`. The attribute `appliedPayment` provides the list of the payment associated to the customer bill (they could be also partial payments). If the customer bill has been fully paid (i.e., `amountDue`= 0) the attribute `appliedPayment` must be valorised with one or more payment which sum of paid amounts corresponds to the value of the `taxIncludedAmount` attribute. 
+  - _CustomerBill_ (TMF678). This resource represents a customer bill as a regular recurring bill or as an extra bill on demand by the customer or the cloud service provider. The _CustomerBill_ could define the total amount to pay considering more bills generated during the billing process (see the _AppliedCustomerBillingRate_ entity below) belonging to the same billing period. 
   - _AppliedCustomerBillingRate (ACBR)_ (TMF678). This resource represents a bill created during the billing process. The bill refers to a _product_ , to a _periodCoverage_ (i.e., the time coverage period of the bill) and to a _customerBill_. More bills can be associated to the same _customerBill_ instance (i.e., aggregation of the bills in a unique payment).
-  - Product (TMF637). This resource represents a product offering, realized as one or more services and/or resources, procured by a customer.
+  - _Product_ (TMF637). This resource represents a product offering, realized as one or more services and/or resources, procured by a customer.
+
+<a name="customerBill-anchor-point"></a>
+**CustomerBill mandatory attributes**
+
+The attributes expected in the CustomerBill (TMF678) entity are:
+- `amountDue`: the total amount to pay for the bill in a billing period. If the CustomerBill is considered fully paid this attribute should be set to `0`. This field decreases based on the payments made;
+- `appliedPayment`:  the list of the performed payments. If the CustomerBill has been fully paid this attribute should be valorised with one or more payments which sum of the paid amounts corresponds to the value of the `taxIncludedAmount` attribute;
+- `billDate`: a date time representing the date of the bill;
+- `billNo`: identifier of the bill for the customer;
+- `billingAccount`: a billing account reference. This attribute should correspond to the product's billingAccount;
+- `billingPeriod`: the time period to which the bill refers;
+- `id`: identifier of the bill in the DOME Persistence Layer;
+- `paymentDueDate`:  a date time representing the date for which the bill must be paid;
+- `relatedParty`: the related parties (Seller/Buyer/SellerOperator/BuyerOperator) involved in the CustomerBill;
+- `remainingAmount`: the amount still to be paid. This field decreases based on the payments made;
+- `state`: represents the status of the CustomerBill. Allowed values are: _new_ -'bill is ready to validate or to sent', _validated_ - 'bill is checked (manual / automatic)', _sent_ - 'bill is sent with the channel defined in the billingaccount', _settled_ - 'bill is payed', _partiallySettled_ - 'bill is partially payed', _onHold_ - 'bill will not be in further processing until open issues connected to the bill are solved';
+- `taxExcludedAmount`: the total amount to pay without taxes;
+- `taxIncludedAmount`: the total amount to pay with taxes. When the CustomeBill is generated the `amountDue` and `remainingAmount` shoud correspond to this attribute;
+- `taxItem`: the list of TaxItem (TMForum678) involved in the bill. In DOME the taxRate is expressed in decimal format (e.g., 0.21) rather than as a percentage (21%);
+
+<a name="acbr-anchor-point"></a>
+**AppliedCustomerBillingRate mandatory attributes**
+
+The attributes expected in the AppliedCustomerBillingRate (TMF678) entity are:
+- `appliedBillingRateType`: the type of applied charge (i.e., one-time, recurring-prepaid, recurring-postpaid, usage, dicount, custom);
+- `appliedTax`: a list of AppliedBillingTaxRate (TMForum 678). In DOME the taxRate is expressed in decimal format (e.g., 0.21) rather than as a percentage (21%);
+- `bill`: the reference to the CustomerBill;
+- `billingAccount`: a billing account reference. This attribute should correspond to the product's billingAccount;
+- `date`: a date time representing the creation date of the applied billing rate according to the bill cycle of the product;
+- `id`: identifier of the applied customer bill in the DOME Persistence Layer;
+- `isBilled`: a boolean value. If true the `bill` attribute should be provided, if false then `billingAccount` should be provided.
+- `periodCoverage`: the time period to which the applied customer bill refers;
+- `product`: the reference to the product;
+- `taxExcludedAmount`: the amount to pay without taxes;
+- `taxIncludedAmount`: the amount to pay with taxes;
 
 1 **How to retrieve all the CustomerBill**
   - To retrieve the list of the CustomerBill generated by the billing subsystem you can use the `GET` method provided by the **TMForum specification**:
@@ -1377,11 +1424,11 @@ To check the status of recurring payments, the TMForum APIs are used to retrieve
 > GET [Customer Bill Management API Endpoint]/customerBill
 
 2 **How to retrieve all the CustomeBill that have been fully paid**
-- To retrieve the list of the CustomerBill that have been fully paid you can use the GET method provided by the TMForum specification using **filters** in the query string in order to get the CusterBill with the attribute `amountDue` set to `0`:
+- To retrieve the list of the CustomerBill that have been fully paid you can use the GET method provided by the TMForum specification using **filters** in the query string in order to get the CusterBill with the attribute `state` set to `settled`:
 
-The following is an example of getting all *CustomerBill* using filters in the *query string* to specify the **amountDue**:
+The following is an example of getting all *CustomerBill* using filters in the *query string* to specify the **state**:
 ``` 
-GET [Customer Bill Management API Endpoint]/customerBill?amountDue.eq=0
+GET [Customer Bill Management API Endpoint]/customerBill?state=settled
 ```
 
 4 **How to retrieve the product(s) associated to a CustomerBill**
@@ -1391,14 +1438,203 @@ The following is an example of getting all *AppliedCustomerBillingRate* related 
 
 ```
 GET [Customer Bill Management API Endpoint]/appliedCustomerBillingRate?bill.id.eq=urn:ngsi-ld:customer-bill:c6fbe257-2084-4573-a814-7f86a5b9a1ae
-```  
+```
 
+## Integration of an external Billing Engine in DOME
+> This section outlines the guidelines for integrating an external billing engine with the DOME billing workflow.
+
+### Billing Engine – Overview
+
+The Billing Engine is a core component of the DOME architecture, responsible for calculating the amounts due by consumers for purchased products. Billing is the functionality that determines the charges associated with product acquisition and usage. These charges are computed according to pricing models, which may include discount policies and different charging modes such as one-time payments, subscriptions (i.e. recurring payments), and usage-based charges (i.e. pay-per-use).
+
+The main responsibilities of the Billing Engine are:
+* Performing real-time **cost estimation (price preview)** before a purchase is committed, enabling transparency and informed decision-making.
+* Computing the **actual bill** amounts based on the applicable pricing model (fixed price, pay-per-use), including discounts and charging rules (i.e., one-time, recurring pre-paid, recurring post-paid)
+
+DOME’s billing system is designed to support a wide range of **pricing combinations** across three main dimensions, as summarized in the following table:
+
+|                     | Option1 | Option2 | Option3 |
+|---------------------|---------|---------|---------|
+| **Pricing model**      |    Fixed Price     |   Pay-per-Use      | Hybrid (Fixed + Variable)        |
+| **Charge model**      |      One-Time   |    Recurring (Monthly, Annual)     |    Custom Period (Every 3 months, 1st of month)     |
+| **Invoice generation model** |  Pre-Paid (at start of period)   |   Post-Paid (at end of period)      |  -     |
+
+In addition, the DOME billing system supports advanced features such as **Tiered Pricing**, enabling different prices based on volume or subscription levels; **Promotions and Discounts**, allowing temporary promotional pricing; and **Multi-Component Pricing**, for example a base subscription fee combined with usage-based charges, or a fixed recurring component alongside variable consumption-based charges.
+
+Below are provided some baseline cooncepts about the **Pay-per-Use** price model enabling the marketing/sales and technical teams to better understand the functional logic.
+
+_Pay-per-Use model_ considers the calulation of price-preview and actual bill to be based on some “consumption metrics” that are continuously collected from the delivery platform. In particular, for the calculation of the price preview during the purchase of a product by a Customer, the usage data can be simulated through the DOME Marketplace dashboard. For the calculation of the consolidated bill, the usage data published in TMForum by the Provider is considered.
+The **Metric** in the DOME context represents the measurable resource or service parameter that is monitored and billed according to actual consumption (e.g. CPU, RAM, storage, API calls).
+In the DOME context, a metric is described by a _provider-defined label_, which is displayed in the user interface. The _name_ attribute, instead, is used to uniquely identify the metric within the TMForum entity responsible for persisting usage data (i.e., the TMForum Usage entity).
+Another information is the **Quantity**, representing the measured consumption value collected for a metric and used to compute the charge associated with the corresponding price component. For instance, using _2 CPUs for 3 hours_ results in a quantity value of _6_.
+The Provider’s delivery platform collects metric data at a defined **Frequency**. A higher frequency results in more accurate tracking of the actual resource consumption. The Price Plan linked to a Product Offering specifies the unit price applied to each billing metric (e.g., 2 EUR per CPU/hour). The total charge is calculated by multiplying the consumed quantity by the unit price. For example, if 2 CPUs are used for 3 hours (total quantity = 6 CPU/hours), the resulting cost is 12 EUR.
+
+The DOME ecosystem provides a native **DOME Billing Engine** that implements the responsibilities described above (i.e. cost estimation and final bill calculation according to pricing logic and charging models). At the same time, the DOME architecture is designed to ensure flexibility for billing scenarios that extend beyond the supported models or that require direct control over billing data.
+For this reason, providers may maintain full operational and computational autonomy by integrating their own **custom billing engine** within the DOME billing workflow.
+
+The next sections provide guidelines on how to integrate an external Billing Engine.
+
+### REST API Specification for External Billing Engines
+
+This section defines the REST APIs that an external Billing Engine must expose in order to integrate with the DOME billing workflow. These APIs represent the integration contract between DOME and a Billing Engine, allowing DOME to delegate cost estimation and billing calculations while preserving provider autonomy over pricing logic and billing data. The specification focuses on _what_ the APIs must provide, not on _how_ the Billing Engine internally performs billing calculations.
+
+#### General Assumptions 
+The following assumptions apply to all Billing Engine APIs:
+* APIs are exposed as **RESTful** services;
+* Request and response payloads use **JSON** encoding;
+* Monetary amounts include a currency code compliant with [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html);
+* Error responses follow standard HTTP status codes.
+
+#### API Categories
+
+The Billing Engine APIs are grouped according to the main billing responsibilities:
+* Cost Estimation APIs: to obtain a real-time price preview before a purchase is committed;
+* Billing Calculation APIs to compute the final bill amounts according to the applicable pricing model.
+
+The following table summarizes the REST APIs that an external Billing Engine must expose to achieve the integration with the DOME ecosystem.
+
+| Category | Endpoint | Method | Mandatory | Description |
+|-----------------|-------------|----------|---------|-----------------------|
+| Cost Estimation |  `/billing/previewPrice` | POST | Yes | Calculates a price preview of a product order. In case of a usage-based product offering, it provides cost extimation according to the customer's usage simulation|
+| Billing Calculation |  `/billing/bill` | POST | Yes | Computes the actual bill amount for a purchased product within a billing period, according to the product offering pricing logic  and charging models|
+| Billing Calculation |  `/billing/instantBill` | POST | Yes | Computes the actual bill amount for a product at a given instant in time (i.e., the billing period has the same start and end date), according to the product offering pricing logic |
+
+#### Reference Data Model
+
+The Billing Engine APIs rely on a reference data model that combines:
+* Standardized entities defined by _TM Forum Open API specifications_;
+* _DOME-specific Data Transfer Objects_ (DTOs) introduced to structure API requests and responses.
+
+This approach allows DOME to maximize interoperability by reusing industry-standard billing models, while preserving flexibility to support platform-specific integration needs.
+
+The Billing Engine APIs reuse entities defined in the _TMForum Open API_ data model.
+_TMForum entities_ are used as authoritative reference models for core billing concepts such as invoices, bill items, and billing periods, and adopted as defined in the TMForum Open API specifications, without semantic modification.
+
+The following table summarizes the TMForum entities involved in the DOME billing APIs and their corresponding TMForum specifications (version 4).
+
+| TM Forum Entity | Description | TM Forum Specification (v4) |
+|-----------------|-------------|------------------------------|
+| `CustomerBill` | Represents a bill issued to a customer, including total amount and billing period | TMF 678 – Customer Bill Management |
+| `AppliedCustomerBillingRate` | Represents an applied billing rate (i.e., bill item) contributing to the final bill amount | TMF 678 – Customer Bill Management |
+| `TimePeriod` | Represents a time interval used to define billing periods and charging intervals | TMF 678 – Customer Bill Management |
+| `Product` | Represents a product offering instance purchased by a customer | TMF 637 – Product Inventory Management |
+| `ProductOrder` | Represents a product order submitted by a customer | TMF 622 – Product Ordering Management |
+| `Usage` | Represents usage or consumption data used for usage-based billing | TMF 365 – Usage Management |
+
+In addition to TM Forum entities, DOME defines a set of _DOME-specific Data Transfer Object (DTO)_ to act as API-level contracts between DOME and external Billing Engines. The DOME DTOs are used to:
+* Encapsulate one or more TMForum entities when required;
+* Simplify API payloads;
+* Provide a stable and controlled integration interface.
+
+DOME DTOs do not redefine billing semantics, but serve as composition and transport structures.
+
+The following table summarizes the DOME DTOs entities involved in the DOME billing API.
+
+| DOME DTO | Description | 
+|----------|-------------|
+| `BillingPreviewRequestDTO` | Input DTO used to trigger the cost estimation of a product offering during the ordering phase |
+| `BillingRequestDTO` | Input DTO used to trigger billing calculation for a given purchased product and billing period |
+| `InstantBillingRequestDTO` | Input DTO used to trigger billing calculation for a given product on-demand at a given instant in time |
+| `Invoice` | Output DTO representing the result of a billing operation |
+
+The following class diagram depicts the DOME-specific DTOs mentioned above, showing their attributes and, in particular, the TMForum entities they include.
+![Billing Engine Reference Data Model](doc/img/data-model.png)
+
+**BillingPreviewRequestDTO**
+The `BillingPreviewRequestDTO` is a DOME-specific input DTO used to calculate the total order price of an order made by a customer, and aggregates standard TMForum entities.
+In particular, to obtain a cost estimation, this DTO aggregates the information about the instance of the order made by the customer and, in case of a usage-based product offering, information about simulated usage of the services/resources that the customer is going to purchase.
+
+| Attribute | Type | Required | Description |
+|----------|------|----------|-------------|
+|`productOrder`|`ProductOrder` (TMF622) |Yes | Istance of the order made by the customer. The order refers one or more services/resources (i.e., order items)|
+|`usage`|`List<Usage>` (TMF365) |No | Usage data used in case of pay-per-use plans to simulate the consumptions and calculate the price according to the specified usage |
+
+**BillingRequestDTO**
+The `BillingRequestDTO` is a DOME-specific input DTO used to calculate the bills due for a product in a specifid billing period, and includes standard TMForum entities.
+In particular, this DTO is used by the Billing Engine to evaluate and calculate the billing amounts due for a specific product within a defined billing period. It enables the Billing Engine to verify whether billing charges are applicable for the product in the specified period, according to its pricing components, and to generate the corresponding billing records.
+
+| Attribute | Type | Required | Description |
+|----------|------|----------|-------------|
+|`productId`|`string` |Yes | Identifier of the purchased product instance to be billed |
+|`billingPeriod`|`TimePeriod` (TMF678) |Yes| Time interval for which the billing calculation is performed. The BE must check if bills are due for the specified product within the billing period and, in case, calcutate them |
+
+**InstantBillingRequestDTO**
+The `InstantBillingRequestDTO` is a DOME-specific input DTO used to calculate a bill on demand for a given product at a specific point in time.
+In particular, this DTO enables the Billing Engine to verifies whether, at the specified time (the billing period start and end coincide), the product includes price components that must be billed. The referenced product represents a product instance that may not yet be persisted, supporting use cases such as one-time charges (e.g. initial fees prior to order completion).
+
+| Attribute | Type | Required | Description |
+|----------|------|----------|-------------|
+|`product`|`Product` (TMF637) |Yes | Product instance for which billing must be calculated |
+|`date`|`OffsetDateTime `|Yes| The point in time at which the billing calculation is requested for the product (i.e. start and end date of billing period coincide|
+
+**Invoice**
+The `Invoice` is a DOME-specific output DTO representing the invoice returned to the customer as the result of a billing calculation performed by the Billing Engine, and includes standard TMForum entities.
+In particular, this DTO includes the invoice summarizing the total amount to be paid, as well as the list of individual bill items corresponding to the product’s pricing components, which together contribute to the final amount due.
+
+| Attribute | Type | Required | Description |
+|----------|------|----------|-------------|
+|`customerBill`|`CustomerBill ` (TMF678) |Yes | The customer invoice representing the total amount to pay in a billing period for a product according to the bills items|
+|`appliedCustomerBillingRates`|`List<AppliedCustomerBillingRate>`(TMF678) |Yes| Detailed billing rates applied to compute the final amount |
+
+### API Description
+#### Cost Estimation
+ Endpoint | Method | Description | INPUT | OUTPUT
+|-----------------|-------------|----------|---------|--------|
+| `/billing/previewPrice` |  POST | This API provides the cost estimation (i.e., price preview) of an order made by the customer during the ordering phase|`BillingPreviewRequestDTO`|`ProductOrder`|
+
+As described in the [Reference Data Model](#reference-data-model), the `BillingPreviewRequestDTO` in input incapsulates the information about the `ProductOrder` for which is requested cost extimation, and, in case of a pay-per-use, provides also information about the simulated `Usage` data (otherwise this information won't be present).
+In the following are reported the attributes that are expected to be valorized in each involved TMForum entity, to achive price preview calculation.
+
+_ProductOrder_ (TMF622)
+
+This entity represents an order made by a Customer. The required attributes are:
+
+* _productOrderItem_: A list of `ProductOrderItem` (TMF622) as part of the order. The list describes all the items of the order. Each `ProductOrderItem` must refers in the `itemTotalPrice` attribute the list of `OrderPrice`(TMF622), representing the actual price paid by the Customer for this item of the order. Each `OrderPrice`defines information about the price anche charge model in the attribute `productOfferingPrice` which is a `ProductOfferingPriceRef` (TMF622) referring a `ProductOfferingPrice`(TMF622). Detailed information about the attributes required in the `ProductOfferingPrice` are reported in [ProductOfferingPrice mandatory attribute for billing processing](#productOfferingPrice-anchor-point);
+* _relatedParty_: The list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
+
+_Usage_ (TMF635)
+
+This entity represents a usage event that can have charges applied to it. The required attributes are:
+
+* _id_:  The unique identifier;
+* _ratedProductUsage_: A list of RatedProductUsage (TMF635). The list containes an instance of RatedProductUsage, referring in the _productRef_ attribute the Product object of the usage;
+* _usageDate_: The date time of the metering collection, respecting the previous usage event;
+* _usageCharacteristic_: A list of UsageCharacteristic (TMF635) representing the specific metrics of the usage event. In the UsageCharacteristic the attribute _name_ represents the metric (e.g.,CPU/hours, RAM/hours), while the attribute _value_ is used to store the total amount of the consumption for the metric (e.g., if a customer uses 2 CPU for 3 hours the total consumption is 6 CPU/hours, therefore `name=CPU/hours` and `value=6`);
+* _relatedParty_: the list of the involved parties (i.e., Seller, Buyer, SellerOperator, BuyerOperator).
+
+The `ProductOrder` (TMF622) in output MUST provide the total amount to pay in the _orderTotalPrice_ attribute.
+
+#### Billing Calculation
+
+ Endpoint | Method | Description | INPUT | OUTPUT
+|-----------------|-------------|----------|---------|--------|
+| `/billing//bill` | POST | This API computes the actual bill amount for a purchased product within a billing period|`BillingRequestDTO`|`Invoice`|
+
+As described in the [Reference Data Model](#reference-data-model), the `BillingRequestDTO` in input incapsulates the information about the identifier of the purchased Product (TMF637) and the billing period for which is requested the calculation of the bill, if any. 
+The Product instance will be retrived from the DOME Persistence Layer through the product identifier. The Billing Engine will check if any bill is due within the specified billing period and calculates them according to the price plan. Detailed information about the attributes required in the `Product` are reported in [Product mandatory attribute for billing processing](#product-anchor-point);  
+
+The `Invoice` DTO in output, as described in the [Reference Data Model](#reference-data-model), incapsulates the information about the generated _CustomerBill_ (TMF678) with the total amount to pay, and the list of the _AppliedCustomerBillingRate_ (TMF678) representing each bill item.  Detailed information about the attributes required in the `CustomeBill` are reported in [CustomerBill mandatory attributes](#customerBill-anchor-point), while detailed information about the attributes required in the `AppliedCustomerBillingRate` are reported in [AppliedCustomerBillingRate mandatory attributes](#acbr-anchor-point).
+
+ Endpoint | Method | Description | INPUT | OUTPUT
+|-----------------|-------------|----------|---------|--------|
+| `/billing/instantBill` | POST | This API computes the actual bill amount for a product at a given instant in time. The typical usage scenario for this API is during the ordering phase, when purchasing a product with an initial fee to pay.|`InstantBillingRequestDTO`|`Invoice`|
+
+As described in the [Reference Data Model](#reference-data-model), the `InstantBillingRequestDTO` in input encapsulates the information about the Product (TMF637), not yet be persisted, the Customer is going to purchase and the specific point in time (i.e., an OffesetDateTime) when is required to calculate the bill. The API verifies if the Product contains price components (e.g., one-time prices) that must be billed and calculates the bill.
+
+An `Invoice` DTO is produced in output.
+
+#### Assumptions about Invoice and Tax generation
+
+* The external BE must generate invoices according to a specific billing period (i.e., time period).  If your offering has explicit periodicity, use it to generate invoices that fall in that time period OR to lookup existing invoices you've already generated.
+* Your engine must returns TMF-compliant invoices. If your invoices lack taxes, DOME applies VAT; otherwise, it respects your system's tax logic.
+Invoice persistence
+* The provider is left free to decide whether the invoices generated through it’s own external BE will be persisted in the DOME persistence layer by DOME or will be the provider itself that take care of it. If no invoices are returned to DOME (either because no invoices are available on the billing period or because they have already persisted) no further actions are required by DOME.
+  
 ## Policies
 
 > This section will be filled when policies and the authorization process have been defined and specified.
 
 ### Defining policies
-
 >- How can a Service Provider create policies that concern the Products that they offer ?
 >- How can a Marketplace Operator create policites that concern the Products that they host ?
 
